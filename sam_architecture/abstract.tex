@@ -1,0 +1,166 @@
+\documentclass[9pt,technote]{IEEEtran} % Transactions on Robotics style
+%\documentclass[12pt]{article}
+
+%\usepackage[tight,footnotesize]{subfigure}
+\usepackage{answers}
+\usepackage{setspace}
+\usepackage{graphicx}
+%\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+%\usepackage{tikzpicture}
+\usepackage{tikz}
+\usepackage{hyperref}
+%\usepackage{subfigure}
+\usepackage{caption,subcaption}
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\title{SAM Driver \& Software Architecture overview}%replace with the appropriate homework number
+\author{Nils Bore\\ %replace with your name
+Robotics, Perception and Learning Lab, KTH, Stockholm\\
+nbore@kth.se} %if necessary, replace with your course title
+
+\maketitle
+%Below is an example of the problem environment
+
+\begin{abstract}
+bla
+\end{abstract}
+
+%\section{Hardware Overview}
+
+\section{Architecture Overview}
+\label{overview}
+
+The SAM AUV platform is designed to use two identical ARM processors as its main computers.
+These will be referred to as the \textit{base} and \textit{science} computers respectively.
+In this document we are mainly concerned with the software architecture on the \textit{base}
+computer, and any discussion refers to that unless otherwise mentioned.
+The base computer communicate with sensors and actuators (henceforth referred to as \textit{devices})
+via the CAN bus protocol. Attached to most devices are \textit{Teensy} microcontrollers, which
+handle the interfacing with the CAN bus network. The microcontrollers are also responsible for
+synching the time of all devices to that of the computers.
+
+\section{ROS Middleware}
+\label{ros}
+
+\textit{The Robot Operating System} (ROS) is a so called \textit{middleware}, that allows different processes on
+a computer or network to communicate with each other in different ways.
+It also provides ways of organizing and running software. ROS allows the transmission of data types,
+called ROS \textit{messages}, between components. A large quantity of message types are already
+provided through the ROS software distribution, but you may also define new message types.
+The advantage of using provided or standardized message types is that the ROS community
+already provides tools for operating on many of these types.
+
+\section{UAVCAN Protocol}
+\label{uavcan}
+
+UAVCAN is a high-level protocol defined on top of CAN bus. It allows for easy and robust
+communication of data types over a CAN bus network. Similar to ROS, UAVCAN defines its
+own message types, and allow the user to extend the already exiting types with new messages.
+UAVCAN \textit{nodes} are responsible for transmitting and receiving messages over the network.
+They may run both on full-fledged processors such as that of the base computer, or on microcontrollers.
+UAVCAN also provides tools for synching the time of the attached nodes.
+
+\section{Components}
+\label{components}
+
+\subsection{Devices \& Teensys}
+
+As stated in the Section \ref{overview}, most sensor and actuators are hooked up to a Teensy microcontroller.
+The microcontrollers all provide a UAVCAN node that may provide both subscribe and publish
+functionality, depending on the capabilities of the attached device.
+Note that ROS and UAVCAN messages, while similar, can not be defined in a way
+as to be shared among platforms. To get the data from the Teensys into the ROS middleware
+on the base computer, we therefore need to define an interoperability layer.
+
+\subsection{uavcan\_ros\_bridge}
+
+The interoperability layer between ROS and UAVCAN is called \textit{uavcan\_ros\_bridge}\footnote{\texttt{gitr.sys.kth.se/smarc-project/sam\_drivers/\\tree/master/uavcan\_ros\_bridge}}.
+It is divided into two parts, one that converts UAVCAN messages into ROS messages and
+one that converts ROS messages into UAVCAN. This division is motivated by the way the
+ROS and UAVCAN event loops are implemented. Specifically, in the case of the UAVCAN to
+ROS bridge, the event loop is driven by UAVCAN, and a function to publish a ROS message
+is triggered every time a UAVCAN message is received. The other way is driven by the ROS
+event loop in a similar manner. The division minimizes delay in the propagation of the messages.
+
+In effect we would like a direct translation between the message types of UAVCAN and ROS.
+However, the specification of the messages differ on a few points\footnote{\texttt{github.com/tum-phoenix/drive\_ros\_uavcan/README.md }}.
+Luckily, all of these differences can easily be avoided by using the following convention
+when translating a message in either direction.
+\begin{itemize}
+\item Variable size int types of UAVCAN: always use the next largest int size in ROS.
+\item ROS topic names: ROS allows publishing on topics. The topic names should be defined statically in the bridge.
+\item UAVCAN node id recipients: UAVCAN supports recipients being specified in a message. These should be defined statically in the bridge.
+\end{itemize}
+With these workarounds, any types on either side can always be translated to a suitable
+type and message on the other side via the bridge.
+
+To convert a UAVCAN message to ROS you need to write a conversion
+function. The procedure is the same as for conversions in the
+other direction. The conversion message for the IMU function
+might look as below.
+\begin{scriptsize}
+\begin{verbatim}
+template <>
+bool convert(
+    const uavcan::equipment::ahrs::RawIMU& uav_msg,
+    sensor_msgs::Imu& ros_msg)
+{
+    ros_msg.header.stamp =
+        convert_timestamp(uav_msg.timestamp);
+    ros_msg.linear_acceleration.x =
+        uav_msg.accelerometer_latest[0];
+    ros_msg.linear_acceleration.y =
+        uav_msg.accelerometer_latest[1];
+    ros_msg.linear_acceleration.z =
+        uav_msg.accelerometer_latest[2];
+    ros_msg.angular_velocity.x =
+        uav_msg.rate_gyro_latest[0];
+    ros_msg.angular_velocity.y =
+        uav_msg.rate_gyro_latest[1];
+    ros_msg.angular_velocity.z =
+        uav_msg.rate_gyro_latest[2];
+    return true;
+}
+\end{verbatim}
+\end{scriptsize}
+It converts the timestamp, as provided by the Teensy,
+and sets the values of all the ROS members to the corresponding
+UAVCAN values. In addition, we need to add the following
+line in \texttt{uavcan\_to\_ros\_bridge.cpp}.
+\begin{scriptsize}
+\begin{verbatim}
+uav_to_ros::ConversionServer<
+    uavcan::equipment::ahrs::RawIMU,
+    sensor_msgs::Imu>
+    server(uav_node, ros_node, "uavcan_imu");
+\end{verbatim}
+\end{scriptsize}
+The string \texttt{"uavcan\_imu"} tells the program where to
+publish the produced ROS topic. With this, the \texttt{ConversionServer}
+interface will take care of subscribing to the correct UAVCAN topics
+and publish a message to ROS every time a new message is received.
+
+\subsection{ROS Hardware Interface}
+
+\subsection{ROS TF Interface}
+
+\subsection{Motion Planner Interface}
+
+\subsection{Controller Interface}
+
+%\bibliography{main}
+%\bibliographystyle{ieeetr}
+
+\end{document}
+
