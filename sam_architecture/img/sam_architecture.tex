@@ -72,7 +72,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (8.529325\du,17.130931\du){uavcan\_to\_ros\_bridge};
+\node at (8.529325\du,17.130931\du){uavcan\_to\_ros\_bridge \ref{bridge}};
 \definecolor{dialinecolor}{rgb}{0.964706, 1.000000, 0.556863}
 \pgfsetfillcolor{dialinecolor}
 \fill (4.076441\du,6.569044\du)--(4.076441\du,10.201022\du)--(12.773847\du,10.201022\du)--(12.773847\du,6.569044\du)--cycle;
@@ -86,7 +86,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (8.425144\du,8.580033\du){ros\_to\_uavcan\_bridge};
+\node at (8.425144\du,8.580033\du){ros\_to\_uavcan\_bridge \ref{bridge}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -104,7 +104,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (50.115010\du,8.571533\du){Motion Planner};
+\node at (50.115010\du,8.571533\du){Motion Planner \ref{planner}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -146,7 +146,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (-5.502794\du,11.246242\du){Encoders};
+\node at (-5.502794\du,11.246242\du){Thrusters};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -302,7 +302,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (28.312405\du,34.565116\du){Mapping};
+\node at (28.312405\du,34.565116\du){Mapping \ref{mapping}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -364,7 +364,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west, scale=1.5] at (-8.149789\du,20.363742\du){\textbf{Base Sensors}};
+\node[anchor=west, scale=1.5, align=left] at (-9.149789\du,19.363742\du){\textbf{Base Sensors}\\\textbf{\& Actuators \ref{sensors}}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -430,7 +430,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (28.384777\du,17.114304\du){Dead Reckoning};
+\node at (28.384777\du,17.114304\du){Dead Reckoning \ref{dr}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -448,7 +448,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (28.493828\du,8.553827\du){Controller};
+\node at (28.493828\du,8.553827\du){Controller \ref{controller}};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -505,7 +505,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (50.140386\du,17.114304\du){TF Transform Server};
+\node at (50.140386\du,17.114304\du){TF Transform Server \ref{tf}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -575,7 +575,7 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (28.384777\du,24.811769\du){Monitoring};
+\node at (28.384777\du,24.811769\du){Monitoring \ref{monitor}};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -778,11 +778,11 @@
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (0.710283\du,16.547993\du){UAVCAN};
+\node[anchor=west] at (0.310283\du,16.547993\du){UAVCAN \ref{uavcan}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (0.819334\du,7.932990\du){UAVCAN};
+\node[anchor=west] at (0.310283\du,7.932990\du){UAVCAN \ref{uavcan}};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
 \pgfsetstrokecolor{dialinecolor}

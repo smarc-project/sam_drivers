@@ -94,6 +94,7 @@ as to be shared between the two. To get data from the Teensys into the ROS middl
 on the base computer, we therefore need to define an interoperability layer.
 
 \subsection{uavcan\_ros\_bridge}
+\label{bridge}
 
 \begin{sidewaysfigure*}
 \include{img/sam_architecture}
@@ -173,6 +174,7 @@ interface will take care of subscribing to the correct UAVCAN topics
 and publish a message to ROS every time a new message is received.
 
 \subsection{ROS Sensor Interfaces}
+\label{sensors}
 
 
 \subsubsection{IMU}
@@ -282,10 +284,12 @@ and publish a message to ROS every time a new message is received.
 \end{description}
 
 \subsection{ROS TF Interface}
+\label{tf}
 
 \footnote{\texttt{http://wiki.ros.org/tf}} 
 
 \subsubsection{Dead Reckoning}
+\label{dr}
 
 \begin{description}
 \item[type] \texttt{TF transformation}
@@ -294,6 +298,7 @@ and publish a message to ROS every time a new message is received.
 \end{description}
 
 \subsubsection{SLAM}
+\label{mapping}
 
 \begin{description}
 \item[type] \texttt{TF transformation}
@@ -302,6 +307,7 @@ and publish a message to ROS every time a new message is received.
 \end{description}
 
 \subsection{Motion Planner Interface}
+\label{planner}
 
 \subsubsection{Parameters}
 
@@ -375,6 +381,7 @@ Takes in tf, and a point, or set of points.
 
 
 \subsection{Controller Interface}
+\label{controller}
 
 Takes in tf, and a trajectory, consisting of 
 
@@ -407,6 +414,7 @@ Takes in tf, and a trajectory, consisting of
 \end{description}
 
 \subsection{Performance Monitoring}
+\label{monitor}
 
 \begin{itemize}
 \item \textbf{Critical altitude} the monitor triggers an emergency ascent when below this altitude \begin{description}
