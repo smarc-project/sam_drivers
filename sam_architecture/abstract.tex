@@ -151,7 +151,60 @@ publish the produced ROS topic. With this, the \texttt{ConversionServer}
 interface will take care of subscribing to the correct UAVCAN topics
 and publish a message to ROS every time a new message is received.
 
-\subsection{ROS Hardware Interface}
+\subsection{ROS Sensor Interface}
+
+
+\subsubsection{IMU} \texttt{sensor\_msgs/Imu}
+\subsubsection{Magnetometer} \texttt{sensor\_msgs/MagneticField}
+\subsubsection{GPS Fix} \texttt{sensor\_msgs/NavSatFix}
+
+\subsection{ROS Actuator Interface}
+
+\subsubsection{Thruster RPM} \texttt{sam\_msgs/ThrusterRPMs}
+\begin{scriptsize}
+\begin{verbatim}
+int32 thruster_1_rpm
+int32 thruster_2_rpm
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+\end{verbatim}
+\end{scriptsize}
+
+\subsubsection{Thruster Angles} \texttt{sam\_msgs/ThrusterAngles}
+\begin{scriptsize}
+\begin{verbatim}
+float32 thruster_vertical_radians
+float32 thruster_horizontal_radians
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+\end{verbatim}
+\end{scriptsize}
+\subsubsection{Ballast Angles} \texttt{sam\_msgs/BallastAngles}
+\begin{scriptsize}
+\begin{verbatim}
+float32 weight_1_offset_radians
+float32 weight_2_offset_radians
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+\end{verbatim}
+\end{scriptsize}
+\subsubsection{Longitudinal weight offset} \texttt{sam\_msgs/PercentStamped}
+\begin{scriptsize}
+\begin{verbatim}
+float32 percent
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+\end{verbatim}
+\end{scriptsize}
+\subsubsection{Buoyancy piston position} \texttt{sam\_msgs/PercentStamped}
 
 \subsection{ROS TF Interface}
 
