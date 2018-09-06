@@ -33,7 +33,14 @@ nbore@kth.se} %if necessary, replace with your course title
 %Below is an example of the problem environment
 
 \begin{abstract}
-bla
+This is a design document intended to guide the development
+of the software architecture for the SMARC SAM AUV.
+We detail the interface of the hardware components to the
+software stack, and propose an interface between
+the basic software components. The design document
+is accompanied by implementations of several of the
+proposed components, as found in the repository
+\texttt{gitr.sys.kth.se/smarc-project/sam\_drivers}.
 \end{abstract}
 
 %\section{Hardware Overview}
@@ -53,18 +60,20 @@ synching the time of all devices to that of the computers.
 \section{ROS Middleware}
 \label{ros}
 
-\textit{The Robot Operating System} (ROS) is a so called \textit{middleware}, that allows different processes on
+\textit{The Robot Operating System} (ROS)\footnote{\texttt{https://ros.org/}} is a so called \textit{middleware}, that allows different processes on
 a computer or network to communicate with each other in different ways.
 It also provides ways of organizing and running software. ROS allows the transmission of data types,
-called ROS \textit{messages}, between components. A large quantity of message types are already
+called ROS \textit{messages}, between components via a publisher/subscriber model.
+A large collection of message types are already
 provided through the ROS software distribution, but you may also define new message types.
 The advantage of using provided or standardized message types is that the ROS community
-already provides tools for operating on many of these types.
+already provides tools for operating on many of these types,
+and that you can display them in the \textit{Rviz} visualization tool.
 
 \section{UAVCAN Protocol}
 \label{uavcan}
 
-UAVCAN is a high-level protocol defined on top of CAN bus. It allows for easy and robust
+UAVCAN\footnote{\texttt{https://uavcan.org/}} is a high-level protocol defined on top of CAN bus. It allows for easy and robust
 communication of data types over a CAN bus network. Similar to ROS, UAVCAN defines its
 own message types, and allow the user to extend the already exiting types with new messages.
 UAVCAN \textit{nodes} are responsible for transmitting and receiving messages over the network.
@@ -76,11 +85,11 @@ UAVCAN also provides tools for synching the time of the attached nodes.
 
 \subsection{Devices \& Teensys}
 
-As stated in the Section \ref{overview}, most sensor and actuators are hooked up to a Teensy microcontroller.
+As stated the Section \ref{overview}, most sensor and actuators are hooked up to a Teensy microcontroller.
 The microcontrollers all provide a UAVCAN node that may provide both subscribe and publish
 functionality, depending on the capabilities of the attached device.
 Note that ROS and UAVCAN messages, while similar, can not be defined in a way
-as to be shared among platforms. To get the data from the Teensys into the ROS middleware
+as to be shared between the two. To get data from the Teensys into the ROS middleware
 on the base computer, we therefore need to define an interoperability layer.
 
 \subsection{uavcan\_ros\_bridge}
@@ -91,16 +100,16 @@ one that converts ROS messages into UAVCAN. This division is motivated by the wa
 ROS and UAVCAN event loops are implemented. Specifically, in the case of the UAVCAN to
 ROS bridge, the event loop is driven by UAVCAN, and a function to publish a ROS message
 is triggered every time a UAVCAN message is received. The other way is driven by the ROS
-event loop in a similar manner. The division minimizes delay in the propagation of the messages.
+event loop in a similar manner. The division minimizes delay in the propagation of messages.
 
 In effect we would like a direct translation between the message types of UAVCAN and ROS.
 However, the specification of the messages differ on a few points\footnote{\texttt{github.com/tum-phoenix/drive\_ros\_uavcan/README.md }}.
 Luckily, all of these differences can easily be avoided by using the following convention
 when translating a message in either direction.
 \begin{itemize}
-\item Variable size int types of UAVCAN: always use the next largest int size in ROS.
-\item ROS topic names: ROS allows publishing on topics. The topic names should be defined statically in the bridge.
-\item UAVCAN node id recipients: UAVCAN supports recipients being specified in a message. These should be defined statically in the bridge.
+\item \textbf{Variable size int types of UAVCAN}: always use the next largest int size in ROS.
+\item \textbf{ROS topic names}: ROS allows publishing on topics. The topic names should be defined statically in the bridge node.
+\item \textbf{UAVCAN node id recipients}: UAVCAN supports recipients being specified in a message. These should be defined statically in the bridge node.
 \end{itemize}
 With these workarounds, any types on either side can always be translated to a suitable
 type and message on the other side via the bridge.
@@ -108,7 +117,7 @@ type and message on the other side via the bridge.
 To convert a UAVCAN message to ROS you need to write a conversion
 function. The procedure is the same as for conversions in the
 other direction. The conversion message for the IMU function
-might look as below.
+might look as follows.
 \begin{scriptsize}
 \begin{verbatim}
 template <>
@@ -151,66 +160,267 @@ publish the produced ROS topic. With this, the \texttt{ConversionServer}
 interface will take care of subscribing to the correct UAVCAN topics
 and publish a message to ROS every time a new message is received.
 
-\subsection{ROS Sensor Interface}
+\subsection{ROS Sensor Interfaces}
 
 
-\subsubsection{IMU} \texttt{sensor\_msgs/Imu}
-\subsubsection{Magnetometer} \texttt{sensor\_msgs/MagneticField}
-\subsubsection{GPS Fix} \texttt{sensor\_msgs/NavSatFix}
+\subsubsection{IMU}
 
-\subsection{ROS Actuator Interface}
+\begin{description}
+\item[type] \texttt{sensor\_msgs/Imu}
+\item[topic] \texttt{/imu}
+\end{description}
 
-\subsubsection{Thruster RPM} \texttt{sam\_msgs/ThrusterRPMs}
-\begin{scriptsize}
+\subsubsection{Magnetometer}
+
+\begin{description}
+\item[type] \texttt{sensor\_msgs/MagneticField}
+\item[topic] \texttt{/magnetic\_field}
+\end{description}
+
+\subsubsection{GPS Fix} 
+
+\begin{description}
+\item[type] \texttt{sensor\_msgs/NavSatFix}
+\item[topic] \texttt{/gps\_fix}
+\end{description}
+
+\subsection{ROS Actuator Interfaces}
+
+\footnote{\texttt{https://gitr.sys.kth.se/smarc-project/\\sam\_drivers/tree/master/sam\_msgs}}
+
+\subsubsection{Thruster RPM}
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/ThrusterRPMs}
+\item[topic] \texttt{/thruster\_rpms}
+\item[contents] \begin{scriptsize}
 \begin{verbatim}
-int32 thruster_1_rpm
-int32 thruster_2_rpm
-std_msgs/Header header
-  uint32 seq
-  time stamp
-  string frame_id
+ int32 thruster_1_rpm
+ int32 thruster_2_rpm
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
 \end{verbatim}
 \end{scriptsize}
+\end{description}
 
-\subsubsection{Thruster Angles} \texttt{sam\_msgs/ThrusterAngles}
-\begin{scriptsize}
+\subsubsection{Thruster Angles}
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/ThrusterAngles}
+\item[topic] \texttt{/thruster\_angles}
+\item[contents] \begin{scriptsize}
 \begin{verbatim}
-float32 thruster_vertical_radians
-float32 thruster_horizontal_radians
-std_msgs/Header header
-  uint32 seq
-  time stamp
-  string frame_id
+ float32 thruster_vertical_radians
+ float32 thruster_horizontal_radians
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
 \end{verbatim}
 \end{scriptsize}
-\subsubsection{Ballast Angles} \texttt{sam\_msgs/BallastAngles}
-\begin{scriptsize}
+\end{description}
+
+\subsubsection{Ballast Angles}
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/BallastAngles}
+\item[topic] \texttt{/thruster\_angles}
+\item[contents] \begin{scriptsize}
 \begin{verbatim}
-float32 weight_1_offset_radians
-float32 weight_2_offset_radians
-std_msgs/Header header
-  uint32 seq
-  time stamp
-  string frame_id
+ float32 weight_1_offset_radians
+ float32 weight_2_offset_radians
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
 \end{verbatim}
 \end{scriptsize}
-\subsubsection{Longitudinal weight offset} \texttt{sam\_msgs/PercentStamped}
-\begin{scriptsize}
+\end{description}
+
+\subsubsection{Longitudinal weight position} 
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/PercentStamped}
+\item[topic] \texttt{/longitudinal\_weight\_position}
+\item[contents] \begin{scriptsize}
 \begin{verbatim}
-float32 percent
-std_msgs/Header header
-  uint32 seq
-  time stamp
-  string frame_id
+ float32 percent
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
 \end{verbatim}
 \end{scriptsize}
-\subsubsection{Buoyancy piston position} \texttt{sam\_msgs/PercentStamped}
+\end{description}
+
+\subsubsection{Buoyancy piston position}
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/PercentStamped}
+\item[topic] \texttt{/buoyancy\_piston\_position}
+\end{description}
 
 \subsection{ROS TF Interface}
 
+\footnote{\texttt{http://wiki.ros.org/tf}} 
+
+\subsubsection{Dead Reckoning}
+
+\begin{description}
+\item[type] \texttt{TF transformation}
+\item[topic] \texttt{/tf}
+\item[frames] \texttt{/odom -> /base\_link}
+\end{description}
+
+\subsubsection{SLAM}
+
+\begin{description}
+\item[type] \texttt{TF transformation}
+\item[topic] \texttt{/tf}
+\item[frames] \texttt{/world -> /odom}
+\end{description}
+
 \subsection{Motion Planner Interface}
 
+\subsubsection{Parameters}
+
+The motion planner interface uses both ROS topics and ROS parameters.
+Parameters can be set by any ROS node and also accessed by any node.
+In particular, the motion planner should take into account the following parameters.
+\begin{itemize}
+\item \textbf{Safe altitude} the motion planner should always try to stay above this height over the sea floor \begin{description}
+\item[type] \texttt{double}
+\item[name] \texttt{/safe\_altitude}
+\end{description}
+\item \textbf{Safe depth} the motion planner should always try to stay above this water depth \begin{description}
+\item[type] \texttt{double}
+\item[name] \texttt{/safe\_depth}
+\end{description}  
+\end{itemize}
+
+\subsubsection{Topics}
+
+% here we will require several types of goals,
+% like on the Hugin. These may be one of the following:
+% 1. 2D Pose + Depth/Altitude (positive z indicate altitude control, negative z indicate depth control?)
+% (what if we want both?) - these should be parameters, i.e. safe altitude/depth
+% 2. Heading + Depth/Altitude -> could this be converted into a pose instead (automatically) ?
+% 3. Hover + Depth/Altitude -> we can't really convert this into a trajectory, so scrap this
+% Can we get this 
+
+Takes in tf, and a point, or set of points.
+
+\begin{description}
+\item[type] \texttt{sam\_msgs/HeadingStamped}
+\item[topic] \texttt{/nav\_heading}
+\item[contents] \begin{scriptsize}
+\begin{verbatim}
+ float32 heading
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
+\end{verbatim}
+\end{scriptsize}
+\end{description}
+
+\begin{description}
+\item[type] \texttt{geometry\_msgs/PoseStamped}
+\item[topic] \texttt{/nav\_goal}
+\item[contents] \begin{scriptsize}
+\begin{verbatim}
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
+ geometry_msgs/Pose pose
+   geometry_msgs/Point position
+     float64 x
+     float64 y
+     float64 z
+   geometry_msgs/Quaternion orientation
+     float64 x
+     float64 y
+     float64 z
+     float64 w
+\end{verbatim}
+\end{scriptsize}
+\end{description}
+
+
 \subsection{Controller Interface}
+
+Takes in tf, and a trajectory, consisting of 
+
+\begin{description}
+\item[type] \texttt{nav\_msgs/Path}
+\item[topic] \texttt{/global\_plan}
+\item[contents] \begin{scriptsize}
+\begin{verbatim}
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
+ geometry_msgs/PoseStamped[] poses
+   std_msgs/Header header
+     uint32 seq
+     time stamp
+     string frame_id
+   geometry_msgs/Pose pose
+     geometry_msgs/Point position
+       float64 x
+       float64 y
+       float64 z
+     geometry_msgs/Quaternion orientation
+       float64 x
+       float64 y
+       float64 z
+       float64 w
+\end{verbatim}
+\end{scriptsize}
+\end{description}
+
+\subsection{Performance Monitoring}
+
+\begin{itemize}
+\item \textbf{Critical altitude} the monitor triggers an emergency ascent when below this altitude \begin{description}
+\item[type] \texttt{double}
+\item[name] \texttt{/critical\_altitude}
+\end{description}
+\item \textbf{Critical depth} the monitor triggers an emergency ascent when below this water depth \begin{description}
+\item[type] \texttt{double}
+\item[name] \texttt{/critical\_depth}
+\end{description}  
+\end{itemize}
+
+\begin{description}
+\item[type] \texttt{sensor\_msgs/BatteryState}
+\item[topic] \texttt{/battery\_state}
+\item[contents] \begin{scriptsize}
+\begin{verbatim}
+ std_msgs/Header header
+   uint32 seq
+   time stamp
+   string frame_id
+ float32 voltage
+ float32 current
+ float32 charge
+ float32 capacity
+ float32 design_capacity
+ float32 percentage
+ uint8 power_supply_status
+ uint8 power_supply_health
+ uint8 power_supply_technology
+ bool present
+ float32[] cell_voltage
+ string location
+ string serial_number
+\end{verbatim}
+\end{scriptsize}
+\end{description}
+
 
 %\bibliography{main}
 %\bibliographystyle{ieeetr}
