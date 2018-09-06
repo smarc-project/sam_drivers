@@ -17,6 +17,7 @@
 \usepackage{hyperref}
 %\usepackage{subfigure}
 \usepackage{caption,subcaption}
+\usepackage{rotating}
 
 \begin{document}
 
@@ -25,7 +26,7 @@
 % --------------------------------------------------------------
 
 \title{SAM Driver \& Software Architecture overview}%replace with the appropriate homework number
-\author{Nils Bore\\ %replace with your name
+\author{Dr. Nils Bore\\ %replace with your name
 Robotics, Perception and Learning Lab, KTH, Stockholm\\
 nbore@kth.se} %if necessary, replace with your course title
 
@@ -93,6 +94,17 @@ as to be shared between the two. To get data from the Teensys into the ROS middl
 on the base computer, we therefore need to define an interoperability layer.
 
 \subsection{uavcan\_ros\_bridge}
+
+\begin{sidewaysfigure*}
+\include{img/sam_architecture}
+\caption{Overview of the SMARC system software components for the ''SAM`` and ''Lolo`` AUVs,
+         with the Section of the components indicated next to the labels.
+         Note that that the ''Lolo Computer`` will not be present on SAM, and that those
+		 components will instead be integrated on the ''Base Computer`` of SAM. The ''firewall``
+		 is therefore specific to Lolo. For details on the individual components, see the
+		 respective subsections of Section \ref{system}.}
+\label{system_figure}
+\end{sidewaysfigure*}
 
 The interoperability layer between ROS and UAVCAN is called \textit{uavcan\_ros\_bridge}\footnote{\texttt{gitr.sys.kth.se/smarc-project/sam\_drivers/\\tree/master/uavcan\_ros\_bridge}}.
 It is divided into two parts, one that converts UAVCAN messages into ROS messages and
@@ -182,6 +194,13 @@ and publish a message to ROS every time a new message is received.
 \begin{description}
 \item[type] \texttt{sensor\_msgs/NavSatFix}
 \item[topic] \texttt{/gps\_fix}
+\end{description}
+
+\subsubsection{Pressure} 
+
+\begin{description}
+\item[type] \texttt{sensor\_msgs/FluidPressure}
+\item[topic] \texttt{/pressure}
 \end{description}
 
 \subsection{ROS Actuator Interfaces}
@@ -317,7 +336,10 @@ Takes in tf, and a point, or set of points.
 \item[topic] \texttt{/nav\_heading}
 \item[contents] \begin{scriptsize}
 \begin{verbatim}
- float32 heading
+ float64 heading
+ # depth if negative,
+ # altitude if positive
+ float64 z
  std_msgs/Header header
    uint32 seq
    time stamp
@@ -339,7 +361,9 @@ Takes in tf, and a point, or set of points.
    geometry_msgs/Point position
      float64 x
      float64 y
-     float64 z
+     # depth if negative,
+     # altitude if positive
+     float64 z 
    geometry_msgs/Quaternion orientation
      float64 x
      float64 y
