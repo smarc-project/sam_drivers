@@ -98,12 +98,11 @@ on the base computer, we therefore need to define an interoperability layer.
 
 \begin{sidewaysfigure*}
 \include{img/sam_architecture}
-\caption{Overview of the SMARC system software components for the ''SAM`` and ''Lolo`` AUVs,
-         with the Section of the components indicated next to the labels.
-         Note that that the ''Lolo Computer`` will not be present on SAM, and that those
-		 components will instead be integrated on the ''Base Computer`` of SAM. The ''firewall``
-		 is therefore specific to Lolo. For details on the individual components, see the
-		 respective subsections of Section \ref{system}.}
+\caption{Overview of the base SAM AUV dataflow, with message types detailed.
+         The Section of the components are indicated next to the labels.
+         Note the orange line next to the base sensors and actuators.
+         It indicates that each component is connected to the CAN network
+         via a Teensy microcontroller, see Section \ref{bridge}.}
 \label{system_figure}
 \end{sidewaysfigure*}
 
@@ -176,7 +175,15 @@ and publish a message to ROS every time a new message is received.
 \subsection{ROS Sensor Interfaces}
 \label{sensors}
 
-
+Whenever possible, we should use the standard ROS messages
+to represent the data flowing between components.
+For simple sensors, there are for the most part suitable
+message types available. In the case of more complex sensors,
+and particular the sonar sensors in the SAM AUV, we will
+have to implement our own data types. The exact interface
+of these types will be decided when they are available, and
+we have drivers to inspect the presented data.
+For the base sensors, we propose using the following messages.
 \subsubsection{IMU}
 
 \begin{description}
@@ -207,8 +214,11 @@ and publish a message to ROS every time a new message is received.
 
 \subsection{ROS Actuator Interfaces}
 
-\footnote{\texttt{https://gitr.sys.kth.se/smarc-project/\\sam\_drivers/tree/master/sam\_msgs}}
-
+Similarly, the actuators of an AUV are specific to the hardware.
+Since we already know the interface of the actuators, we
+have prototyped message definitions in the \texttt{sam\_msgs}
+repository\footnote{\texttt{https://gitr.sys.kth.se/smarc-project/\\sam\_drivers/tree/master/sam\_msgs}}.
+We propose the following data types.
 \subsubsection{Thruster RPM}
 
 \begin{description}
@@ -286,7 +296,20 @@ and publish a message to ROS every time a new message is received.
 \subsection{ROS TF Interface}
 \label{tf}
 
-\footnote{\texttt{http://wiki.ros.org/tf}} 
+ROS uses the TF library \footnote{\texttt{http://wiki.ros.org/tf}} to represent
+the geometric state of the world, i.e. the transforms between different parts.
+In our case, we will likely have at least three notable transform frames,
+\texttt{/world} - the global refereece frame,
+\texttt{/base\_link} - the position of the AUV center of rotation,
+\texttt{/odom} - the dead reckoning reference frame.
+The dead reckoning and SLAM systems produce different transforms within
+this structure. DR produces high-frequency estimates of the \texttt{/base\_link}
+pose in the \texttt{/odom} reference frame. Meanwhile, SLAM produces lower
+frequency corrections to this transform by publishing the transform
+between \texttt{/world} and \texttt{/odom}. The TF transform server takes
+care of synchronizing these transforms, and provides us with
+full transforms between \texttt{/world} and \texttt{/base\_link}
+at the frequency of DR.
 
 \subsubsection{Dead Reckoning}
 \label{dr}
