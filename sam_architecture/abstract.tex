@@ -26,7 +26,7 @@
 % --------------------------------------------------------------
 
 \title{SAM Driver \& Software Architecture overview}%replace with the appropriate homework number
-\author{Dr. Nils Bore\\ %replace with your name
+\author{Nils Bore\\ %replace with your name
 Robotics, Perception and Learning Lab, KTH, Stockholm\\
 nbore@kth.se} %if necessary, replace with your course title
 
@@ -53,7 +53,7 @@ The SAM AUV platform is designed to use two identical ARM processors as its main
 These will be referred to as the \textit{base} and \textit{science} computers respectively.
 In this document we are mainly concerned with the software architecture on the \textit{base}
 computer, and any discussion refers to that unless otherwise mentioned.
-The base computer communicate with sensors and actuators (henceforth referred to as \textit{devices})
+The base computer communicates with sensors and actuators (henceforth referred to as \textit{devices})
 via the CAN bus protocol. Attached to most devices are \textit{Teensy} microcontrollers, which
 handle the interfacing with the CAN bus network. The microcontrollers are also responsible for
 synching the time of all devices to that of the computers.
@@ -76,7 +76,7 @@ and that you can display them in the \textit{Rviz} visualization tool.
 
 UAVCAN\footnote{\texttt{https://uavcan.org/}} is a high-level protocol defined on top of CAN bus. It allows for easy and robust
 communication of data types over a CAN bus network. Similar to ROS, UAVCAN defines its
-own message types, and allow the user to extend the already exiting types with new messages.
+own message types, and also allows the user to extend the system with user-defined message types.
 UAVCAN \textit{nodes} are responsible for transmitting and receiving messages over the network.
 They may run both on full-fledged processors such as that of the base computer, or on microcontrollers.
 UAVCAN also provides tools for synching the time of the attached nodes.
@@ -128,7 +128,7 @@ type and message on the other side via the bridge.
 
 To convert a UAVCAN message to ROS you need to write a conversion
 function. The procedure is the same as for conversions in the
-other direction. The conversion message for the IMU function
+other direction. The conversion function for the IMU messages
 might look as follows.
 \begin{scriptsize}
 \begin{verbatim}
@@ -181,7 +181,7 @@ For simple sensors, there are for the most part suitable
 message types available. In the case of more complex sensors,
 and particular the sonar sensors in the SAM AUV, we will
 have to implement our own data types. The exact interface
-of these types will be decided when they are available, and
+of these types will be decided when the sensors are available, and
 we have drivers to inspect the presented data.
 For the base sensors, we propose using the following messages.
 \subsubsection{IMU}
@@ -309,7 +309,8 @@ frequency corrections to this transform by publishing the transform
 between \texttt{/world} and \texttt{/odom}. The TF transform server takes
 care of synchronizing these transforms, and provides us with
 full transforms between \texttt{/world} and \texttt{/base\_link}
-at the frequency of DR.
+at the frequency of DR. This also means that we can run with
+purely based on DR if there is no SLAM correction available.
 
 \subsubsection{Dead Reckoning}
 \label{dr}
@@ -331,6 +332,23 @@ at the frequency of DR.
 
 \subsection{Motion Planner Interface}
 \label{planner}
+
+The motion planner discussed here is the one used for
+traversing distances under water. There may also be
+other planners and controllers e.g. for hovering or
+for ascent/descent. We mainly have two ways of commanding
+the AUV to move. First, we may give it a pose in
+the global reference frame, i.e. \texttt{/world}.
+We may also give it a heading that it will follow.
+In both cases, we need to supply a target depth of
+the AUV that it should try to stay at. In both cases,
+we will use the \texttt{z} component of the messages
+for this purpose. We propose that if \texttt{z} has a
+negative value, it refers to the target depth below
+the sea floor. In instead \texttt{z} is positive, it
+should be interpreted as the target altitude (height above seafloor).
+In addition, there are safe altitudes and depths to take
+into account when planning, see below.
 
 \subsubsection{Parameters}
 
@@ -358,8 +376,8 @@ In particular, the motion planner should take into account the following paramet
 % 3. Hover + Depth/Altitude -> we can't really convert this into a trajectory, so scrap this
 % Can we get this 
 
-Takes in tf, and a point, or set of points.
-
+The proposed topic to specify a trajectory are defined as follows.
+It can either be a heading,
 \begin{description}
 \item[type] \texttt{sam\_msgs/HeadingStamped}
 \item[topic] \texttt{/nav\_heading}
@@ -376,7 +394,7 @@ Takes in tf, and a point, or set of points.
 \end{verbatim}
 \end{scriptsize}
 \end{description}
-
+or a pose in the \texttt{/world} frame,
 \begin{description}
 \item[type] \texttt{geometry\_msgs/PoseStamped}
 \item[topic] \texttt{/nav\_goal}
@@ -401,13 +419,29 @@ Takes in tf, and a point, or set of points.
 \end{verbatim}
 \end{scriptsize}
 \end{description}
-
+The motion planner then produces a message of type \texttt{nav\_msgs/Path}
+(see the next section). The path represents a realistic motion
+trajectory of the AUV, that can be followed by a controller algorithm.
+The rationale for using a \texttt{nav\_msgs/Path} for both kinds
+of goals (way point and heading) is two-fold:
+\begin{enumerate}
+\item It minimizes development overhead
+\item We still need a 3D path in the z-axis, to keep the desired depth or altitude
+\end{enumerate}
+We anticipate that this will work well in our scenario, since
+the planner is expected to run every few seconds.
 
 \subsection{Controller Interface}
 \label{controller}
 
-Takes in tf, and a trajectory, consisting of 
-
+The controller subscribes to the path from the previous
+section, together with the transform between \texttt{/world}
+and \texttt{/base\_link}, as provided by the TF server.
+It then tries to control the actuators of the vehicle
+to follow the desired path. Note that the controller may be
+separated into several different controllers, for example for
+the xy-plane and for the z-axis (depth control).
+The path is simply a collection of successive poses, as defined below.
 \begin{description}
 \item[type] \texttt{nav\_msgs/Path}
 \item[topic] \texttt{/global\_plan}
@@ -439,6 +473,11 @@ Takes in tf, and a trajectory, consisting of
 \subsection{Performance Monitoring}
 \label{monitor}
 
+We briefly touch on performance monitoring here, together with some
+relevant message types. Similar to the safe depths of Section \ref{planner},
+the AUV will also have critical depths/altitude parameters.
+If these parameters are exceeded, it may choose to do an emergency ascent,
+or take other measures for safety.
 \begin{itemize}
 \item \textbf{Critical altitude} the monitor triggers an emergency ascent when below this altitude \begin{description}
 \item[type] \texttt{double}
@@ -449,7 +488,8 @@ Takes in tf, and a trajectory, consisting of
 \item[name] \texttt{/critical\_depth}
 \end{description}  
 \end{itemize}
-
+In addition, by inspecting the health and charge of the battery,
+it may also choose to abort the mission.
 \begin{description}
 \item[type] \texttt{sensor\_msgs/BatteryState}
 \item[topic] \texttt{/battery\_state}
@@ -476,6 +516,12 @@ Takes in tf, and a trajectory, consisting of
 \end{scriptsize}
 \end{description}
 
+\section{Summary}
+
+We have presented a detailed overview of the components
+needed for the SAM base navigation system. It may now
+be of interest to look at the reference implementations in
+\texttt{gitr.sys.kth.se/smarc-project/sam\_drivers}.
 
 %\bibliography{main}
 %\bibliographystyle{ieeetr}
