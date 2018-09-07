@@ -86,7 +86,7 @@ UAVCAN also provides tools for synching the time of the attached nodes.
 
 \subsection{Devices \& Teensys}
 
-As stated the Section \ref{overview}, most sensor and actuators are hooked up to a Teensy microcontroller.
+As stated the Section \ref{overview}, most sensors and actuators are hooked up to a Teensy microcontroller.
 The microcontrollers all provide a UAVCAN node that may provide both subscribe and publish
 functionality, depending on the capabilities of the attached device.
 Note that ROS and UAVCAN messages, while similar, can not be defined in a way
@@ -179,7 +179,7 @@ Whenever possible, we should use the standard ROS messages
 to represent the data flowing between components.
 For simple sensors, there are for the most part suitable
 message types available. In the case of more complex sensors,
-and particular the sonar sensors in the SAM AUV, we will
+and in particular the sonar sensors in the SAM AUV, we will
 have to implement our own data types. The exact interface
 of these types will be decided when the sensors are available, and
 we have drivers to inspect the presented data.
@@ -215,7 +215,7 @@ For the base sensors, we propose using the following messages.
 \subsection{ROS Actuator Interfaces}
 
 Similarly, the actuators of an AUV are specific to the hardware.
-Since we already know the interface of the actuators, we
+But since we already know the interface of the actuators, we
 have prototyped message definitions in the \texttt{sam\_msgs}
 repository\footnote{\texttt{https://gitr.sys.kth.se/smarc-project/\\sam\_drivers/tree/master/sam\_msgs}}.
 We propose the following data types.
@@ -299,7 +299,7 @@ We propose the following data types.
 ROS uses the TF library \footnote{\texttt{http://wiki.ros.org/tf}} to represent
 the geometric state of the world, i.e. the transforms between different parts.
 In our case, we will likely have at least three notable transform frames,
-\texttt{/world} - the global refereece frame,
+\texttt{/world} - the global reference frame,
 \texttt{/base\_link} - the position of the AUV center of rotation,
 \texttt{/odom} - the dead reckoning reference frame.
 The dead reckoning and SLAM systems produce different transforms within
