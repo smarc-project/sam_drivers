@@ -169,6 +169,7 @@ add_library(ros_to_uav_array_command
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
 add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
+add_executable(ros_to_uavcan_time_master src/ros_to_uavcan_time_master.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -200,6 +201,13 @@ target_link_libraries(ros_to_uavcan_bridge
   ${catkin_LIBRARIES}
   ${UAVCAN_LIB}
   #uavcan_dsdlc
+  rt
+)
+
+target_link_libraries(ros_to_uavcan_time_master
+  uavcan_platform_linux
+  ${catkin_LIBRARIES}
+  ${UAVCAN_LIB}
   rt
 )
 

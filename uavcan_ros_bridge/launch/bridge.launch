@@ -2,6 +2,13 @@
 
   <arg name="publisher_uav_node_id" default="97"/>
   <arg name="subscriber_uav_node_id" default="98"/>
+  <arg name="clock_master_uav_node_id" default="99"/>
+  <arg name="clock_period_msec" default="1000"/>
+
+  <node name="ros_to_uavcan_time_master_node" pkg="uavcan_ros_bridge" type="ros_to_uavcan_time_master" respawn="true" output="screen">
+    <param name="uav_node_id" value="$(arg clock_master_uav_node_id)"/>
+    <param name="clock_period_msec" value="$(arg clock_period_msec)"/>
+  </node>
 
   <node name="ros_to_uavcan_bridge_node" pkg="uavcan_ros_bridge" type="ros_to_uavcan_bridge" respawn="true" output="screen">
     <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
