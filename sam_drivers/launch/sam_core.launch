@@ -23,7 +23,7 @@
           args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/> -->
 
       <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
-      <param name="use_gui" value="true"/>
+      <param name="use_gui" value="false"/>
     </node>
 
     <!-- Load joint controller configurations from YAML file to parameter server -->
@@ -38,5 +38,8 @@
     </node>
     
   </group>
+
+  <include file="$(find uavcan_ros_bridge)/launch/bridge.launch">
+  </include>
 
 </launch>
