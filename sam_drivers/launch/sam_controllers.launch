@@ -16,6 +16,7 @@
     <node name="pid_actuator" pkg="sam_loop_test" type="pid_actuator" ns="LCG_trim" >
       <param name="topic_from_controller" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
+      <param name="limit_between_setpoints" value="2" />
       <remap from="/actuator_input" to="/uavcan_lcg_command"/>
     </node>
 
