@@ -1,1 +1,1 @@
-# SMaRC_uavcan_messages
+# smarc_uavcan_messages
