@@ -11,6 +11,8 @@
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
 
+  <arg name="uav_can_interface" default="can0"/>
+
   <!-- TF broadcaster world to AUV odom -->
   <node pkg="tf" type="static_transform_publisher" name="$(arg namespace)_world_odom" args="$(arg x) $(arg y) $(arg z) $(arg roll) $(arg pitch) $(arg yaw) world $(arg namespace)_odom 50" />
 
@@ -40,6 +42,7 @@
   </group>
 
   <include file="$(find uavcan_ros_bridge)/launch/bridge.launch">
+    <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
   </include>
 
 </launch>

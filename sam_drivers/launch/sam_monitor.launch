@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find rosmon_monitor)/launch/monitor.launch">
+    <arg name="config_file" value="$(find sam_drivers)/config/monitor_groups.yaml"/>
+  </include>
+
+</launch>
