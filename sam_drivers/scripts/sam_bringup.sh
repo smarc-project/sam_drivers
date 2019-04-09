@@ -22,7 +22,7 @@ tmux select-window -t $SESSION:3
 tmux send-keys "mon launch sam_drivers sam_controllers.launch"
 
 tmux select-window -t $SESSION:4
-tmux send-keys "mon launch sam_drivers sam_monitor.launch"
+tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
 
 # Set default window
 tmux select-window -t $SESSION:0
