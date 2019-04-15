@@ -12,7 +12,7 @@ class StartupCheckServer(object):
         rospy.loginfo("Checking pressure...")
 
         try:
-            pressure = rospy.wait_for_message("/uavcan_pressure2", FluidPressure, 1.)
+            pressure = rospy.wait_for_message("/uavcan_to_ros_bridge_node/sensor_pressure1", FluidPressure, 3.)
         except rospy.ROSException:
             rospy.loginfo("Could not get pressure on %s, aborting...", "/uavcan_pressure2")
             return False
@@ -25,7 +25,7 @@ class StartupCheckServer(object):
 
         rospy.loginfo("Checking lcg...")
 
-        self.lcg_cmd.publish(value=50., header=self.header) # publish setpoint 50
+        self.lcg_cmd.publish(value=lcg_setpoint, header=self.header) # publish setpoint 50
         rospy.loginfo("Published lcg setpoint at %f, waiting....", lcg_setpoint)
         rospy.sleep(5.) # wait for 5s to reach 50
         # get lcg feedback, wait for 1s
@@ -47,11 +47,11 @@ class StartupCheckServer(object):
 
         rospy.loginfo("Checking vbs...")
 
-        self.vbs_cmd.publish(value=50., header=self.header) # publish setpoint 50
+        self.vbs_cmd.publish(value=vbs_setpoint, header=self.header) # publish setpoint 50
 
         rospy.loginfo("Published vbs setpoint at %f, waiting....", vbs_setpoint)
 
-        rospy.sleep(5.) # wait for 5s to reach 50
+        rospy.sleep(20.) # wait for 5s to reach 50
         # get vbs feedback, wait for 1s
 
         try:
@@ -84,7 +84,7 @@ class StartupCheckServer(object):
         if not self.test_lcg(50.):
             return
 
-        if not self.test_lcg(100.):
+        if not self.test_lcg(88.):
             return
 
         if not self.test_vbs(0.):
