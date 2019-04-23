@@ -1,4 +1,4 @@
-#include <uavcan_ros_bridge/uav_to_ros/actuator_status.h>
+#include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
 
 namespace uav_to_ros {
 

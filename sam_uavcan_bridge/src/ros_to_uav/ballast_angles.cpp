@@ -1,4 +1,4 @@
-#include <uavcan_ros_bridge/ros_to_uav/ballast_angles.h>
+#include <sam_uavcan_bridge/ros_to_uav/ballast_angles.h>
 
 namespace ros_to_uav {
 

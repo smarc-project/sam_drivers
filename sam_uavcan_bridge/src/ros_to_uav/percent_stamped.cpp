@@ -1,4 +1,4 @@
-#include <uavcan_ros_bridge/ros_to_uav/percent_stamped.h>
+#include <sam_uavcan_bridge/ros_to_uav/percent_stamped.h>
 
 namespace ros_to_uav {
 
