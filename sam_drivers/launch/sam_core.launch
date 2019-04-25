@@ -41,8 +41,11 @@
     
   </group>
 
-  <include file="$(find uavcan_ros_bridge)/launch/bridge.launch">
+  <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
     <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
   </include>
+
+  <node pkg="sam_drivers" type="sam_startup_check.py" name="sam_startup_check" output="screen"/>
+  <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/>
 
 </launch>
