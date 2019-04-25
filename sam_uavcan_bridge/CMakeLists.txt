@@ -1,20 +1,26 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sam_msgs)
+project(sam_uavcan_bridge)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++11")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  uavcan_ros_bridge
   geometry_msgs
   sensor_msgs
   std_msgs
-  message_generation
-  actionlib
-  actionlib_msgs
+  sam_msgs
+  message_runtime
 )
+
+find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
+
+set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, if the library is installed
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -50,15 +56,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  ThrusterRPMs.msg
-  BallastAngles.msg
-  PercentStamped.msg
-  ThrusterAngles.msg
-  Command.msg
-  ArrayCommand.msg
-)
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -68,20 +70,17 @@ add_message_files(
 # )
 
 ## Generate actions in the 'action' folder
-add_action_files(
-  FILES
-  SystemsCheck.action
-)
+# add_action_files(
+#   FILES
+#   Action1.action
+#   Action2.action
+# )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
-  sensor_msgs
-  std_msgs
-  actionlib
-  actionlib_msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -114,8 +113,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES sam_msgs
-#  CATKIN_DEPENDS geometry_msgs sensor_msgs std_msgs
+#  LIBRARIES sam_uavcan_bridge
+  CATKIN_DEPENDS uavcan_ros_bridge
 #  DEPENDS system_lib
 )
 
@@ -126,24 +125,44 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/sam_msgs.cpp
+#   src/${PROJECT_NAME}/sam_uavcan_bridge.cpp
 # )
+add_library(sam_uavcan_platform_linux
+  src/uavcan_platform_linux.cpp
+)
+
+add_library(uav_to_ros_actuator_status
+  src/uav_to_ros/actuator_status.cpp
+)
+
+add_library(ros_to_uav_percent_stamped
+  src/ros_to_uav/percent_stamped.cpp
+)
+
+add_library(ros_to_uav_ballast_angles
+  src/ros_to_uav/ballast_angles.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_actuator_status ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sam_msgs_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/sam_uavcan_bridge_node.cpp)
+add_executable(sam_uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
+add_executable(sam_ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -159,6 +178,25 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(sam_uavcan_to_ros_bridge
+  sam_uavcan_platform_linux
+  uav_to_ros_actuator_status
+  #${uavcan_ros_bridge_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${UAVCAN_LIB}
+  rt
+)
+
+target_link_libraries(sam_ros_to_uavcan_bridge
+  sam_uavcan_platform_linux
+  ros_to_uav_percent_stamped
+  ros_to_uav_ballast_angles
+  #${uavcan_ros_bridge_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${UAVCAN_LIB}
+  #uavcan_dsdlc
+  rt
+)
 
 #############
 ## Install ##
@@ -200,7 +238,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sam_msgs.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_sam_uavcan_bridge.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
