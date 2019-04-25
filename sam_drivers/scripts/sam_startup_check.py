@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import rospy
-from sam_msgs.msg import PercentStamped
+from sam_msgs.msg import PercentStamped, Leak
 from sensor_msgs.msg import FluidPressure
 from std_msgs.msg import Header
 from sam_msgs.msg import SystemsCheckAction, SystemsCheckFeedback, SystemsCheckResult
@@ -11,6 +11,27 @@ class StartupCheckServer(object):
 
     _feedback = SystemsCheckFeedback()
     _result = SystemsCheckResult()
+
+    def test_leak(self):
+
+        rospy.loginfo("Checking leak sensor...")
+
+        try:
+            leak = rospy.wait_for_message("/uavcan_leak", Leak, 3.)
+        except rospy.ROSException:
+            rospy.loginfo("Could not get leak message on %s, aborting...", "/uavcan_leak")
+            self._result.status = "Could not get leak message on %s, aborting..." % "/uavcan_leak"
+            return False
+
+        if leak.value:
+            rospy.loginfo("Got leak sensor and detected leaks, aborting...")
+            self._result.status = "Got leak sensor and detected leaks, aborting..."
+            return False
+        else:
+            rospy.loginfo("Got leak sensor and no leaks, seems ok!")
+            self._feedback.status = "Got leak sensor and no leaks, seems ok!"
+
+        return True
 
     def test_pressure(self):
 
@@ -125,6 +146,12 @@ class StartupCheckServer(object):
         self._as.publish_feedback(self._feedback)
 
         if not self.test_pressure():
+            self._as.set_aborted(self._result)
+            return
+
+        self._as.publish_feedback(self._feedback)
+
+        if not self.test_leak():
             self._as.set_aborted(self._result)
             return
 
