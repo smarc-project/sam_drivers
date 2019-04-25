@@ -20,6 +20,7 @@
     <remap from="~imu" to="uavcan_imu"/>
     <remap from="~pressure1" to="uavcan_pressure1"/>
     <remap from="~pressure2" to="uavcan_pressure2"/>
+    <remap from="~leak" to="uavcan_leak"/>
   </node>
 
 </launch>

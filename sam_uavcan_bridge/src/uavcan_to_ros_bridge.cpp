@@ -14,6 +14,7 @@
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
 
 #include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
+#include <sam_uavcan_bridge/uav_to_ros/leak.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -77,6 +78,8 @@ int main(int argc, char** argv)
     //uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 20);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> vbs_feedback_server(uav_node, pn, "vbs_feedback", 13);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> lcg_feedback_server(uav_node, pn, "lcg_feedback", 14);
+
+    uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::Leak> leak_server(uav_node, pn, "leak", 200);
 
     /*
      * Running the node.
