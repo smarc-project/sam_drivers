@@ -22,6 +22,8 @@
     <remap from="~pressure2" to="uavcan_pressure2"/>
     <remap from="~leak" to="uavcan_leak"/>
     <remap from="~shallow_pressure" to="uavcan_shallow_pressure"/>
+    <remap from="~tcg_feedback1" to="uavcan_tcg_feedback1"/>
+    <remap from="~tcg_feedback2" to="uavcan_tcg_feedback2"/>
   </node>
 
 </launch>

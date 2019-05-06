@@ -79,6 +79,10 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> vbs_feedback_server(uav_node, pn, "vbs_feedback", 13);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> lcg_feedback_server(uav_node, pn, "lcg_feedback", 14);
 
+    // TODO: replace these with a proper uavcan message with both angles included
+    uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> tcg_feedback_server1(uav_node, pn, "tcg_feedback1", 27);
+    uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> tcg_feedback_server2(uav_node, pn, "tcg_feedback2", 28);
+
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::Leak> leak_server(uav_node, pn, "leak", 200);
 
     /*
