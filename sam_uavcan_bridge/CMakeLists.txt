@@ -157,6 +157,10 @@ add_library(ros_to_uav_thruster_rpms
   src/ros_to_uav/thruster_rpms.cpp
 )
 
+add_library(ros_to_uav_thruster_angles
+  src/ros_to_uav/thruster_angles.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -166,6 +170,7 @@ add_dependencies(uav_to_ros_leak ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -203,6 +208,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_percent_stamped
   ros_to_uav_ballast_angles
   ros_to_uav_thruster_rpms
+  ros_to_uav_thruster_angles
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   ${UAVCAN_LIB}
