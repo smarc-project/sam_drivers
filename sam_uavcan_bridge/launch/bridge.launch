@@ -8,6 +8,8 @@
     <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
     <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
     <remap from="~command" to="uavcan_command"/>
+    <remap from="~rpm_command" to="uavcan_rpm_command"/>
+    <remap from="~vector_command" to="uavcan_vector_command"/>
     <remap from="~array_command" to="uavcan_array_command"/>
     <remap from="~vbs_command" to="uavcan_vbs_command"/>
     <remap from="~tcg_command" to="uavcan_tcg_command"/>
