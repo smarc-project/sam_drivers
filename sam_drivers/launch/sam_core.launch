@@ -24,8 +24,9 @@
 <!--     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/> -->
 
-      <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
       <param name="use_gui" value="false"/>
+      <rosparam param="source_list">["/sam/command_states"]</rosparam>
     </node>
 
     <!-- Load joint controller configurations from YAML file to parameter server -->
@@ -46,6 +47,7 @@
   </include>
 
   <node pkg="sam_drivers" type="sam_startup_check.py" name="sam_startup_check" output="screen"/>
+  <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen"/>
   <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/>
 
 </launch>
