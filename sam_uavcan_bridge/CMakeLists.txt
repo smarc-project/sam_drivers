@@ -178,6 +178,7 @@ add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} 
 # add_executable(${PROJECT_NAME}_node src/sam_uavcan_bridge_node.cpp)
 add_executable(sam_uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
 add_executable(sam_ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
+add_executable(sam_ros_to_uavcan_time_master src/ros_to_uavcan_time_master.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -213,6 +214,13 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ${catkin_LIBRARIES}
   ${UAVCAN_LIB}
   #uavcan_dsdlc
+  rt
+)
+
+target_link_libraries(sam_ros_to_uavcan_time_master
+  sam_uavcan_platform_linux
+  ${catkin_LIBRARIES}
+  ${UAVCAN_LIB}
   rt
 )
 
