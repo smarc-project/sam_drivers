@@ -1,0 +1,18 @@
+#
+# Pressure reading with sensor ID and timestamp.
+#
+
+#
+# Data acquisition timestamp.
+#
+uavcan.Timestamp timestamp
+
+#
+# Pressure and pressure variance
+#
+uavcan.equipment.air_data.StaticPressure pressure
+
+#
+# device ID
+#
+uint8 device_id
