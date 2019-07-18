@@ -8,11 +8,11 @@
 uavcan.Timestamp timestamp
 
 #
-# Pressure and pressure variance
-#
-uavcan.equipment.air_data.StaticPressure pressure
-
-#
 # device ID
 #
 uint8 device_id
+
+#
+# Pressure and pressure variance
+#
+uavcan.equipment.air_data.StaticPressure pressure
