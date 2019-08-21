@@ -1,11 +1,12 @@
 <launch>
 
-  <arg name="publisher_uav_node_id" default="97"/>
-  <arg name="subscriber_uav_node_id" default="98"/>
+  <arg name="publisher_uav_node_id" default="98"/>
+  <arg name="subscriber_uav_node_id" default="97"/>
+  <arg name="time_master_uav_node_id" default="1"/>
   <arg name="uav_can_interface" default="can0"/>
 
   <node name="ros_to_uavcan_bridge_node" pkg="sam_uavcan_bridge" type="sam_ros_to_uavcan_bridge" respawn="true" output="screen">
-    <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
+    <param name="uav_node_id" value="$(arg publisher_uav_node_id)"/>
     <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
     <remap from="~command" to="uavcan_command"/>
     <remap from="~rpm_command" to="uavcan_rpm_command"/>
@@ -16,8 +17,13 @@
     <remap from="~lcg_command" to="uavcan_lcg_command"/>
   </node>
 
+  <node name="uavcan_time_master_node" pkg="sam_uavcan_bridge" type="sam_uavcan_time_master" respawn="true" output="screen">
+    <param name="uav_node_id" value="$(arg time_master_uav_node_id)"/>
+    <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
+  </node>
+
   <node name="uavcan_to_ros_bridge_node" pkg="sam_uavcan_bridge" type="sam_uavcan_to_ros_bridge" respawn="false" output="screen">
-    <param name="uav_node_id" value="$(arg publisher_uav_node_id)"/>
+    <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
     <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
     <remap from="~imu" to="uavcan_imu"/>
     <remap from="~pressure1" to="uavcan_pressure1"/>
