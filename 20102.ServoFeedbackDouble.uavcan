@@ -7,11 +7,6 @@
 #
 uavcan.Timestamp timestamp
 
-#
-# Pressure and pressure variance
-#
-uavcan.equipment.air_data.StaticPressure pressure
-
 uint4 actuator_id_1
 
 float16 position_1        # radian
