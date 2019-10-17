@@ -149,6 +149,10 @@ add_library(uav_to_ros_sensor_pressure_stamped
   src/uav_to_ros/sensor_pressure_stamped.cpp
 )
 
+add_library(uav_to_ros_servo_feedback_double
+  src/uav_to_ros/servo_feedback_double.cpp
+)
+
 add_library(uav_to_ros_temperature
   src/uav_to_ros/temperature.cpp
 )
@@ -176,6 +180,7 @@ add_library(ros_to_uav_thruster_angles
 add_dependencies(uav_to_ros_actuator_status ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_leak ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_sensor_pressure_stamped dsdlc)
+add_dependencies(uav_to_ros_servo_feedback_double dsdlc)
 add_dependencies(uav_to_ros_temperature ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -209,6 +214,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_actuator_status
   uav_to_ros_leak
   uav_to_ros_sensor_pressure_stamped
+  uav_to_ros_servo_feedback_double
   uav_to_ros_temperature
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
