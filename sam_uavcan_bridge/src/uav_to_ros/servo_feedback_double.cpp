@@ -7,9 +7,9 @@ bool convert(const uavcan::ReceivedDataStructure<smarc_uavcan_messages::ServoFee
 {
     ros_msg.header.stamp = convert_timestamp(uav_msg.timestamp);
     ros_msg.position.push_back(uav_msg.position_1);
-    ros_msg.name.push_back(string(uav_msg.actuator_id_1));
+    ros_msg.name.push_back("elevator");
     ros_msg.position.push_back(uav_msg.position_2);
-    ros_msg.name.push_back(string(uav_msg.actuator_id_2));
+    ros_msg.name.push_back("rudder");
     return true;
 }
 
