@@ -12,10 +12,12 @@
 #include <uavcan_ros_bridge/uav_to_ros/magnetic_field.h>
 #include <uavcan_ros_bridge/uav_to_ros/pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
+#include <uavcan_ros_bridge/uav_to_ros/sensor_pressure_stamped.h>
 #include <uavcan_ros_bridge/uav_to_ros/esc_status.h>
 
 #include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
 #include <sam_uavcan_bridge/uav_to_ros/leak.h>
+#include <sam_uavcan_bridge/uav_to_ros/temperature.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -71,12 +73,17 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::power::BatteryInfo, sensor_msgs::BatteryState> battery_server(uav_node, pn, "battery_state");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::MagneticFieldStrength, sensor_msgs::MagneticField> magnetic_server(uav_node, pn, "magnetic_field");
     // NOTE: the last argument is the source node id numbers, these are example values
-    uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server1(uav_node, pn, "pressure1", 91);
-    //uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server2(uav_node, pn, "pressure2", 93);
+    // uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server1(uav_node, pn, "pressure1", 91);
+    // uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server2(uav_node, pn, "pressure2", 93);
 
-    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> sensor_pressure_server1(uav_node, pn, "sensor_pressure1", 22);
-    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> sensor_pressure_server2(uav_node, pn, "shallow_pressure", 23);
-    //uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 20);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(uav_node, pn, "sensor_pressure_stamped1", 22);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar02(uav_node, pn, "sensor_pressure_stamped2", 23);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 1);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> tank_pressure_server(uav_node, pn, "tank_pressure", 2);
+    // uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> sensor_pressure_server1(uav_node, pn, "sensor_pressure1", 22);
+    // uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> sensor_pressure_server2(uav_node, pn, "shallow_pressure", 23);
+    // uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 20);
+    uav_to_ros::ConversionServer<uavcan::equipment::device::Temperature, sam_msgs::Temperature> motor_oil_temperature_server(uav_node, pn, "motor_temperature", 1);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> vbs_feedback_server(uav_node, pn, "vbs_feedback", 13);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> lcg_feedback_server(uav_node, pn, "lcg_feedback", 14);
 
