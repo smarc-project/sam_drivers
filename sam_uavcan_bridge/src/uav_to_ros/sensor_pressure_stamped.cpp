@@ -1,4 +1,4 @@
-#include <uavcan_ros_bridge/uav_to_ros/sensor_pressure_stamped.h>
+#include <sam_uavcan_bridge/uav_to_ros/sensor_pressure_stamped.h>
 
 namespace uav_to_ros {
 
