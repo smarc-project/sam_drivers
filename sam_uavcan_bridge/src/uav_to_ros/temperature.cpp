@@ -9,6 +9,7 @@ bool convert(const uavcan::ReceivedDataStructure<uavcan::equipment::device::Temp
         return false;
     }
 
+    ros_msg.header.stamp = ros::Time::now();
     ros_msg.temperature = uav_msg.temperature;
     ros_msg.variance = 0;
 
