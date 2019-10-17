@@ -76,8 +76,8 @@ int main(int argc, char** argv)
     // uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server1(uav_node, pn, "pressure1", 91);
     // uav_to_ros::ConversionServer<uavcan::equipment::air_data::StaticPressure, sensor_msgs::FluidPressure> pressure_server2(uav_node, pn, "pressure2", 93);
 
-    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(uav_node, pn, "sensor_pressure_stamped1", 22);
-    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar02(uav_node, pn, "sensor_pressure_stamped2", 23);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(uav_node, pn, "sensor_pressure_bar30", 22);
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar02(uav_node, pn, "sensor_pressure_bar02", 23);
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 1);
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> tank_pressure_server(uav_node, pn, "tank_pressure", 2);
     // uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressure, sensor_msgs::FluidPressure> sensor_pressure_server1(uav_node, pn, "sensor_pressure1", 22);
