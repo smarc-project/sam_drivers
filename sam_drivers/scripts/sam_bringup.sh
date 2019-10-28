@@ -18,16 +18,16 @@ tmux select-window -t $SESSION:1
 tmux send-keys "rosrun flexxros sam_controls.py" C-m
 
 tmux select-window -t $SESSION:2
-tmux send-keys "mon launch sam_drivers sam_core.launch --name=$(tmux display-message -p '#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_drivers sam_core.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
-tmux send-keys "mon launch sam_dead_reckoning sam_stim_dr.launch --name=$(tmux display-message -p '#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_dead_reckoning sam_stim_dr.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:4
-tmux send-keys "mon launch sam_drivers sam_controllers.launch --name=$(tmux display-message -p '#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_drivers sam_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:5
-tmux send-keys "mon launch sam_march sam_march.launch --name=$(tmux display-message -p '#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_march sam_march.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:6
 tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
