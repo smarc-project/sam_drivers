@@ -48,6 +48,6 @@
 
   <node pkg="sam_drivers" type="sam_startup_check.py" name="sam_startup_check" output="screen"/>
   <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen"/>
-  <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/>
+  <!-- <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/> -->
 
 </launch>
