@@ -26,8 +26,9 @@
     <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
     <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
     <remap from="~imu" to="uavcan_imu"/>
-    <remap from="~pressure1" to="uavcan_pressure1"/>
-    <remap from="~pressure2" to="uavcan_pressure2"/>
+    <remap from="~sensor_pressure_bar02" to="uavcan_pressure20"/>
+    <remap from="~sensor_pressure_bar30" to="uavcan_pressure300"/>
+    <remap from="~motor_temperature" to="uavcan_motor_temp"/>
     <remap from="~leak" to="uavcan_leak"/>
     <remap from="~joint_states" to="joint_states"/>
     <remap from="~shallow_pressure" to="uavcan_shallow_pressure"/>
