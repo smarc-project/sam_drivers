@@ -112,7 +112,7 @@ set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, 
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include dsdl/dsdlc_generated
 #  LIBRARIES sam_uavcan_bridge
   CATKIN_DEPENDS uavcan_ros_bridge
 #  DEPENDS system_lib
@@ -126,8 +126,13 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
+  dsdl/dsdlc_generated
   ${catkin_INCLUDE_DIRS}
 )
+
+add_custom_target(sam_dsdlc libuavcan_dsdlc # If the library is installed
+                  "smarc_uavcan_messages" -I${UAVCAN_DSDL_DEFINITIONS}
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dsdl)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -143,6 +148,18 @@ add_library(uav_to_ros_actuator_status
 
 add_library(uav_to_ros_leak
   src/uav_to_ros/leak.cpp
+)
+
+add_library(uav_to_ros_sensor_pressure_stamped
+  src/uav_to_ros/sensor_pressure_stamped.cpp
+)
+
+add_library(uav_to_ros_servo_feedback_double
+  src/uav_to_ros/servo_feedback_double.cpp
+)
+
+add_library(uav_to_ros_temperature
+  src/uav_to_ros/temperature.cpp
 )
 
 add_library(ros_to_uav_percent_stamped
@@ -167,6 +184,9 @@ add_library(ros_to_uav_thruster_angles
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_actuator_status ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_leak ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_sensor_pressure_stamped sam_dsdlc)
+add_dependencies(uav_to_ros_servo_feedback_double sam_dsdlc)
+add_dependencies(uav_to_ros_temperature ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -198,6 +218,9 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   sam_uavcan_platform_linux
   uav_to_ros_actuator_status
   uav_to_ros_leak
+  uav_to_ros_sensor_pressure_stamped
+  uav_to_ros_servo_feedback_double
+  uav_to_ros_temperature
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   ${UAVCAN_LIB}
