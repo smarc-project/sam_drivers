@@ -39,15 +39,15 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
       <param name="robot_description" value="/$(arg namespace)/robot_description" />
     </node>
+
+    <node pkg="sam_drivers" type="sam_startup_check.py" name="sam_startup_check" output="screen"/>
+    <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen"/>
     
   </group>
 
   <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
     <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
   </include>
-
-  <node pkg="sam_drivers" type="sam_startup_check.py" name="sam_startup_check" output="screen"/>
-  <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen"/>
   <!-- <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/> -->
 
 </launch>
