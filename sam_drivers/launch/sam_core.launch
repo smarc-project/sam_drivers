@@ -54,7 +54,7 @@
        <remap from="~thrust_vector_cmd" to="/$(arg namespace)/core/thrust_vector_cmd"/>
     </node>
 
-    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)">
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)" ns="core">
       <param name="port" value="$(arg gps_port)"/>
       <param name="baud" value="$(arg gps_baud)"/>
       <param name="frame_id" value="$(arg namespace)/gps_link"/>
