@@ -40,7 +40,7 @@
             <remap from="~motor_oil_pressure" to="motor_oil_pressure"/>
             <remap from="~vbs_tank_pressure" to="vbs_tank_pressure"/>
             <remap from="~leak" to="leak_fb"/>
-            <remap from="~gps_fix" to="gps"/>
+            <remap from="~gps_fix" to="can_gps"/>
             <remap from="~battery_state" to="battery_fb"/>
             <remap from="~magnetic_field" to="compass"/>
         </node>

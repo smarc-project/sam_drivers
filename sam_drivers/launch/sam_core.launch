@@ -11,6 +11,10 @@
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
 
+  <arg name="gps_port" value="/dev/ttyUSB3"/>
+  <arg name="gps_baud" value="9600"/>
+
+  <arg name="with_gps" default="true"/>
   <arg name="uav_can_interface" default="can0"/>
 
 
@@ -48,6 +52,13 @@
     <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen">
        <remap from="~rpm_cmd" to="/$(arg namespace)/core/rpm_cmd"/>
        <remap from="~thrust_vector_cmd" to="/$(arg namespace)/core/thrust_vector_cmd"/>
+    </node>
+
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)">
+      <param name="port" value="$(arg gps_port)"/>
+      <param name="baud" value="$(arg gps_baud)"/>
+      <param name="frame_id" value="$(arg namespace)/gps_link"/>
+      <remap from="fix" to="gps"/>
     </node>
     
   </group>
