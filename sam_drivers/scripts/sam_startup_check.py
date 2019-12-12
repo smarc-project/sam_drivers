@@ -16,11 +16,13 @@ class StartupCheckServer(object):
 
         rospy.loginfo("Checking leak sensor...")
 
+        feedback_topic = "/sam/core/leak_fb"
+
         try:
-            leak = rospy.wait_for_message("/uavcan_leak", Leak, 3.)
+            leak = rospy.wait_for_message(feedback_topic, Leak, 3.)
         except rospy.ROSException:
-            rospy.loginfo("Could not get leak message on %s, aborting...", "/uavcan_leak")
-            self._result.status = "Could not get leak message on %s, aborting..." % "/uavcan_leak"
+            rospy.loginfo("Could not get leak message on %s, aborting...", feedback_topic)
+            self._result.status = "Could not get leak message on %s, aborting..." % feedback_topic
             return False
 
         if leak.value:
@@ -37,11 +39,13 @@ class StartupCheckServer(object):
 
         rospy.loginfo("Checking pressure...")
 
+        feedback_topic = "/sam/core/depth20_pressure"
+
         try:
-            pressure = rospy.wait_for_message("/uavcan_to_ros_bridge_node/sensor_pressure1", FluidPressure, 3.)
+            pressure = rospy.wait_for_message(feedback_topic, FluidPressure, 3.)
         except rospy.ROSException:
-            rospy.loginfo("Could not get pressure on %s, aborting...", "/uavcan_pressure2")
-            self._result.status = "Could not get pressure on %s, aborting..." % "/uavcan_pressure2"
+            rospy.loginfo("Could not get pressure on %s, aborting...", feedback_topic)
+            self._result.status = "Could not get pressure on %s, aborting..." % feedback_topic
             return False
 
         rospy.loginfo("Got pressure message with value %f, seems ok!", pressure.fluid_pressure)
@@ -58,11 +62,13 @@ class StartupCheckServer(object):
         rospy.sleep(5.) # wait for 5s to reach 50
         # get lcg feedback, wait for 1s
 
+        feedback_topic = "/sam/core/lcg_fb"
+
         try:
-            lcg_feedback = rospy.wait_for_message("/uavcan_to_ros_bridge_node/lcg_feedback", PercentStamped, 1.)
+            lcg_feedback = rospy.wait_for_message(feedback_topic, PercentStamped, 1.)
         except rospy.ROSException:
-            rospy.loginfo("Could not get feedback on %s, aborting...", "/uavcan_to_ros_bridge_node/lcg_feedback")
-            self._result.status = "Could not get feedback on %s, aborting..." % "/uavcan_to_ros_bridge_node/lcg_feedback"
+            rospy.loginfo("Could not get feedback on %s, aborting...", feedback_topic)
+            self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
             return False
 
         if abs(lcg_feedback.value - lcg_setpoint) > 2.:
@@ -84,12 +90,13 @@ class StartupCheckServer(object):
 
         rospy.sleep(20.) # wait for 5s to reach 50
         # get vbs feedback, wait for 1s
+        feedback_topic = "/sam/core/vbs_fb"
 
         try:
-            vbs_feedback = rospy.wait_for_message("/uavcan_to_ros_bridge_node/vbs_feedback", PercentStamped, 1.)
+            vbs_feedback = rospy.wait_for_message(feedback_topic, PercentStamped, 1.)
         except rospy.ROSException:
-            rospy.loginfo("Could not get feedback on %s, aborting...", "/uavcan_to_ros_bridge_node/vbs_feedback")
-            self._result.status = "Could not get feedback on %s, aborting..." % "/uavcan_to_ros_bridge_node/vbs_feedback"
+            rospy.loginfo("Could not get feedback on %s, aborting...", feedback_topic)
+            self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
             return False
 
         if abs(vbs_feedback.value - vbs_setpoint) > 2.:
@@ -106,8 +113,8 @@ class StartupCheckServer(object):
         self._action_name = name
         self._as = actionlib.SimpleActionServer(self._action_name, SystemsCheckAction, execute_cb=self.execute_cb, auto_start = False)
 
-        self.lcg_cmd = rospy.Publisher('/uavcan_lcg_command', PercentStamped, queue_size=10)
-        self.vbs_cmd = rospy.Publisher('/uavcan_vbs_command', PercentStamped, queue_size=10)
+        self.lcg_cmd = rospy.Publisher('~lcg_cmd', PercentStamped, queue_size=10)
+        self.vbs_cmd = rospy.Publisher('~vbs_cmd', PercentStamped, queue_size=10)
 
         self._as.start()
 

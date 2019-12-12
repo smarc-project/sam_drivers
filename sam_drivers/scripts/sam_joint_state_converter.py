@@ -36,8 +36,8 @@ class SamJointStateConverter(object):
         self.start_time = rospy.Time.now()
         self.velocities = [0., 0.]
 
-        self.thruster_sub = rospy.Subscriber("/uavcan_rpm_command", ThrusterRPMs, self.thruster_callback)
-        self.vector_sub = rospy.Subscriber("/uavcan_vector_command", ThrusterAngles, self.vector_callback)
+        self.thruster_sub = rospy.Subscriber("~rpm_cmd", ThrusterRPMs, self.thruster_callback)
+        self.vector_sub = rospy.Subscriber("~thrust_vector_cmd", ThrusterAngles, self.vector_callback)
 
         self.joint_state_pub = rospy.Publisher("/sam/command_states", JointState, queue_size=10)
 
