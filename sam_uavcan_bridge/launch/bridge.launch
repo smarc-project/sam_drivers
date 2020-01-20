@@ -33,6 +33,7 @@
             <remap from="~vbs_feedback" to="vbs_fb"/>
             <remap from="~lcg_feedback" to="lcg_fb"/>
             <remap from="~esc_status" to="esc_status_fb"/>
+            <remap from="~circuit_status" to="circuit_status_fb"/>
             <remap from="~imu" to="yost_imu"/>
             <remap from="~sensor_pressure_bar02" to="depth20_pressure"/>
             <remap from="~sensor_pressure_bar30" to="depth300_pressure"/>
