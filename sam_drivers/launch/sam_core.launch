@@ -63,6 +63,11 @@
       <param name="frame_id" value="$(arg namespace)/gps_link"/>
       <remap from="fix" to="gps"/>
     </node>
+  
+    <include file="$(find sam_drivers)/launch/sam_rosbag.launch">
+      <arg name="save_path" value="$(arg uav_can_interface)"/>
+      <arg name="bag_name" value="sam_core"/>
+    </include>
     
   </group>
 
