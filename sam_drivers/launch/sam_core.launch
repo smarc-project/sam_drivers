@@ -54,6 +54,9 @@
        <remap from="~thrust_vector_cmd" to="/$(arg namespace)/core/thrust_vector_cmd"/>
     </node>
 
+    <!-- Node that enables us to disable the DVL in order to get GPS fixes to update DR -->
+    <node pkg="sam_actions" type="gps_fix_server.py" name="gps_fix_server" output="screen"/>
+
     <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)" ns="core">
       <param name="port" value="$(arg gps_port)"/>
       <param name="baud" value="$(arg gps_baud)"/>
