@@ -13,6 +13,7 @@
 #include <uavcan_ros_bridge/uav_to_ros/pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/esc_status.h>
+#include <uavcan_ros_bridge/uav_to_ros/circuit_status.h>
 
 #include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
 #include <sam_uavcan_bridge/uav_to_ros/leak.h>
@@ -85,6 +86,7 @@ int main(int argc, char** argv)
 
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::Leak> leak_server(uav_node, pn, "leak", 200);
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server(uav_node, pn, "esc_status");
+    uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, uavcan_ros_bridge::CircuitStatus> circuit_status_server(uav_node, pn, "circuit_status");
 
     /*
      * Running the node.
