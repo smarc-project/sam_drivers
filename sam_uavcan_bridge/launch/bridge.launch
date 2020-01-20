@@ -32,7 +32,8 @@
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
             <remap from="~vbs_feedback" to="vbs_fb"/>
             <remap from="~lcg_feedback" to="lcg_fb"/>
-            <remap from="~esc_status" to="esc_status_fb"/>
+            <remap from="~esc_status0" to="esc_status0_fb"/>
+            <remap from="~esc_status1" to="esc_status1_fb"/>
             <remap from="~circuit_status" to="circuit_status_fb"/>
             <remap from="~imu" to="yost_imu"/>
             <remap from="~sensor_pressure_bar02" to="depth20_pressure"/>
