@@ -39,7 +39,7 @@ tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_dead_reckoning sam_gps_dummy.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:8
-tmux send-keys "mon launch sam_march sam_march.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch auv_simple_motion_planner yaw_planner.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 #tmux select-window -t $SESSION:8
 #tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
