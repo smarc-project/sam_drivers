@@ -29,6 +29,10 @@
 <!--     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-urdf -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) -model $(arg namespace) -param /$(arg namespace)/robot_description"/> -->
 
+    <node name="esc_feedback_parser" pkg="sam_drivers" type="esc_fb_parser.py" respawn="true" output="screen">
+    </node>
+
+
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
       <param name="use_gui" value="false"/>
       <rosparam param="source_list">["/sam/command_states"]</rosparam>
