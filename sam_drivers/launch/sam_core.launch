@@ -40,7 +40,7 @@
 <!--     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint1_position_controller joint2_position_controller joint_state_controller"/> -->
 
     <!-- STIM300 IMU driver -->
-    <node name="stim300driver" pkg="driver_stim300" type="stim300_driver_node" />
+    <node name="stim300driver" pkg="driver_stim300" type="stim300_driver_node" ns="core"/>
     <param name = "device_name" value="/dev/ttyUSB0" type="string" />
     <param name = "stanard_deviation_of_gyro" value="0.0004" type="double" />
     <param name = "stanard_deviation_of_acc" value="0.004" type="double" />
