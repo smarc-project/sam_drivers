@@ -46,7 +46,7 @@
     	<param name = "device_name" value="/dev/ttyUSB0" type="string" />
     	<param name = "stanard_deviation_of_gyro" value="0.0004" type="double" />
     	<param name = "stanard_deviation_of_acc" value="0.004" type="double" />
-    	<param name = "imu_output" value="stim_imu" type="string"/>
+    	<param name = "imu_output" value="/$(arg namespace)/core/stim_imu" type="string"/>
     	<param name = "imu_frame" value="$(arg namespace)/imu_link" type="string"/>
     	<param name = "sample_rate" value="125" type="double" />
     </node>
