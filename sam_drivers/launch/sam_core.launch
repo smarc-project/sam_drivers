@@ -20,7 +20,7 @@
 
   <group ns="$(arg namespace)">
     <!-- TF broadcaster world to AUV odom -->
-    <node pkg="tf" type="static_transform_publisher" name="tf_world_odom_publisher" args="$(arg x) $(arg y) $(arg z) $(arg roll) $(arg pitch) $(arg yaw) world $(arg namespace)/odom 50" />
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tf_world_odom_publisher" args="$(arg x) $(arg y) $(arg z) $(arg roll) $(arg pitch) $(arg yaw) world $(arg namespace)/odom 50" /> -->
 
     <param name="robot_description"
            command="$(find xacro)/xacro.py '$(find sam_description)/robots/sam_auv_$(arg mode).urdf.xacro' debug:=$(arg debug) namespace:=$(arg namespace)" />
@@ -42,7 +42,7 @@
      <node name="esc_fb_combined" pkg="sam_drivers" type="esc_fb_parser.py" ns="core" output="screen"/>
 
     <!-- STIM300 IMU driver -->
-    <node name="stim300driver" pkg="driver_stim300" type="stim300_driver_node" ns="core">
+    <node name="stim300driver" output="screen" pkg="driver_stim300" type="stim300_driver_node" ns="core">
     	<param name = "device_name" value="/dev/ttyUSB0" type="string" />
     	<param name = "stanard_deviation_of_gyro" value="0.0004" type="double" />
     	<param name = "stanard_deviation_of_acc" value="0.004" type="double" />
