@@ -10,8 +10,8 @@ class ESCParser(object):
     def esc_cb(self, esc_fb_msg0, esc_fb_msg1):
         #print "Synch ESC msgs"
 	synch_fb = ThrusterRPMs()
-        synch_fb.thruster_1_rpm = esc_fb_msg0.esc_index
-        synch_fb.thruster_2_rpm = esc_fb_msg1.esc_index
+        synch_fb.thruster_1_rpm = esc_fb_msg0.rpm
+        synch_fb.thruster_2_rpm = esc_fb_msg1.rpm
         synch_fb.header.stamp = rospy.Time.now()
 	self.esc_pub.publish(synch_fb)
 
