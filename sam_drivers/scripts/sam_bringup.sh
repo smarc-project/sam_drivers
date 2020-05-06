@@ -1,4 +1,22 @@
 SESSION=sam_bringup
+
+# Lidingo
+UTM_ZONE=34
+UTM_BAND=V
+
+# KTH
+# UTM_ZONE=33
+# UTM_BAND=V
+
+# IP Addresses to connect to neptus
+# The IP of the computer running neptus
+NEPTUS_IP=192.168.2.69
+# IP of SAM
+SAM_IP=192.168.2.65
+# Port for the imc-ros-bridge, usually doesnt change from 6002.
+BRIDGE_PORT=6002
+
+
 # This is the workspace containing the ros packages that are needed
 
 tmux -2 new-session -d -s $SESSION
@@ -18,7 +36,6 @@ tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
 
 tmux select-window -t $SESSION:1
-# tmux send-keys "rosrun flexxros sam_controls.py" C-m
 tmux send-keys "mon launch flexxros sam_controls.launch --name=$(tmux display-message -p 'p#I_#W')" C-m
 
 tmux select-window -t $SESSION:2
@@ -40,7 +57,7 @@ tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_dead_reckoning sam_gps_dummy.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:8
-tmux send-keys "mon launch sam_mission mission.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 #tmux select-window -t $SESSION:9
 #tmux send-keys "mon launch sam_communicator sam_communicator.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
