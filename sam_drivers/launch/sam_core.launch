@@ -41,6 +41,12 @@
 
      <node name="esc_fb_combined" pkg="sam_drivers" type="esc_fb_parser.py" ns="core" output="screen"/>
 
+    <!-- SBG IMU driver -->
+    <node name="sbg_ellipseA" pkg="sbg_driver" type="sbg_device" output="screen">
+      <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_sam.yaml" />
+    </node>
+
+
     <!-- STIM300 IMU driver -->
     <node name="stim300driver" output="screen" pkg="driver_stim300" type="stim300_driver_node" ns="core">
     	<param name = "device_name" value="/dev/ttyUSB0" type="string" />
