@@ -45,7 +45,7 @@ tmux select-window -t $SESSION:3
 tmux send-keys "mon launch dvl_ros_driver dvl.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:4
-tmux send-keys "mon launch sam_dead_reckoning sam_gps_dr.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_dead_reckoning dual_ekf_test.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:5
 tmux send-keys "mon launch sam_basic_controllers static_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
@@ -53,10 +53,10 @@ tmux send-keys "mon launch sam_basic_controllers static_controllers.launch --nam
 tmux select-window -t $SESSION:6
 tmux send-keys "mon launch sam_basic_controllers dynamic_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-tmux select-window -t $SESSION:7
-tmux send-keys "mon launch sam_dead_reckoning sam_gps_dummy.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+#tmux select-window -t $SESSION:7
+#tmux send-keys "mon launch sam_dead_reckoning sam_gps_dummy.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-tmux select-window -t $SESSION:8
+tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 #tmux select-window -t $SESSION:9
