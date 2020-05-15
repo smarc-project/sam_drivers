@@ -28,8 +28,8 @@ tmux new-window -t $SESSION:3 -n 'dvl'
 tmux new-window -t $SESSION:4 -n 'dr'
 tmux new-window -t $SESSION:5 -n 'static_ctrl'
 tmux new-window -t $SESSION:6 -n 'dyn_ctrl'
-tmux new-window -t $SESSION:7 -n 'gps_dr'
-tmux new-window -t $SESSION:8 -n 'bt'
+#tmux new-window -t $SESSION:7 -n 'gps_dr'
+tmux new-window -t $SESSION:7 -n 'bt'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
 
 tmux select-window -t $SESSION:0
