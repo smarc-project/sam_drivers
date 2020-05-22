@@ -5,12 +5,12 @@ UTM_ZONE=34
 UTM_BAND=V
 
 # KTH
-# UTM_ZONE=33
-# UTM_BAND=V
+#UTM_ZONE=33
+#UTM_BAND=V
 
 # IP Addresses to connect to neptus
 # The IP of the computer running neptus
-NEPTUS_IP=192.168.2.69
+NEPTUS_IP=192.168.2.41
 # IP of SAM
 SAM_IP=192.168.2.65
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
@@ -31,6 +31,7 @@ tmux new-window -t $SESSION:6 -n 'dyn_ctrl'
 #tmux new-window -t $SESSION:7 -n 'gps_dr'
 tmux new-window -t $SESSION:7 -n 'bt'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
+tmux new-window -t $SESSION:8 -n 'new_gui'
 
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
@@ -59,11 +60,19 @@ tmux send-keys "mon launch sam_basic_controllers dynamic_controllers.launch --na
 tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
+# hacky af, this sleep is.
+# somehow the mon launch version doesnt work properly, so hack it is.
+sleep 5
+tmux select-window -t $SESSION:8
+tmux send-keys "roslaunch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam" C-m
+#tmux send-keys "mon launch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam --name=$(tmux display-message -p 'p#I_#W')" C-m
+
 #tmux select-window -t $SESSION:9
 #tmux send-keys "mon launch sam_communicator sam_communicator.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 #tmux select-window -t $SESSION:8
 #tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
+
 
 # Set default window
 tmux select-window -t $SESSION:0
