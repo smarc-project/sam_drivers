@@ -16,6 +16,9 @@ SAM_IP=192.168.2.65
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 BRIDGE_PORT=6002
 
+# For the camera, 0:down, 1:right, 2: left. 
+# For now we only use one camera to avoid jetson  shutting down 
+SENSOR_ID = 0 
 
 # This is the workspace containing the ros packages that are needed
 
@@ -31,6 +34,7 @@ tmux new-window -t $SESSION:6 -n 'dyn_ctrl'
 #tmux new-window -t $SESSION:7 -n 'gps_dr'
 tmux new-window -t $SESSION:7 -n 'bt'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
+tmux new-window -t $SESSION:8 -n 'camera'
 
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
@@ -58,6 +62,9 @@ tmux send-keys "mon launch sam_basic_controllers dynamic_controllers.launch --na
 
 tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux select-window -t $SESSION:8
+tmux send-keys "mon launch sam_camera_config nv_jpeg.launch sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 #tmux select-window -t $SESSION:9
 #tmux send-keys "mon launch sam_communicator sam_communicator.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
