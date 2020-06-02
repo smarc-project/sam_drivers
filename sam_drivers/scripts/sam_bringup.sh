@@ -18,8 +18,8 @@ BRIDGE_PORT=6002
 
 # For the camera, 0:down, 1:right, 2: left. 
 # For now we only use one camera to avoid jetson  shutting down 
-SENSOR_ID = 0 
-CAR_DEPTH = 10
+SENSOR_ID=0 
+CAR_DEPTH=10
 # This is the workspace containing the ros packages that are needed
 
 tmux -2 new-session -d -s $SESSION
