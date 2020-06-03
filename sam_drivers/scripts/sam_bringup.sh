@@ -39,8 +39,11 @@ tmux new-window -t $SESSION:8 -n 'camera'
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
 
-# tmux select-window -t $SESSION:1
+# start the gui and new_gui in one launch file 
+
+tmux select-window -t $SESSION:1
 # tmux send-keys "mon launch flexxros sam_controls.launch --name=$(tmux display-message -p 'p#I_#W')" C-m
+tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --wait" C-m
 
 tmux select-window -t $SESSION:2
 tmux send-keys "mon launch sam_drivers sam_core.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
@@ -68,13 +71,15 @@ tmux send-keys "mon launch sam_camera_config sam_detection.launch sim:=false sen
 
 # hacky af, this sleep is.
 # somehow the mon launch version doesnt work properly, so hack it is.
-sleep 5
+# sleep 5
+# tmux select-window -t $SESSION:8
+# tmux send-keys "roslaunch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam" C-m
+#tmux send-keys "mon launch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam --name=$(tmux display-message -p 'p#I_#W')" C-m
+
 #tmux select-window -t $SESSION:9
 #tmux send-keys "mon launch sam_communicator sam_communicator.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-# start the gui and new_gui in one launch file 
-tmux select-window -t $SESSION:1
-tmux send-keys "mon launch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --name=$(tmux display-message -p 'p#I_#W')" C-m
+# tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam" C-m
 
 #tmux select-window -t $SESSION:8
 #tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
