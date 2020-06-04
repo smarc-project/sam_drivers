@@ -18,8 +18,8 @@ BRIDGE_PORT=6002
 
 # For the camera, 0:down, 1:right, 2: left. 
 # For now we only use one camera to avoid jetson  shutting down 
-SENSOR_ID = 0 
-CAR_DEPTH = 10
+SENSOR_ID=0 
+CAR_DEPTH=10
 # This is the workspace containing the ros packages that are needed
 
 tmux -2 new-session -d -s $SESSION
@@ -39,8 +39,11 @@ tmux new-window -t $SESSION:8 -n 'camera'
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
 
+# start the gui and new_gui in one launch file 
+
 tmux select-window -t $SESSION:1
-tmux send-keys "mon launch flexxros sam_controls.launch --name=$(tmux display-message -p 'p#I_#W')" C-m
+# tmux send-keys "mon launch flexxros sam_controls.launch --name=$(tmux display-message -p 'p#I_#W')" C-m
+tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --wait" C-m
 
 tmux select-window -t $SESSION:2
 tmux send-keys "mon launch sam_drivers sam_core.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
@@ -66,8 +69,17 @@ tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_ba
 tmux select-window -t $SESSION:8
 tmux send-keys "mon launch sam_camera_config sam_detection.launch sim:=false sensor_id:=$SENSOR_ID car_depth:=$CAR_DEPTH --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
+# hacky af, this sleep is.
+# somehow the mon launch version doesnt work properly, so hack it is.
+# sleep 5
+# tmux select-window -t $SESSION:8
+# tmux send-keys "roslaunch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam" C-m
+#tmux send-keys "mon launch roswasm_webgui sam_webgui.launch rosbridge_ip:=$SAM_IP namespace:=sam --name=$(tmux display-message -p 'p#I_#W')" C-m
+
 #tmux select-window -t $SESSION:9
 #tmux send-keys "mon launch sam_communicator sam_communicator.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+# tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam" C-m
 
 #tmux select-window -t $SESSION:8
 #tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
