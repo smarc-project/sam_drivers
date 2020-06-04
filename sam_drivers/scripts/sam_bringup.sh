@@ -5,12 +5,12 @@ UTM_ZONE=34
 UTM_BAND=V
 
 # KTH
-# UTM_ZONE=33
-# UTM_BAND=V
+#UTM_ZONE=33
+#UTM_BAND=V
 
 # IP Addresses to connect to neptus
 # The IP of the computer running neptus
-NEPTUS_IP=192.168.2.69
+NEPTUS_IP=192.168.2.41
 # IP of SAM
 SAM_IP=192.168.2.65
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
@@ -71,6 +71,7 @@ tmux send-keys "mon launch sam_camera_config sam_detection.launch sim:=false sen
 
 #tmux select-window -t $SESSION:8
 #tmux send-keys "roslaunch sam_drivers sam_monitor.launch"
+
 
 # Set default window
 tmux select-window -t $SESSION:0
