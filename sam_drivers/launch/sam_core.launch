@@ -57,6 +57,14 @@
     	<param name = "sample_rate" value="125" type="double" />
     </node>
 
+    <!-- DV DVL -->
+    <node pkg="dvl_ros_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
+      <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
+      <param name="dvl_raw_topic" value="/$(arg robot_name)/core/dvl_raw_output"/>
+      <param name="dvl_frame" value="$(arg robot_name)/dvl_link"/>
+      <param name="dvl_on_off_srv" value="/$(arg robot_name)/core/start_stop_dvl"/>
+    </node>
+
     <!-- Publish robot model for ROS -->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
       <param name="robot_description" value="/$(arg namespace)/robot_description" />
