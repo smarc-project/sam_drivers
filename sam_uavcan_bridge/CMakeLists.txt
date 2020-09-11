@@ -18,9 +18,9 @@ find_package(catkin REQUIRED COMPONENTS
   message_runtime
 )
 
-find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
+#find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
 
-set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, if the library is installed
+#set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, if the library is installed
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -130,7 +130,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_custom_target(sam_dsdlc libuavcan_dsdlc # If the library is installed
+add_custom_target(sam_dsdlc ${DSDL_COMPILER} # If the library is installed
                   "smarc_uavcan_messages" -I${UAVCAN_DSDL_DEFINITIONS}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dsdl)
 
@@ -199,6 +199,9 @@ add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} 
 add_executable(sam_uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
 add_executable(sam_ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
 add_executable(sam_uavcan_time_master src/uavcan_time_master.cpp)
+add_dependencies(sam_uavcan_to_ros_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(sam_ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(sam_uavcan_time_master ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -223,7 +226,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_temperature
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
-  ${UAVCAN_LIB}
+  #${UAVCAN_LIB}
   rt
 )
 
@@ -235,7 +238,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_thruster_angles
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
-  ${UAVCAN_LIB}
+  #${UAVCAN_LIB}
   #uavcan_dsdlc
   rt
 )
@@ -243,7 +246,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
 target_link_libraries(sam_uavcan_time_master
   sam_uavcan_platform_linux
   ${catkin_LIBRARIES}
-  ${UAVCAN_LIB}
+  #${UAVCAN_LIB}
   rt
 )
 
