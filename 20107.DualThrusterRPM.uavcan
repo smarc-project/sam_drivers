@@ -1,0 +1,6 @@
+#
+# Dual Thruster RPM. Can be negative.
+#
+
+smarc_uavcan_messages.ThrusterRPM thruster_front
+smarc_uavcan_messages.ThrusterRPM thruster_back
