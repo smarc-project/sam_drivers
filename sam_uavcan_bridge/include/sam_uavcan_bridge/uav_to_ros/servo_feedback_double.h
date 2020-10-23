@@ -1,5 +1,5 @@
-#ifndef UAV_TO_ROS_SENSOR_PRESSURE_STAMPED_H
-#define UAV_TO_ROS_SENSOR_PRESSURE_STAMPED_H
+#ifndef UAV_TO_ROS_SERVO_FEEDBACK_DOUBLE_H
+#define UAV_TO_ROS_SERVO_FEEDBACK_DOUBLE_H
 
 #include <smarc_uavcan_messages/ServoFeedbackDouble.hpp>
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
