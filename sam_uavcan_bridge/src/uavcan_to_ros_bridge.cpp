@@ -20,6 +20,7 @@
 #include <sam_uavcan_bridge/uav_to_ros/sensor_pressure_stamped.h>
 #include <sam_uavcan_bridge/uav_to_ros/servo_feedback_double.h>
 #include <sam_uavcan_bridge/uav_to_ros/temperature.h>
+#include <sam_uavcan_bridge/uav_to_ros/battery_state_basic.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -88,6 +89,7 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server0(uav_node, pn, "esc_status0", 0);
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
     uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, uavcan_ros_bridge::CircuitStatus> circuit_status_server(uav_node, pn, "circuit_status");
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::BatteryStateBasic, sensor_msgs::BatteryState> battery_server2(uav_node, pn, "battery_state_basic");
 
     /*
      * Running the node.
