@@ -8,7 +8,6 @@
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
 #include <uavcan_ros_bridge/uav_to_ros/imu.h>
 #include <uavcan_ros_bridge/uav_to_ros/gps_fix.h>
-#include <uavcan_ros_bridge/uav_to_ros/battery_state.h>
 #include <uavcan_ros_bridge/uav_to_ros/magnetic_field.h>
 #include <uavcan_ros_bridge/uav_to_ros/pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
@@ -75,7 +74,6 @@ int main(int argc, char** argv)
     ros::NodeHandle pn("~");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::Solution, sensor_msgs::Imu> imu_server(uav_node, pn, "imu");
     uav_to_ros::ConversionServer<uavcan::equipment::gnss::Fix, sensor_msgs::NavSatFix> gps_server(uav_node, pn, "gps_fix");
-    uav_to_ros::ConversionServer<uavcan::equipment::power::BatteryInfo, sensor_msgs::BatteryState> battery_server(uav_node, pn, "battery_state");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::MagneticFieldStrength, sensor_msgs::MagneticField> magnetic_server(uav_node, pn, "magnetic_field");
 
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(uav_node, pn, "sensor_pressure_bar30", 22);
