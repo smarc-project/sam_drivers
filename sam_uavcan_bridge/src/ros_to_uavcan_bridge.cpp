@@ -13,6 +13,7 @@
 #include <sam_uavcan_bridge/ros_to_uav/ballast_angles.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_rpms.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_angles.h>
+#include <sam_uavcan_bridge/ros_to_uav/dual_thruster_rpm.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::PercentStamped> lcg_server(uav_node, pn, "lcg_command", 14);
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server1(uav_node, pn, "tcg_command", 27);
     //ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server2(uav_node, pn, "tcg_command2", 28);
+    ros_to_uav::ConversionServer<smarc_uavcan_messages::DualThrusterRPM, smarc_msgs::DualThrusterRPM> dual_thruster_rpm_server(uav_node, pn, "dual_thruster_rpm");
 
     /*
      * Running the node.

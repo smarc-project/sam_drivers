@@ -20,6 +20,7 @@
             <remap from="~vbs_command" to="vbs_cmd"/>
             <remap from="~tcg_command" to="tcg_cmd"/>
             <remap from="~lcg_command" to="lcg_cmd"/>
+            <remap from="~dual_thruster_rpm" to="dual_thrust_cmd"/>
         </node>
 
         <node name="uavcan_time_master" pkg="sam_uavcan_bridge" type="sam_uavcan_time_master" respawn="true" output="screen">
@@ -46,6 +47,7 @@
             <remap from="~battery_state_basic" to="battery_fb"/>
             <remap from="~consumed_charge_feedback" to="consumed_charge_fb"/>
             <remap from="~ctd_feedback" to="ctd_fb"/>
+            <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~magnetic_field" to="compass"/>
         </node>
 
