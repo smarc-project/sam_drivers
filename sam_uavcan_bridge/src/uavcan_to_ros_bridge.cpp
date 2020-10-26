@@ -8,7 +8,6 @@
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
 #include <uavcan_ros_bridge/uav_to_ros/imu.h>
 #include <uavcan_ros_bridge/uav_to_ros/gps_fix.h>
-#include <uavcan_ros_bridge/uav_to_ros/battery_state.h>
 #include <uavcan_ros_bridge/uav_to_ros/magnetic_field.h>
 #include <uavcan_ros_bridge/uav_to_ros/pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
@@ -20,6 +19,9 @@
 #include <sam_uavcan_bridge/uav_to_ros/sensor_pressure_stamped.h>
 #include <sam_uavcan_bridge/uav_to_ros/servo_feedback_double.h>
 #include <sam_uavcan_bridge/uav_to_ros/temperature.h>
+#include <sam_uavcan_bridge/uav_to_ros/battery_state_basic.h>
+#include <sam_uavcan_bridge/uav_to_ros/consumed_charge_feedback.h>
+#include <sam_uavcan_bridge/uav_to_ros/ctd_feedback.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -72,7 +74,6 @@ int main(int argc, char** argv)
     ros::NodeHandle pn("~");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::Solution, sensor_msgs::Imu> imu_server(uav_node, pn, "imu");
     uav_to_ros::ConversionServer<uavcan::equipment::gnss::Fix, sensor_msgs::NavSatFix> gps_server(uav_node, pn, "gps_fix");
-    uav_to_ros::ConversionServer<uavcan::equipment::power::BatteryInfo, sensor_msgs::BatteryState> battery_server(uav_node, pn, "battery_state");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::MagneticFieldStrength, sensor_msgs::MagneticField> magnetic_server(uav_node, pn, "magnetic_field");
 
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(uav_node, pn, "sensor_pressure_bar30", 22);
@@ -88,6 +89,9 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server0(uav_node, pn, "esc_status0", 0);
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
     uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, uavcan_ros_bridge::CircuitStatus> circuit_status_server(uav_node, pn, "circuit_status");
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::BatteryStateBasic, sensor_msgs::BatteryState> battery_server2(uav_node, pn, "battery_state_basic");
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeFeedback, sam_msgs::ConsumedChargeFeedback> consumed_charge_server(uav_node, pn, "consumed_charge_feedback");
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::CTDFeedback, smarc_msgs::CTDFeedback> ctd_feedback_server(uav_node, pn, "ctd_feedback");
 
     /*
      * Running the node.
