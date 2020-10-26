@@ -9,7 +9,6 @@ namespace uav_to_ros {
 
 template <>
 bool convert(const smarc_uavcan_messages::BatteryStateBasic& uav_msg, sensor_msgs::BatteryState& ros_msg);
-// bool convert(const uavcan::ReceivedDataStructure<smarc_uavcan_messages::BatteryStateBasic>& uav_msg, sensor_msgs::BatteryState& ros_msg);
 
 }
 

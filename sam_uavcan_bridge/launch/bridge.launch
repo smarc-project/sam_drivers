@@ -45,6 +45,8 @@
             <remap from="~gps_fix" to="can_gps"/>
             <remap from="~battery_state" to="old_battery_fb"/>
             <remap from="~battery_state_basic" to="battery_fb"/>
+            <remap from="~consumed_charge_feedback" to="consumed_charge_fb"/>
+            <remap from="~ctd_feedback" to="ctd_fb"/>
             <remap from="~magnetic_field" to="compass"/>
         </node>
 
