@@ -20,6 +20,9 @@ BRIDGE_PORT=6002
 # For now we only use one camera to avoid jetson  shutting down 
 SENSOR_ID=0 
 CAR_DEPTH=10
+
+SSS_SAVE_PATH=/home/sam/sss_test
+
 # This is the workspace containing the ros packages that are needed
 
 tmux -2 new-session -d -s $SESSION
@@ -34,6 +37,7 @@ tmux new-window -t $SESSION:5 -n 'dyn_ctrl'
 tmux new-window -t $SESSION:6 -n 'bt'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
 tmux new-window -t $SESSION:7 -n 'camera'
+tmux new-window -t $SESSION:8 -n 'payloads'
 
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
@@ -61,6 +65,9 @@ tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_ba
 
 tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_camera_config sam_detection.launch sim:=false sensor_id:=$SENSOR_ID car_depth:=$CAR_DEPTH --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux select-window -t $SESSION:8
+tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # hacky af, this sleep is.
 # somehow the mon launch version doesnt work properly, so hack it is.
