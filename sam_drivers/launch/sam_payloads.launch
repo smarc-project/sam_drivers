@@ -1,0 +1,16 @@
+<launch>
+
+  <arg name="namespace" default="sam"/>
+  <arg name="sss_ip" default="192.168.2.63"/>
+  <arg name="sss_port" default="57349"/>
+  <arg name="sss_out_file" default="test.dvs"/>
+
+  <group ns="$(arg namespace)">
+    <node pkg="deepvision_sss_driver" type="driver_node" name="sss_driver_node" output="screen">
+      <param name="ip" value="$(arg sss_ip)"/>
+      <param name="port" value="$(arg sss_port)"/>
+      <param name="out_file" value="$(arg sss_out_file)"/>
+    </node>
+  </group>
+
+</launch>
