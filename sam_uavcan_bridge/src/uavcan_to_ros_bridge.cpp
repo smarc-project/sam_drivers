@@ -129,6 +129,7 @@ int main(int argc, char** argv)
         ROS_ERROR("Failed to start the node; error: %d", node_start_res);
         exit(0);
     }
+    const uavcan::MonotonicTime startTime = uav_node.getMonotonicTime();
 
     ros::NodeHandle pn("~");
     uav_to_ros::ConversionServer<uavcan::equipment::ahrs::Solution, sensor_msgs::Imu> imu_server(uav_node, pn, "imu");
@@ -163,6 +164,8 @@ int main(int argc, char** argv)
     {
         ROS_INFO("UAVCAN network monitor started");
     }
+    
+    const std::string nodeName = uav_node.getName().c_str();
 
     Monitor listener;
     monitor.addListener(&listener);
@@ -174,7 +177,19 @@ int main(int argc, char** argv)
     monitor_timer.setCallback([&](const uavcan::TimerEvent&) {
         for (unsigned i = 1; i <= uavcan::NodeID::Max; i++)
         {
-            if (monitor.isNodeKnown(i))
+            if (i == (unsigned) self_node_id)
+            {
+                uavcan_ros_bridge::UavcanNodeStatusNamed msgNode;
+                msgNode.id = self_node_id;
+                msgNode.name = nodeName;
+                msgNode.ns.uptime_sec = (uav_node.getMonotonicTime() - startTime).toMSec()/1000;
+                msgNode.ns.health = uav_node.getNodeStatusProvider().getHealth();
+                msgNode.ns.mode = uav_node.getNodeStatusProvider().getMode();
+                msgNode.ns.sub_mode = 0;
+                msgNode.ns.vendor_specific_status_code = uav_node.getNodeStatusProvider().getVendorSpecificStatusCode();
+                msgArray.array.push_back(msgNode);
+            }
+            else if (monitor.isNodeKnown(i))
             {
                 // ROS_INFO("Found ID %d", i);
                 // ROS_INFO("Name: %s", listener.node_registry[i].first.c_str());
