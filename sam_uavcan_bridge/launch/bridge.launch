@@ -3,6 +3,7 @@
 <arg name="publisher_uav_node_id" default="98"/>
 <arg name="subscriber_uav_node_id" default="97"/>
 <arg name="time_master_uav_node_id" default="1"/>
+<arg name="network_monitor_uav_node_id" default="99"/>
 <arg name="uav_can_interface" default="can0"/>
 <arg name="robot_name" default="sam"/>
 
@@ -49,6 +50,11 @@
             <remap from="~ctd_feedback" to="ctd_fb"/>
             <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~magnetic_field" to="compass"/>
+        </node>
+
+        <node name="uavcan_network_monitor" pkg="sam_uavcan_bridge" type="sam_uavcan_network_monitor" respawn="true" output="screen">
+            <param name="uav_node_id" value="$(arg network_monitor_uav_node_id)"/>
+            <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
             <remap from="~uavcan_network_status" to="uavcan_fb"/>
         </node>
 
