@@ -3,7 +3,9 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <signal.h>
+#include <unordered_map>
 #include <uavcan/uavcan.hpp>
+#include <uavcan/protocol/node_info_retriever.hpp>
 
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
 #include <uavcan_ros_bridge/uav_to_ros/imu.h>
@@ -13,6 +15,7 @@
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/esc_status.h>
 #include <uavcan_ros_bridge/uav_to_ros/circuit_status.h>
+#include <uavcan_ros_bridge/UavcanNodeStatusNamedArray.h>
 
 #include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
 #include <sam_uavcan_bridge/uav_to_ros/leak.h>
@@ -23,6 +26,61 @@
 #include <sam_uavcan_bridge/uav_to_ros/consumed_charge_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/ctd_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/dual_thruster_feedback.h>
+
+
+class Monitor : public uavcan::INodeInfoListener
+{
+public:
+    std::unordered_map<int, std::pair<std::string, uavcan::protocol::NodeStatus>> node_registry;
+
+private:
+    // std::unique_ptr<uavcan::protocol::GetNodeInfo::Response> last_node_info;
+    // uavcan::NodeID last_node_id;
+    // unsigned status_message_cnt;
+    // unsigned status_change_cnt;
+    // unsigned info_unavailable_cnt;
+
+    virtual void handleNodeInfoRetrieved(uavcan::NodeID node_id,
+                                         const uavcan::protocol::GetNodeInfo::Response& node_info)
+    {
+        std::string _name = "";
+        for(auto c:node_info.name){
+            _name += c;
+        }
+        node_registry[node_id.get()].first = _name;
+        // last_node_info.reset(new uavcan::protocol::GetNodeInfo::Response(node_info));
+    }
+
+    #pragma GCC diagnostic ignored "-Wunused-parameter"
+    virtual void handleNodeInfoUnavailable(uavcan::NodeID node_id)
+    {
+        // std::cout << "NODE INFO FOR " << int(node_id.get()) << " IS UNAVAILABLE" << std::endl;
+        // last_node_id = node_id;
+        // info_unavailable_cnt++;
+    }
+    #pragma GCC diagnostic pop
+
+    #pragma GCC diagnostic ignored "-Wunused-parameter"
+    virtual void handleNodeStatusChange(const uavcan::NodeStatusMonitor::NodeStatusChangeEvent& event)
+    {
+        // std::cout << "NODE " << int(event.node_id.get()) << " STATUS CHANGE: "
+        //           << event.old_status.toString() << " --> " << event.status.toString() << std::endl;
+        // status_change_cnt++;
+    }
+    #pragma GCC diagnostic pop
+
+    virtual void handleNodeStatusMessage(const uavcan::ReceivedDataStructure<uavcan::protocol::NodeStatus>& msg)
+    {
+        node_registry[msg.getSrcNodeID().get()].second = msg;
+        // status_message_cnt++;
+    }
+public:
+    Monitor()
+        // : status_message_cnt(0)
+        // , status_change_cnt(0)
+        // , info_unavailable_cnt(0)
+    { }
+};
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -94,6 +152,47 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeFeedback, sam_msgs::ConsumedChargeFeedback> consumed_charge_server(uav_node, pn, "consumed_charge_feedback");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::CTDFeedback, smarc_msgs::CTDFeedback> ctd_feedback_server(uav_node, pn, "ctd_feedback");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::DualThrusterFeedback, smarc_msgs::DualThrusterFeedback> thruster_feedback_server(uav_node, pn, "thrusters_feedback");
+
+    uavcan::NodeInfoRetriever monitor(uav_node);
+    const int monitor_init_res = monitor.start();
+    if (monitor_init_res < 0) {
+        ROS_ERROR("Failed to start the node status monitor; error: %d", monitor_init_res);
+        exit(0);
+    }
+    else
+    {
+        ROS_INFO("UAVCAN network monitor started");
+    }
+
+    Monitor listener;
+    monitor.addListener(&listener);
+
+    ros::Publisher status_pub = pn.advertise<uavcan_ros_bridge::UavcanNodeStatusNamedArray>("uavcan_network_status", 1);
+    uavcan_ros_bridge::UavcanNodeStatusNamedArray msgArray;
+
+    uavcan::Timer monitor_timer(uav_node);
+    monitor_timer.setCallback([&](const uavcan::TimerEvent&) {
+        for (unsigned i = 1; i <= uavcan::NodeID::Max; i++)
+        {
+            if (monitor.isNodeKnown(i))
+            {
+                // ROS_INFO("Found ID %d", i);
+                // ROS_INFO("Name: %s", listener.node_registry[i].first.c_str());
+                uavcan_ros_bridge::UavcanNodeStatusNamed msgNode;
+                msgNode.id = i;
+                msgNode.name = listener.node_registry[i].first;
+                msgNode.ns.uptime_sec = listener.node_registry[i].second.uptime_sec;
+                msgNode.ns.health = listener.node_registry[i].second.health;
+                msgNode.ns.mode = listener.node_registry[i].second.mode;
+                msgNode.ns.sub_mode = listener.node_registry[i].second.mode;
+                msgNode.ns.vendor_specific_status_code = listener.node_registry[i].second.sub_mode;
+                msgArray.array.push_back(msgNode);
+            }
+        }
+        status_pub.publish(msgArray);
+    });
+
+    monitor_timer.startPeriodic(uavcan::MonotonicDuration::fromMSec(1000));
 
     /*
      * Running the node.

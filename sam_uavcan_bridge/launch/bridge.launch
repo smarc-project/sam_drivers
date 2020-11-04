@@ -49,6 +49,7 @@
             <remap from="~ctd_feedback" to="ctd_fb"/>
             <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~magnetic_field" to="compass"/>
+            <remap from="~uavcan_network_status" to="uavcan_fb"/>
         </node>
 
     </group>
