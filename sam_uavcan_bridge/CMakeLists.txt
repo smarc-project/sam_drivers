@@ -225,9 +225,11 @@ add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS
 add_executable(sam_uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
 add_executable(sam_ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
 add_executable(sam_uavcan_time_master src/uavcan_time_master.cpp)
+add_executable(sam_uavcan_network_monitor src/uavcan_network_monitor.cpp)
 add_dependencies(sam_uavcan_to_ros_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(sam_ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(sam_uavcan_time_master ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(sam_uavcan_network_monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -275,6 +277,13 @@ target_link_libraries(sam_ros_to_uavcan_bridge
 )
 
 target_link_libraries(sam_uavcan_time_master
+  sam_uavcan_platform_linux
+  ${catkin_LIBRARIES}
+  #${UAVCAN_LIB}
+  rt
+)
+
+target_link_libraries(sam_uavcan_network_monitor
   sam_uavcan_platform_linux
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}
