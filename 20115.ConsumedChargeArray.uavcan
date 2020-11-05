@@ -4,4 +4,4 @@
 
 uavcan.Timestamp timestamp
 
-smarc_uavcan_messages.ConsumedCharge[<=15] charge
+smarc_uavcan_messages.ConsumedCharge[<=15] array
