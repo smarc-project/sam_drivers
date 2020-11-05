@@ -7,8 +7,7 @@
 #include <uavcan/uavcan.hpp>
 #include <uavcan/protocol/node_info_retriever.hpp>
 
-#include <uavcan_ros_bridge/uavcan_ros_bridge.h>
-#include <uavcan_ros_bridge/UavcanNodeStatusNamedArray.h>
+#include <sam_msgs/UavcanNodeStatusNamedArray.h>
 
 
 class Monitor : public uavcan::INodeInfoListener
@@ -132,16 +131,16 @@ int main(int argc, char** argv)
     Monitor listener;
     monitor.addListener(&listener);
 
-    ros::Publisher status_pub = pn.advertise<uavcan_ros_bridge::UavcanNodeStatusNamedArray>("uavcan_network_status", 1);
+    ros::Publisher status_pub = pn.advertise<sam_msgs::UavcanNodeStatusNamedArray>("uavcan_network_status", 1);
 
     uavcan::Timer monitor_timer(uav_node);
     monitor_timer.setCallback([&](const uavcan::TimerEvent&) {
-        uavcan_ros_bridge::UavcanNodeStatusNamedArray msgArray;
+        sam_msgs::UavcanNodeStatusNamedArray msgArray;
         for (unsigned i = 1; i <= uavcan::NodeID::Max; i++)
         {
             if (i == (unsigned) self_node_id)
             {
-                uavcan_ros_bridge::UavcanNodeStatusNamed msgNode;
+                sam_msgs::UavcanNodeStatusNamed msgNode;
                 msgNode.id = self_node_id;
                 msgNode.name = nodeName;
                 msgNode.ns.uptime_sec = (uav_node.getMonotonicTime() - startTime).toMSec()/1000;
@@ -155,7 +154,7 @@ int main(int argc, char** argv)
             {
                 // ROS_INFO("Found ID %d", i);
                 // ROS_INFO("Name: %s", listener.node_registry[i].first.c_str());
-                uavcan_ros_bridge::UavcanNodeStatusNamed msgNode;
+                sam_msgs::UavcanNodeStatusNamed msgNode;
                 msgNode.id = i;
                 msgNode.name = listener.node_registry[i].first;
                 msgNode.ns.uptime_sec = listener.node_registry[i].second.uptime_sec;
