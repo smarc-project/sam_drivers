@@ -3,7 +3,7 @@
   <arg name="debug" default="0"/>
   <arg name="mode" default="default"/>
   <arg name="namespace" default="sam"/>
-
+  <arg name="robot_name" default="sam"/>
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
@@ -55,6 +55,14 @@
     	<param name = "imu_output" value="/$(arg namespace)/core/stim_imu" type="string"/>
     	<param name = "imu_frame" value="$(arg namespace)/imu_link" type="string"/>
     	<param name = "sample_rate" value="125" type="double" />
+    </node>
+
+    <!-- DV DVL -->
+    <node pkg="dvl_ros_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
+      <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
+      <param name="dvl_raw_topic" value="/$(arg robot_name)/core/dvl_raw_output"/>
+      <param name="dvl_frame" value="$(arg robot_name)/dvl_link"/>
+      <param name="dvl_on_off_srv" value="/$(arg robot_name)/core/start_stop_dvl"/>
     </node>
 
     <!-- Publish robot model for ROS -->
