@@ -33,6 +33,7 @@
             <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
             <remap from="~vbs_feedback" to="vbs_fb"/>
+            <remap from="~vbs_tank_temperature" to="vbs_tank_temperature"/>
             <remap from="~lcg_feedback" to="lcg_fb"/>
             <remap from="~esc_status0" to="esc_status0_fb"/>
             <remap from="~esc_status1" to="esc_status1_fb"/>
