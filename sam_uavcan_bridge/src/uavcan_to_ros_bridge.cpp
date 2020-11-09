@@ -12,7 +12,7 @@
 #include <uavcan_ros_bridge/uav_to_ros/pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/sensor_pressure.h>
 #include <uavcan_ros_bridge/uav_to_ros/esc_status.h>
-#include <uavcan_ros_bridge/uav_to_ros/circuit_status.h>
+// #include <uavcan_ros_bridge/uav_to_ros/circuit_status.h>
 
 #include <sam_uavcan_bridge/uav_to_ros/actuator_status.h>
 #include <sam_uavcan_bridge/uav_to_ros/leak.h>
@@ -20,9 +20,11 @@
 #include <sam_uavcan_bridge/uav_to_ros/servo_feedback_double.h>
 #include <sam_uavcan_bridge/uav_to_ros/temperature.h>
 #include <sam_uavcan_bridge/uav_to_ros/battery_state_basic.h>
-#include <sam_uavcan_bridge/uav_to_ros/consumed_charge_feedback.h>
+// #include <sam_uavcan_bridge/uav_to_ros/consumed_charge_feedback.h>
+#include <sam_uavcan_bridge/uav_to_ros/consumed_charge_array.h>
 #include <sam_uavcan_bridge/uav_to_ros/ctd_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/dual_thruster_feedback.h>
+#include <sam_uavcan_bridge/uav_to_ros/circuit_status_stamped.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -81,6 +83,7 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar02(uav_node, pn, "sensor_pressure_bar02", 23);
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> motor_oil_pressure_server(uav_node, pn, "motor_oil_pressure", 1);
     uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> vbs_tank_pressure_server(uav_node, pn, "vbs_tank_pressure", 2);
+    uav_to_ros::ConversionServer<uavcan::equipment::device::Temperature, sensor_msgs::Temperature> vbs_tank_temperature_server(uav_node, pn, "vbs_tank_temperature", 2);
 
     uav_to_ros::ConversionServer<uavcan::equipment::device::Temperature, sensor_msgs::Temperature> motor_oil_temperature_server(uav_node, pn, "motor_temperature", 1);
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> vbs_feedback_server(uav_node, pn, "vbs_feedback", 13);
@@ -89,9 +92,9 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::Leak> leak_server(uav_node, pn, "leak", 200);
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server0(uav_node, pn, "esc_status0", 0);
     uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
-    uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, uavcan_ros_bridge::CircuitStatus> circuit_status_server(uav_node, pn, "circuit_status");
+    uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, sam_msgs::CircuitStatusStamped> circuit_status_server(uav_node, pn, "circuit_status");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::BatteryStateBasic, sensor_msgs::BatteryState> battery_server2(uav_node, pn, "battery_state_basic");
-    uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeFeedback, sam_msgs::ConsumedChargeFeedback> consumed_charge_server(uav_node, pn, "consumed_charge_feedback");
+    uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeArray, sam_msgs::ConsumedChargeArray> consumed_charge_server2(uav_node, pn, "consumed_charge_array");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::CTDFeedback, smarc_msgs::CTDFeedback> ctd_feedback_server(uav_node, pn, "ctd_feedback");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::DualThrusterFeedback, smarc_msgs::DualThrusterFeedback> thruster_feedback_server(uav_node, pn, "thrusters_feedback");
 

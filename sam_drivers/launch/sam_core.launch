@@ -99,6 +99,11 @@
   <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
     <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
   </include>
+
+  <include file="$(find message_joiner)/launch/joiner.launch">
+    <!-- <arg name="joiner_publish_frequency" value="$(arg joiner_publish_frequency)"/> -->
+    <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
+  </include>
   <!-- <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/> -->
 
 </launch>
