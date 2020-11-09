@@ -25,7 +25,7 @@ SSS_SAVE_PATH=/home/sam/sss_test
 
 # This is the workspace containing the ros packages that are needed
 
-tmux new-session -d -s $SESSION
+tmux -2 new-session -d -s $SESSION
 
 tmux rename-window "roscore"
 tmux new-window -t $SESSION:1 -n 'gui'
