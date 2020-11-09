@@ -171,6 +171,10 @@ add_library(uav_to_ros_consumed_charge_feedback
   src/uav_to_ros/consumed_charge_feedback.cpp
 )
 
+add_library(uav_to_ros_consumed_charge_array
+  src/uav_to_ros/consumed_charge_array.cpp
+)
+
 add_library(uav_to_ros_ctd_feedback
   src/uav_to_ros/ctd_feedback.cpp
 )
@@ -199,6 +203,10 @@ add_library(ros_to_uav_dual_thruster_rpm
   src/ros_to_uav/dual_thruster_rpm.cpp
 )
 
+add_library(uav_to_ros_circuit_status_stamped
+  src/uav_to_ros/circuit_status_stamped.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -210,8 +218,10 @@ add_dependencies(uav_to_ros_servo_feedback_double sam_dsdlc)
 add_dependencies(uav_to_ros_temperature ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_battery_state_basic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_consumed_charge_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_dual_thruster_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_circuit_status_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -254,8 +264,10 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_temperature
   uav_to_ros_battery_state_basic
   uav_to_ros_consumed_charge_feedback
+  uav_to_ros_consumed_charge_array
   uav_to_ros_ctd_feedback
   uav_to_ros_dual_thruster_feedback
+  uav_to_ros_circuit_status_stamped
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}
