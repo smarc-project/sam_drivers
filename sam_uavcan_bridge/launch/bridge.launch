@@ -22,6 +22,7 @@
             <remap from="~tcg_command" to="tcg_cmd"/>
             <remap from="~lcg_command" to="lcg_cmd"/>
             <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
+            <remap from="~light_command" to="light_command"/>
         </node>
 
         <node name="uavcan_time_master" pkg="sam_uavcan_bridge" type="sam_uavcan_time_master" respawn="true" output="screen">
