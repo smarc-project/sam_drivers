@@ -23,6 +23,7 @@
             <remap from="~lcg_command" to="lcg_cmd"/>
             <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
             <remap from="~light_command" to="light_command"/>
+            <remap from="~panic_forwarding_out" to="panic_cmd"/>
         </node>
 
         <node name="uavcan_time_master" pkg="sam_uavcan_bridge" type="sam_uavcan_time_master" respawn="true" output="screen">
@@ -52,6 +53,7 @@
             <remap from="~ctd_feedback" to="ctd_fb"/>
             <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~magnetic_field" to="compass"/>
+            <remap from="~panic_forwarding_in" to="panic_fb"/>
         </node>
 
         <node name="uavcan_network_monitor" pkg="sam_uavcan_bridge" type="sam_uavcan_network_monitor" respawn="true" output="screen">
