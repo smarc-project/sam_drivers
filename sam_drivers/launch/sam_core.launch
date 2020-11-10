@@ -10,6 +10,8 @@
   <arg name="roll" default="0.0"/>
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
+  <arg name="utm_zone" default="32"/>
+  <arg name="utm_band" default="V"/>
 
   <arg name="gps_port" value="/dev/ttyUSB3"/>
   <arg name="gps_baud" value="9600"/>
@@ -17,6 +19,8 @@
   <arg name="with_gps" default="true"/>
   <arg name="uav_can_interface" default="can0"/>
 
+  <param name="utm_zone" type="int" value="$(arg utm_zone)"/>
+  <param name="utm_band" type="string" value="$(arg utm_band)"/> 
 
   <group ns="$(arg namespace)">
     <!-- TF broadcaster world to AUV odom -->
