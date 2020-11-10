@@ -187,6 +187,10 @@ add_library(uav_to_ros_circuit_status_stamped
   src/uav_to_ros/circuit_status_stamped.cpp
 )
 
+add_library(uav_to_ros_panic
+  src/uav_to_ros/panic.cpp
+)
+
 add_library(ros_to_uav_percent_stamped
   src/ros_to_uav/percent_stamped.cpp
 )
@@ -211,6 +215,10 @@ add_library(ros_to_uav_light_command
   src/ros_to_uav/light_command.cpp
 )
 
+add_library(ros_to_uav_panic
+  src/ros_to_uav/panic.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -226,12 +234,14 @@ add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TAR
 add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_dual_thruster_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_circuit_status_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_light_command ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -273,6 +283,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_ctd_feedback
   uav_to_ros_dual_thruster_feedback
   uav_to_ros_circuit_status_stamped
+  uav_to_ros_panic
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}
@@ -287,6 +298,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_thruster_angles
   ros_to_uav_dual_thruster_rpm
   ros_to_uav_light_command
+  ros_to_uav_panic
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}

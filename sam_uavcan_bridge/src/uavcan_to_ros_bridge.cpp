@@ -25,6 +25,7 @@
 #include <sam_uavcan_bridge/uav_to_ros/ctd_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/dual_thruster_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/circuit_status_stamped.h>
+#include <sam_uavcan_bridge/uav_to_ros/panic.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -97,6 +98,7 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeArray, sam_msgs::ConsumedChargeArray> consumed_charge_server2(uav_node, pn, "consumed_charge_array");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::CTDFeedback, smarc_msgs::CTDFeedback> ctd_feedback_server(uav_node, pn, "ctd_feedback");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::DualThrusterFeedback, smarc_msgs::DualThrusterFeedback> thruster_feedback_server(uav_node, pn, "thrusters_feedback");
+    uav_to_ros::ConversionServer<uavcan::protocol::Panic, std_msgs::String> panic_forwarding_server(uav_node, pn, "panic_forwarding_in");
 
     /*
      * Running the node.

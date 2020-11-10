@@ -15,6 +15,7 @@
 #include <sam_uavcan_bridge/ros_to_uav/thruster_angles.h>
 #include <sam_uavcan_bridge/ros_to_uav/dual_thruster_rpm.h>
 #include <sam_uavcan_bridge/ros_to_uav/light_command.h>
+#include <sam_uavcan_bridge/ros_to_uav/panic.h>
 
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
@@ -64,6 +65,7 @@ int main(int argc, char** argv)
     //ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server2(uav_node, pn, "tcg_command2", 28);
     ros_to_uav::ConversionServer<smarc_uavcan_messages::DualThrusterRPM, smarc_msgs::DualThrusterRPM> dual_thruster_rpm_server(uav_node, pn, "dual_thruster_rpm");
     ros_to_uav::ConversionServer<uavcan::equipment::indication::LightsCommand, sam_msgs::LightCommand> light_command_server(uav_node, pn, "light_command");
+    ros_to_uav::ConversionServer<uavcan::protocol::Panic, std_msgs::String> panic_forwardning_server(uav_node, pn, "panic_forwarding_out");
 
     /*
      * Running the node.
