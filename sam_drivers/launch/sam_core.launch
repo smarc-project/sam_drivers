@@ -39,8 +39,6 @@
     <!-- load the controllers -->
 <!--     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint1_position_controller joint2_position_controller joint_state_controller"/> -->
 
-     <node name="esc_fb_combined" pkg="sam_drivers" type="esc_fb_parser.py" ns="core" output="screen"/>
-
     <!-- SBG IMU driver -->
     <node name="sbg_ellipseA" pkg="sbg_driver" type="sbg_device" output="screen">
       <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_sam.yaml" />
