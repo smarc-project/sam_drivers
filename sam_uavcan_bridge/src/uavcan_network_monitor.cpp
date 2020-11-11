@@ -18,8 +18,6 @@ public:
 private:
     // std::unique_ptr<uavcan::protocol::GetNodeInfo::Response> last_node_info;
     // uavcan::NodeID last_node_id;
-    // unsigned status_message_cnt;
-    // unsigned status_change_cnt;
     // unsigned info_unavailable_cnt;
 
     virtual void handleNodeInfoRetrieved(uavcan::NodeID node_id,
@@ -42,25 +40,27 @@ private:
     }
     #pragma GCC diagnostic pop
 
-    #pragma GCC diagnostic ignored "-Wunused-parameter"
     virtual void handleNodeStatusChange(const uavcan::NodeStatusMonitor::NodeStatusChangeEvent& event)
     {
-        // std::cout << "NODE " << int(event.node_id.get()) << " STATUS CHANGE: "
-        //           << event.old_status.toString() << " --> " << event.status.toString() << std::endl;
-        // status_change_cnt++;
+        if(event.was_known)
+        {
+            if (event.status.mode == 7)
+            {
+                node_registry[event.node_id.get()].second.mode = event.status.mode;
+                ROS_WARN("UAVCAN node %d went OFFLINE!", event.node_id.get());
+            } else if (event.old_status.mode == 7)
+            {
+                ROS_INFO("UAVCAN node %d is back!", event.node_id.get());
+            }
+        }
     }
-    #pragma GCC diagnostic pop
 
     virtual void handleNodeStatusMessage(const uavcan::ReceivedDataStructure<uavcan::protocol::NodeStatus>& msg)
     {
         node_registry[msg.getSrcNodeID().get()].second = msg;
-        // status_message_cnt++;
     }
 public:
     Monitor()
-        // : status_message_cnt(0)
-        // , status_change_cnt(0)
-        // , info_unavailable_cnt(0)
     { }
 };
 
