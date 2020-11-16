@@ -1,16 +1,20 @@
 SESSION=sam_bringup
 
 # Lidingo
-UTM_ZONE=34
+#UTM_ZONE=34
+#UTM_BAND=V
+
+# Kristineberg
+UTM_ZONE=32
 UTM_BAND=V
 
-# KTH
+# Rest of Sweden
 #UTM_ZONE=33
 #UTM_BAND=V
 
 # IP Addresses to connect to neptus
 # The IP of the computer running neptus
-NEPTUS_IP=192.168.2.41
+NEPTUS_IP=192.168.2.55
 # IP of SAM
 SAM_IP=192.168.2.65
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
@@ -64,7 +68,7 @@ tmux select-window -t $SESSION:6
 tmux send-keys "mon launch sam_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:7
-# tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+#tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:8
