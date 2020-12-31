@@ -51,7 +51,7 @@
             <remap from="~gps_fix" to="can_gps"/>
             <remap from="~battery_state_basic" to="battery_fb"/>
             <remap from="~consumed_charge_array" to="consumed_charge_array_fb"/>
-            <remap from="~ctd_feedback" to="ctd_fb"/>
+            <remap from="~ctd_feedback" to="ctd"/>
             <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~magnetic_field" to="compass"/>
             <remap from="~panic_forwarding_in" to="panic_fb"/>
