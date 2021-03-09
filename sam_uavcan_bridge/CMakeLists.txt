@@ -14,8 +14,10 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   sensor_msgs
   std_msgs
+  std_srvs
   sam_msgs
   smarc_msgs
+  message_generation
   message_runtime
 )
 
@@ -132,7 +134,7 @@ include_directories(
 )
 
 add_custom_target(sam_dsdlc ${DSDL_COMPILER} # If the library is installed
-                  "smarc_uavcan_messages" -I${UAVCAN_DSDL_DEFINITIONS}
+                  "smarc_uavcan_messages" "smarc_uavcan_services" -I${UAVCAN_DSDL_DEFINITIONS}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dsdl)
 
 ## Declare a C++ library
@@ -183,6 +185,10 @@ add_library(uav_to_ros_dual_thruster_feedback
   src/uav_to_ros/dual_thruster_feedback.cpp
 )
 
+add_library(uav_to_ros_front_thruster_feedback
+  src/uav_to_ros/front_thruster_feedback.cpp
+)
+
 add_library(uav_to_ros_circuit_status_stamped
   src/uav_to_ros/circuit_status_stamped.cpp
 )
@@ -219,6 +225,10 @@ add_library(ros_to_uav_panic
   src/ros_to_uav/panic.cpp
 )
 
+add_library(ros_to_uav_uavcan_update_battery
+  src/ros_to_uav/uavcan_update_battery.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -233,6 +243,7 @@ add_dependencies(uav_to_ros_consumed_charge_feedback ${${PROJECT_NAME}_EXPORTED_
 add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_dual_thruster_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_front_thruster_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_circuit_status_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -242,6 +253,7 @@ add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} 
 add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_light_command ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_uavcan_update_battery ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -284,6 +296,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_consumed_charge_array
   uav_to_ros_ctd_feedback
   uav_to_ros_dual_thruster_feedback
+  uav_to_ros_front_thruster_feedback
   uav_to_ros_circuit_status_stamped
   uav_to_ros_panic
   #${uavcan_ros_bridge_LIBRARIES}
@@ -324,6 +337,7 @@ target_link_libraries(sam_uavcan_network_monitor
 
 target_link_libraries(sam_ros_to_uavcan_services
   sam_uavcan_platform_linux
+  ros_to_uav_uavcan_update_battery
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}
   rt

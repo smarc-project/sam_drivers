@@ -1,2 +1,3 @@
 # Ignore generated message files
 sam_uavcan_bridge/dsdl/dsdlc_generated/smarc_uavcan_messages
+sam_uavcan_bridge/dsdl/dsdlc_generated/smarc_uavcan_services
