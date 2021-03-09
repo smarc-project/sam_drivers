@@ -40,19 +40,21 @@
             <remap from="~lcg_feedback" to="lcg_fb"/>
             <remap from="~esc_status0" to="esc_status0_fb"/>
             <remap from="~esc_status1" to="esc_status1_fb"/>
-            <remap from="~circuit_status" to="circuit_status_fb"/>
+            <remap from="~circuit_status" to="circuit_status"/>
             <remap from="~imu" to="yost_imu"/>
             <remap from="~sensor_pressure_bar02" to="depth20_pressure"/>
             <remap from="~sensor_pressure_bar30" to="depth300_pressure"/>
             <remap from="~motor_temperature" to="motor_temp"/>
             <remap from="~motor_oil_pressure" to="motor_oil_pressure"/>
             <remap from="~vbs_tank_pressure" to="vbs_tank_pressure"/>
-            <remap from="~leak" to="leak_fb"/>
+            <remap from="~leak" to="leak"/>
             <remap from="~gps_fix" to="can_gps"/>
-            <remap from="~battery_state_basic" to="battery_fb"/>
-            <remap from="~consumed_charge_array" to="consumed_charge_array_fb"/>
+            <remap from="~battery_state_basic" to="battery"/>
+            <remap from="~consumed_charge_array" to="consumed_charge_array"/>
             <remap from="~ctd_feedback" to="ctd"/>
             <remap from="~thrusters_feedback" to="thrusters_fb"/>
+            <remap from="~thruster1_feedback" to="thruster1_fb"/>
+            <remap from="~thruster2_feedback" to="thruster2_fb"/>
             <remap from="~magnetic_field" to="compass"/>
             <remap from="~panic_forwarding_in" to="panic_fb"/>
         </node>
@@ -60,7 +62,7 @@
         <node name="uavcan_network_monitor" pkg="sam_uavcan_bridge" type="sam_uavcan_network_monitor" respawn="true" output="screen">
             <param name="uav_node_id" value="$(arg network_monitor_uav_node_id)"/>
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
-            <remap from="~uavcan_network_status" to="uavcan_fb"/>
+            <remap from="~uavcan_network_status" to="uavcan_status"/>
         </node>
 
         <node name="ros_to_UC_services" pkg="sam_uavcan_bridge" type="sam_ros_to_uavcan_services" respawn="true" output="screen">
@@ -69,6 +71,7 @@
             <remap from="~get_node_info" to="uavcan_get_node_info"/>
             <remap from="~get_transport_stats" to="uavcan_get_transport_stats"/>
             <remap from="~restart_node" to="uavcan_restart_node"/>
+            <remap from="~update_battery" to="uavcan_update_battery"/>
         </node>
 
     </group>
