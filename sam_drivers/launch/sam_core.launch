@@ -64,7 +64,7 @@
       <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
       <param name="dvl_raw_topic" value="/$(arg robot_name)/core/dvl_raw_output"/>
       <param name="dvl_frame" value="$(arg robot_name)/dvl_link"/>
-      <param name="dvl_on_off_srv" value="/$(arg robot_name)/core/start_stop_dvl"/>
+      <param name="dvl_on_off_srv" value="/$(arg robot_name)/core/toggle_dvl"/>
     </node>
 
     <!-- Publish robot model for ROS -->
