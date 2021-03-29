@@ -60,7 +60,7 @@
     </node>
 
     <!-- DV DVL -->
-    <node pkg="dvl_ros_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
+    <node pkg="deepvision_dvl_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
       <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
       <param name="dvl_raw_topic" value="/$(arg robot_name)/core/dvl_raw_output"/>
       <param name="dvl_frame" value="$(arg robot_name)/dvl_link"/>
