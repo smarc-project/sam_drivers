@@ -91,8 +91,8 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> lcg_feedback_server(uav_node, pn, "lcg_feedback", 14);
 
     uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::Leak> leak_server(uav_node, pn, "leak", 200);
-    uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server0(uav_node, pn, "esc_status0", 0);
-    uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_bridge::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
+    uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_msgs::ESCStatus> esc_status_server0(uav_node, pn, "esc_status0", 0);
+    uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_msgs::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
     uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, sam_msgs::CircuitStatusStamped> circuit_status_server(uav_node, pn, "circuit_status");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::BatteryStateBasic, sensor_msgs::BatteryState> battery_server2(uav_node, pn, "battery_state_basic");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::ConsumedChargeArray, sam_msgs::ConsumedChargeArray> consumed_charge_server2(uav_node, pn, "consumed_charge_array");
