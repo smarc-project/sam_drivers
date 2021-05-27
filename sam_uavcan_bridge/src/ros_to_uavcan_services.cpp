@@ -47,9 +47,9 @@ int main(int argc, char** argv)
     }
 
     ros::NodeHandle pn("~");
-    ros_to_uav::ServiceConversionServer<uavcan::protocol::GetNodeInfo, uavcan_ros_bridge::UavcanGetNodeInfo> node_info_server(uav_node, pn, "get_node_info");
-    ros_to_uav::ServiceConversionServer<uavcan::protocol::GetTransportStats, uavcan_ros_bridge::UavcanGetTransportStats> transport_stats_server(uav_node, pn, "get_transport_stats");
-    ros_to_uav::ServiceConversionServer<uavcan::protocol::RestartNode, uavcan_ros_bridge::UavcanRestartNode> restart_server(uav_node, pn, "restart_node");
+    ros_to_uav::ServiceConversionServer<uavcan::protocol::GetNodeInfo, uavcan_ros_msgs::UavcanGetNodeInfo> node_info_server(uav_node, pn, "get_node_info");
+    ros_to_uav::ServiceConversionServer<uavcan::protocol::GetTransportStats, uavcan_ros_msgs::UavcanGetTransportStats> transport_stats_server(uav_node, pn, "get_transport_stats");
+    ros_to_uav::ServiceConversionServer<uavcan::protocol::RestartNode, uavcan_ros_msgs::UavcanRestartNode> restart_server(uav_node, pn, "restart_node");
     ros_to_uav::ServiceConversionServer<smarc_uavcan_services::UpdateBattery, sam_msgs::UavcanUpdateBattery> update_battery_server(uav_node, pn, "update_battery");
 
     /*

@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++11")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   uavcan_ros_bridge
+  uavcan_ros_msgs
   geometry_msgs
   sensor_msgs
   std_msgs
@@ -21,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_runtime
 )
 
-#find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
+find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
 
 #set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, if the library is installed
 
