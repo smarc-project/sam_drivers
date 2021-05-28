@@ -11,6 +11,7 @@
 
 #include <sam_uavcan_bridge/ros_to_uav/percent_stamped.h>
 #include <sam_uavcan_bridge/ros_to_uav/ballast_angles.h>
+#include <sam_uavcan_bridge/ros_to_uav/thruster_rpm.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_rpms.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_angles.h>
 #include <sam_uavcan_bridge/ros_to_uav/dual_thruster_rpm.h>
@@ -55,6 +56,8 @@ int main(int argc, char** argv)
 
     ros::NodeHandle pn("~");
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Float32> command_server(uav_node, pn, "command");
+    ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm1_server(uav_node, pn, "rpm1_command", 0);
+    ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm2_server(uav_node, pn, "rpm2_command", 1);
     ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, sam_msgs::ThrusterRPMs> rpm_server(uav_node, pn, "rpm_command");
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::ThrusterAngles> thrust_vector_server(uav_node, pn, "vector_command", 16);
 
