@@ -47,7 +47,15 @@
     <node name="sbg_ellipseA" pkg="sbg_driver" type="sbg_device" output="screen">
       <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_sam.yaml" />
     </node>
-
+    
+    <node pkg="sbg_driver" name="sbg_2_ros" type="sbg_to_ros.py" output="screen">
+		  <param name="sbg_imu_data" value="/$(arg namespace)/sbg/imu_data"/>
+		  <param name="sbg_ekf_quat" value="/$(arg namespace)/sbg/ekf_quat"/>
+		  <param name="sbg_mag" value="/$(arg namespace)/sbg/mag"/>
+		  <param name="sbg_utc_time" value="/$(arg namespace)/sbg/utc_time"/>
+		  <param name="sbg_frame" value="$(arg namespace)/sbg_link"/>
+		  <param name="sbg_imu_out" value="/$(arg namespace)/core/sbg_imu"/>
+	  </node>
 
     <!-- STIM300 IMU driver -->
     <node name="stim300driver" output="screen" pkg="driver_stim300" type="stim300_driver_node" ns="core">
