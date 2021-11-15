@@ -16,8 +16,10 @@
             <param name="uav_node_id" value="$(arg publisher_uav_node_id)"/>
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
             <remap from="~command" to="util_cmd"/>
-            <remap from="~rpm1_command" to="thruster1_cmd"/>
-            <remap from="~rpm2_command" to="thruster2_cmd"/>
+            <!-- <remap from="~rpm1_command" to="thruster1_cmd"/> -->
+            <!-- <remap from="~rpm2_command" to="thruster2_cmd"/> -->
+            <remap from="~new_rpm1_command" to="thruster1_cmd"/>
+            <remap from="~new_rpm2_command" to="thruster2_cmd"/>
             <remap from="~rpm_command" to="rpm_cmd"/>
             <remap from="~vector_command" to="thrust_vector_cmd"/>
             <remap from="~array_command" to="util_array_cmd"/>

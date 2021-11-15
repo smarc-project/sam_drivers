@@ -1,0 +1,21 @@
+#
+# Dual Thruster RPM with ID. RPM can be negative.
+#
+
+#
+# ID
+#
+uint16 id
+
+#
+# Data acquisition timestamp.
+#
+uavcan.Timestamp timestamp
+
+#
+# Thruster RPM. Can be negative.
+#
+smarc_uavcan_messages.ThrusterRPM thruster
+
+float32 current
+float32 torque
