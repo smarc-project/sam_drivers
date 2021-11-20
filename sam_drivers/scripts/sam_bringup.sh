@@ -16,7 +16,7 @@ UTM_BAND=V
 # The IP of the computer running neptus
 NEPTUS_IP=192.168.2.55
 # IP of SAM
-SAM_IP=192.168.2.81
+SAM_IP=192.168.2.235
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 BRIDGE_PORT=6002
 
