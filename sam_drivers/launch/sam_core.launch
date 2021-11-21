@@ -13,7 +13,7 @@
   <arg name="utm_zone" default="32"/>
   <arg name="utm_band" default="V"/>
 
-  <arg name="gps_port" value="/dev/ttyACM0"/>
+  <arg name="gps_port" value="/dev/ttyUSB3"/>
   <arg name="gps_baud" value="9600"/>
 
   <arg name="with_gps" default="true"/>

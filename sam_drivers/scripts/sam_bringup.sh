@@ -1,22 +1,22 @@
 SESSION=sam_bringup
 
-# Lidingo
-#UTM_ZONE=34
-#UTM_BAND=V
-
-# Kristineberg
-UTM_ZONE=32
+# Lidingo & Labbet
+UTM_ZONE=34
 UTM_BAND=V
 
+# Kristineberg
+# UTM_ZONE=32
+# UTM_BAND=V
+
 # Rest of Sweden
-#UTM_ZONE=33
-#UTM_BAND=V
+# UTM_ZONE=33
+# UTM_BAND=V
 
 # IP Addresses to connect to neptus
 # The IP of the computer running neptus
-NEPTUS_IP=192.168.2.55
+NEPTUS_IP=192.168.2.222
 # IP of SAM
-SAM_IP=192.168.2.235
+SAM_IP=192.168.2.82
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 BRIDGE_PORT=6002
 
