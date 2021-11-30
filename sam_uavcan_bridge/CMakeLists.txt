@@ -182,8 +182,8 @@ add_library(uav_to_ros_ctd_feedback
   src/uav_to_ros/ctd_feedback.cpp
 )
 
-add_library(uav_to_ros_dual_thruster_feedback
-  src/uav_to_ros/dual_thruster_feedback.cpp
+add_library(uav_to_ros_thruster_feedback_id
+  src/uav_to_ros/thruster_feedback_id.cpp
 )
 
 add_library(uav_to_ros_circuit_status_stamped
@@ -204,6 +204,10 @@ add_library(ros_to_uav_ballast_angles
 
 add_library(ros_to_uav_thruster_rpm
   src/ros_to_uav/thruster_rpm.cpp
+)
+
+add_library(ros_to_uav_thruster_rpm_id
+  src/ros_to_uav/thruster_rpm_id.cpp
 )
 
 add_library(ros_to_uav_thruster_rpms
@@ -243,12 +247,13 @@ add_dependencies(uav_to_ros_battery_state_basic ${${PROJECT_NAME}_EXPORTED_TARGE
 add_dependencies(uav_to_ros_consumed_charge_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_dual_thruster_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_thruster_feedback_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_circuit_status_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_thruster_rpm_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -296,7 +301,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_consumed_charge_feedback
   uav_to_ros_consumed_charge_array
   uav_to_ros_ctd_feedback
-  uav_to_ros_dual_thruster_feedback
+  uav_to_ros_thruster_feedback_id
   uav_to_ros_circuit_status_stamped
   uav_to_ros_panic
   #${uavcan_ros_bridge_LIBRARIES}
@@ -310,6 +315,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_percent_stamped
   ros_to_uav_ballast_angles
   ros_to_uav_thruster_rpm
+  ros_to_uav_thruster_rpm_id
   ros_to_uav_thruster_rpms
   ros_to_uav_thruster_angles
   ros_to_uav_dual_thruster_rpm

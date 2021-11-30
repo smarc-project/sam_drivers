@@ -1,0 +1,13 @@
+#
+# Thruster RPM with ID. RPM can be negative.
+#
+
+#
+# ID
+#
+uint16 id
+
+#
+# Thruster command
+#
+smarc_uavcan_messages.ThrusterRPM thruster
