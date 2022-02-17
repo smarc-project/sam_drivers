@@ -38,10 +38,11 @@ tmux new-window -t $SESSION:3 -n 'dr'
 tmux new-window -t $SESSION:4 -n 'static_ctrl'
 tmux new-window -t $SESSION:5 -n 'dyn_ctrl'
 #tmux new-window -t $SESSION:7 -n 'gps_dr'
-tmux new-window -t $SESSION:6 -n 'bt'
+tmux new-window -t $SESSION:6 -n 'actions'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
-tmux new-window -t $SESSION:7 -n 'camera'
-tmux new-window -t $SESSION:8 -n 'payloads'
+tmux new-window -t $SESSION:7 -n 'bt'
+tmux new-window -t $SESSION:8 -n 'camera'
+tmux new-window -t $SESSION:9 -n 'payloads'
 
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m
@@ -65,15 +66,19 @@ tmux select-window -t $SESSION:5
 tmux send-keys "mon launch sam_basic_controllers dynamic_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:6
-tmux send-keys "mon launch bt_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_action_servers action_servers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:7
-#tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-# tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch bt_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:8
-tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+#tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+# tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+#tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux select-window -t $SESSION:9
+tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # hacky af, this sleep is.
 # somehow the mon launch version doesnt work properly, so hack it is.
