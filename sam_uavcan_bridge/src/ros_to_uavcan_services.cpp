@@ -61,7 +61,7 @@ int main(int argc, char** argv)
         // Announce that the uav node is alive and well
         uav_node.spinOnce();
     };
-    ros::Timer timer = ros_node.createTimer(ros::Duration(2.), callback);
+    ros::Timer timer = ros_node.createTimer(ros::Duration(1.), callback);
 
     ros::AsyncSpinner spinner(4); // Use 4 threads
     spinner.start();

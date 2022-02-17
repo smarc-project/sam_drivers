@@ -23,7 +23,6 @@
 // #include <sam_uavcan_bridge/uav_to_ros/consumed_charge_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/consumed_charge_array.h>
 #include <sam_uavcan_bridge/uav_to_ros/ctd_feedback.h>
-// #include <sam_uavcan_bridge/uav_to_ros/dual_thruster_feedback.h>
 #include <sam_uavcan_bridge/uav_to_ros/thruster_feedback_id.h>
 #include <sam_uavcan_bridge/uav_to_ros/circuit_status_stamped.h>
 #include <sam_uavcan_bridge/uav_to_ros/panic.h>
@@ -100,7 +99,6 @@ int main(int argc, char** argv)
     uav_to_ros::ConversionServer<smarc_uavcan_messages::CTDFeedback, smarc_msgs::CTD> ctd_feedback_server(uav_node, pn, "ctd_feedback");
     uav_to_ros::ConversionServer<smarc_uavcan_messages::ThrusterFeedbackID, smarc_msgs::ThrusterFeedback> thruster1_feedback_server(uav_node, pn, "thruster1_feedback", 1);
     uav_to_ros::ConversionServer<smarc_uavcan_messages::ThrusterFeedbackID, smarc_msgs::ThrusterFeedback> thruster2_feedback_server(uav_node, pn, "thruster2_feedback", 2);
-    // uav_to_ros::ConversionServer<smarc_uavcan_messages::DualThrusterFeedback, smarc_msgs::DualThrusterFeedback> thruster_feedback_server(uav_node, pn, "thrusters_feedback");
     uav_to_ros::ConversionServer<uavcan::protocol::Panic, std_msgs::String> panic_forwarding_server(uav_node, pn, "panic_forwarding_in");
 
     /*
