@@ -170,6 +170,10 @@ add_library(uav_to_ros_battery_state_basic
   src/uav_to_ros/battery_state_basic.cpp
 )
 
+add_library(uav_to_ros_battery_info
+  src/uav_to_ros/battery_info.cpp
+)
+
 add_library(uav_to_ros_consumed_charge_feedback
   src/uav_to_ros/consumed_charge_feedback.cpp
 )
@@ -244,6 +248,7 @@ add_dependencies(uav_to_ros_sensor_pressure_stamped sam_dsdlc)
 add_dependencies(uav_to_ros_servo_feedback_double sam_dsdlc)
 add_dependencies(uav_to_ros_temperature ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_battery_state_basic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(uav_to_ros_battery_info ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_consumed_charge_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -298,6 +303,7 @@ target_link_libraries(sam_uavcan_to_ros_bridge
   uav_to_ros_servo_feedback_double
   uav_to_ros_temperature
   uav_to_ros_battery_state_basic
+  uav_to_ros_battery_info
   uav_to_ros_consumed_charge_feedback
   uav_to_ros_consumed_charge_array
   uav_to_ros_ctd_feedback
