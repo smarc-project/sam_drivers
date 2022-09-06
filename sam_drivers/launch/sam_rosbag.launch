@@ -3,6 +3,7 @@
   <arg name="save_path" default="/xavier_ssd/autobags"/>
   <arg name="bag_name" default="sam_core"/>
 
-  <node pkg="rosbag" type="record" name="rosbag_record_core" args="record -o $(arg save_path)/$(arg bag_name) -a"/> 
+  <node pkg="rosbag" type="record" name="rosbag_record_core" args="record -o $(arg save_path)/$(arg bag_name) -a -x '/sam/perception/(.*)' "/> 
+
 
 </launch>

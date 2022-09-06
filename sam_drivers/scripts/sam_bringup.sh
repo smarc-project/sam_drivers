@@ -25,7 +25,7 @@ BRIDGE_PORT=6002
 SENSOR_ID=0 
 CAR_DEPTH=10
 
-SSS_SAVE_PATH=/home/sam/sss_test
+SSS_SAVE_PATH=/xavier_ssd/sidescan
 
 # This is the workspace containing the ros packages that are needed
 
@@ -75,10 +75,11 @@ tmux select-window -t $SESSION:8
 #tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 #tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+# tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:9
-tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # hacky af, this sleep is.
 # somehow the mon launch version doesnt work properly, so hack it is.
