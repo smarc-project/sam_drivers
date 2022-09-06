@@ -1,12 +1,12 @@
 SESSION=sam_bringup
 
 # Lidingo & Labbet
-#UTM_ZONE=34
-#UTM_BAND=V
+UTM_ZONE=34
+UTM_BAND=V
 
 # Kristineberg
- UTM_ZONE=32
- UTM_BAND=V
+# UTM_ZONE=32
+# UTM_BAND=V
 
 # Rest of Sweden
 # UTM_ZONE=33
@@ -75,7 +75,8 @@ tmux select-window -t $SESSION:8
 #tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 #tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+# tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:9
 tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
