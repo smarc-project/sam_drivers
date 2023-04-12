@@ -57,7 +57,7 @@ tmux select-window -t $SESSION:2
 tmux send-keys "mon launch sam_drivers sam_core.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
-tmux send-keys "mon launch sam_dead_reckoning dual_ekf_test.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:4
 tmux send-keys "mon launch sam_basic_controllers static_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
