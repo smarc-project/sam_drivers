@@ -16,7 +16,7 @@ UTM_BAND=V
 # The IP of the computer running neptus
 NEPTUS_IP=192.168.2.222
 # IP of SAM
-SAM_IP=192.168.2.82
+SAM_IP=192.168.2.84
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 BRIDGE_PORT=6002
 
@@ -76,7 +76,7 @@ tmux select-window -t $SESSION:8
 # tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 #tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+# tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:9
 tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
