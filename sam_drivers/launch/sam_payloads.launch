@@ -1,11 +1,19 @@
 <launch>
 
   <arg name="namespace" default="sam"/>
+
+  <!-- SSS params -->
   <arg name="sss_ip" default="192.168.2.63"/>
   <arg name="sss_port" default="57349"/>
   <arg name="sss_out_file" default="test.dvs"/>
   <arg name="high_freq" default="false"/>
   <arg name="range" default="40.0"/>
+  
+  <!-- Cams params -->
+  <arg name="image_width" default="1920"/>
+  <arg name="image_height" default="1080"/>
+  <arg name="framerate" default="30"/>
+
 
   <group ns="$(arg namespace)">
     <node pkg="deepvision_sss_driver" type="driver_node" name="sss_driver_node" output="screen">
@@ -15,6 +23,33 @@
       <param name="high_freq" value="$(arg high_freq)"/>
       <param name="range" value="$(arg range)"/>
     </node>
+
+  <!-- board cam -->
+  <group ns="payload">
+  <node name="cam_board" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video4" />
+    <param name="image_width" value="$(arg image_width)" />
+    <param name="image_height" value="$(arg image_height)" />
+    <param name="framerate" value="$(arg framerate)" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="color_format" value="yuv422p" />
+    <param name="camera_frame_id" value="$(arg namespace)/camera_front_right_link" />
+    <param name="io_method" value="mmap"/>
+  </node>
+
+  <!-- starboard cam -->
+  <node name="cam_starboard" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video6" />
+    <param name="image_width" value="$(arg image_width)" />
+    <param name="image_height" value="$(arg image_height)" />
+    <param name="framerate" value="$(arg framerate)" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="color_format" value="yuv422p" />
+    <param name="camera_frame_id" value="$(arg namespace)/camera_front_left_link" />
+    <param name="io_method" value="mmap"/>
+  </node>
+
+  </group>
   </group>
 
 </launch>
