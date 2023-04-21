@@ -10,8 +10,8 @@
   <arg name="range" default="40.0"/>
   
   <!-- Cams params -->
-  <arg name="image_width" default="1920"/>
-  <arg name="image_height" default="1080"/>
+  <arg name="image_width" default="640"/>
+  <arg name="image_height" default="480"/>
   <arg name="framerate" default="30"/>
 
 
