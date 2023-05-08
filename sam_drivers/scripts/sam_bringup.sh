@@ -1,12 +1,12 @@
 SESSION=sam_bringup
 
 # Lidingo & Labbet
-UTM_ZONE=34
-UTM_BAND=V
+#UTM_ZONE=34
+#UTM_BAND=V
 
 # Kristineberg
-# UTM_ZONE=32
-# UTM_BAND=V
+UTM_ZONE=32
+UTM_BAND=V
 
 # Rest of Sweden
 # UTM_ZONE=33
@@ -16,7 +16,7 @@ UTM_BAND=V
 # The IP of the computer running neptus
 NEPTUS_IP=192.168.2.222
 # IP of SAM
-SAM_IP=192.168.2.82
+SAM_IP=192.168.2.84
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 BRIDGE_PORT=6002
 
@@ -38,10 +38,12 @@ tmux new-window -t $SESSION:3 -n 'dr'
 tmux new-window -t $SESSION:4 -n 'static_ctrl'
 tmux new-window -t $SESSION:5 -n 'dyn_ctrl'
 #tmux new-window -t $SESSION:7 -n 'gps_dr'
+
 tmux new-window -t $SESSION:6 -n 'actions'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
 tmux new-window -t $SESSION:7 -n 'bt'
-tmux new-window -t $SESSION:8 -n 'camera'
+# tmux new-window -t $SESSION:8 -n 'camera'
+tmux new-window -t $SESSION:8 -n 'rosbag'
 tmux new-window -t $SESSION:9 -n 'payloads'
 
 tmux select-window -t $SESSION:0
@@ -57,7 +59,7 @@ tmux select-window -t $SESSION:2
 tmux send-keys "mon launch sam_drivers sam_core.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
-tmux send-keys "mon launch sam_dead_reckoning dual_ekf_test.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:4
 tmux send-keys "mon launch sam_basic_controllers static_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
@@ -76,7 +78,9 @@ tmux select-window -t $SESSION:8
 # tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 #tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+# tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux send-keys "mon launch sam_drivers sam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:9
 tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
