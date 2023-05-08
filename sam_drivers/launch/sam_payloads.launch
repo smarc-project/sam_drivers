@@ -25,14 +25,14 @@
       <rosparam command="load" file="$(find sam_drivers)/config/cam_port.yml"/>
   </node>
 
-  <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_port/stop_capture {}" />
+  <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_port/stop_capture {}" /> -->
 
   <!-- starboard cam -->
   <node name="cam_starboard" pkg="usb_cam" type="usb_cam_node" output="screen" >
       <rosparam command="load" file="$(find sam_drivers)/config/cam_starboard.yml"/>
   </node>
 
-  <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_starboard/stop_capture {}" />
+  <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_starboard/stop_capture {}" /> -->
 
   </group>
   </group>
