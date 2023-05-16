@@ -62,27 +62,24 @@ tmux select-window -t $SESSION:3
 tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:4
-tmux send-keys "mon launch sam_basic_controllers static_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_basic_controllers sam_control.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+# tmux select-window -t $SESSION:5
+# tmux send-keys "mon launch sam_action_servers sam_actions.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:5
-tmux send-keys "mon launch sam_basic_controllers dynamic_controllers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-
-tmux select-window -t $SESSION:6
-tmux send-keys "mon launch sam_action_servers action_servers.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-
-tmux select-window -t $SESSION:7
 tmux send-keys "mon launch bt_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-tmux select-window -t $SESSION:8
 #tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 #tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 # tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
+tmux select-window -t $SESSION:6
 tmux send-keys "mon launch sam_drivers sam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-tmux select-window -t $SESSION:9
+tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # hacky af, this sleep is.
