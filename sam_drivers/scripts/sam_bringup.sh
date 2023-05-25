@@ -1,12 +1,12 @@
 SESSION=sam_bringup
 
 # Lidingo & Labbet
-#UTM_ZONE=34
-#UTM_BAND=V
+UTM_ZONE=34
+UTM_BAND=V
 
 # Kristineberg
-UTM_ZONE=32
-UTM_BAND=V
+#UTM_ZONE=32
+#UTM_BAND=V
 
 # Rest of Sweden
 # UTM_ZONE=33
@@ -35,16 +35,16 @@ tmux rename-window "roscore"
 tmux new-window -t $SESSION:1 -n 'gui'
 tmux new-window -t $SESSION:2 -n 'core'
 tmux new-window -t $SESSION:3 -n 'dr'
-tmux new-window -t $SESSION:4 -n 'static_ctrl'
-tmux new-window -t $SESSION:5 -n 'dyn_ctrl'
+tmux new-window -t $SESSION:4 -n 'control'
+tmux new-window -t $SESSION:5 -n 'mission'
 #tmux new-window -t $SESSION:7 -n 'gps_dr'
 
-tmux new-window -t $SESSION:6 -n 'actions'
+tmux new-window -t $SESSION:6 -n 'rosbag'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
-tmux new-window -t $SESSION:7 -n 'bt'
+tmux new-window -t $SESSION:7 -n 'payloads'
 # tmux new-window -t $SESSION:8 -n 'camera'
-tmux new-window -t $SESSION:8 -n 'rosbag'
-tmux new-window -t $SESSION:9 -n 'payloads'
+#tmux new-window -t $SESSION:8 -n 'rosbag'
+#tmux new-window -t $SESSION:9 -n 'payloads'
 
 tmux select-window -t $SESSION:0
 tmux send-keys "roscore" C-m

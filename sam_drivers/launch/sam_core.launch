@@ -80,10 +80,10 @@
       <remap from="fix" to="gps"/>
     </node>
   
-    <include file="$(find sam_drivers)/launch/sam_rosbag.launch">
+    <!--<include file="$(find sam_drivers)/launch/sam_rosbag.launch">
       <arg name="save_path" value="/xavier_ssd/autobags"/>
       <arg name="bag_name" value="sam_core"/>
-    </include>
+    </include>-->
     
   </group>
 
