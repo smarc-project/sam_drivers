@@ -9,7 +9,7 @@ bool convert(const std_msgs::Bool& ros_msg, uavcan::equipment::actuator::ArrayCo
     // const char* c = sub.c_str();
     // uav_msg.reason_text = c;
 
-    const std::bool boolean = ros_msg.data;//.substr(0, 7);
+    const bool boolean = ros_msg.data;//.substr(0, 7);
     // const char* c = sub.c_str();
 
     uav_msg.commands.resize(1);
