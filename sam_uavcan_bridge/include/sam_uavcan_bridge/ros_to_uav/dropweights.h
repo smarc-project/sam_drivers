@@ -8,7 +8,7 @@
 namespace ros_to_uav {
 
 template <>
-bool convert(const std_msgs::String& ros_msg,uavcan::equipment::actuator::ArrayCommand& uav_msg, unsigned char uid);
+bool convert(const std_msgs::Bool& ros_msg,uavcan::equipment::actuator::ArrayCommand& uav_msg, unsigned char uid);
 
 }
 
