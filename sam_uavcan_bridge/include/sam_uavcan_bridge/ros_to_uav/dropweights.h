@@ -1,5 +1,5 @@
-#ifndef ROS_TO_UAV_PANIC_H
-#define ROS_TO_UAV_PANIC_H
+#ifndef ROS_TO_UAV_DROP_H
+#define ROS_TO_UAV_DROP_H
 
 #include <uavcan/equipment/actuator/ArrayCommand.hpp>
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
