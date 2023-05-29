@@ -3,7 +3,7 @@
 
 #include <uavcan/equipment/actuator/ArrayCommand.hpp>
 #include <uavcan_ros_bridge/uavcan_ros_bridge.h>
-#include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
 
 namespace ros_to_uav {
 
