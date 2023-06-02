@@ -52,7 +52,6 @@ tmux send-keys "roscore" C-m
 # start the gui and new_gui in one launch file 
 
 tmux select-window -t $SESSION:1
-# tmux send-keys "mon launch flexxros sam_controls.launch --name=$(tmux display-message -p 'p#I_#W')" C-m
 tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --wait" C-m
 
 tmux select-window -t $SESSION:2
@@ -64,17 +63,8 @@ tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch utm_zone:=$UTM_ZONE 
 tmux select-window -t $SESSION:4
 tmux send-keys "mon launch sam_basic_controllers sam_control.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
-# tmux select-window -t $SESSION:5
-# tmux send-keys "mon launch sam_action_servers sam_actions.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-
 tmux select-window -t $SESSION:5
-tmux send-keys "mon launch bt_mission mission.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND neptus_addr:=$NEPTUS_IP bridge_addr:=$SAM_IP bridge_port:=$BRIDGE_PORT --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-
-#tmux send-keys "mon launch sam_camera_config enhance.launch sim:=false sensor_id:=$SENSOR_ID --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-# tmux send-keys "mon launch sam_camera_config cameras.launch sim:=false --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-#tmux send-keys "mon launch sam_camera_config record_multi_bash.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-# tmux send-keys "mon launch sam_camera_config multi_nv_jpeg.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
-# tmux send-keys "mon launch sam_camera_config combined_camera.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch smarc_bt mission.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:6
 tmux send-keys "mon launch sam_drivers sam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
