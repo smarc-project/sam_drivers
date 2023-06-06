@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import rospy
 from sam_msgs.msg import PercentStamped, Leak

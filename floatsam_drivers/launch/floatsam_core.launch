@@ -3,26 +3,25 @@
   <arg name="debug" default="0"/>
   <arg name="mode" default="default"/>
   <arg name="namespace" default="sam"/>
+  <arg name="robot_name" default="tsam"/>
 
-  <arg name="gps_port" value="/dev/ttyACM0"/>
+  <arg name="gps_port" value="/dev/ttyACM1"/>
   <arg name="gps_baud" value="115200"/>
 
   <arg name="with_gps" default="true"/>
   <arg name="uav_can_interface" default="can0"/>
 
-  <!-- <arg name="utm_zone" default="32"/> -->
-  <!-- <arg name="utm_band" default="V"/> -->
-  <!-- <param name="utm_zone" type="int" value="$(arg utm_zone)"/> -->
-  <!-- <param name="utm_band" type="string" value="$(arg utm_band)"/>  -->
+  <!-- <param name="utm_zone" type="int" value="$(arg utm_zone)"/>
+  <param name="utm_band" type="string" value="$(arg utm_band)"/>  -->
 
   <group ns="$(arg namespace)">
 
     <param name="robot_description"
-           command="$(find xacro)/xacro '$(find sam_description)/robots/sam_auv_$(arg mode).urdf.xacro' debug:=$(arg debug) namespace:=$(arg namespace)" />
+           command="$(find xacro)/xacro '$(find floatsam_description)/robots/floatsam_usv_$(arg mode).urdf.xacro' debug:=$(arg debug) namespace:=$(arg namespace)" />
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
       <param name="use_gui" value="false"/>
-      <rosparam param="source_list">["/sam/command_states"]</rosparam>
+      <rosparam param="source_list">["/floatsam/command_states"]</rosparam>
     </node>
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
@@ -52,14 +51,18 @@
     	<param name = "imu_frame" value="$(arg namespace)/imu_link" type="string"/>
     	<param name = "sample_rate" value="125" type="double" />
     </node>
-
-    <!-- DV DVL -->
-    <node pkg="deepvision_dvl_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
+   
+    <!-- WL DVL -->
+    <!-- <node pkg="waterlinked_a50_ros_driver" type="publisher.py" name="dvl_driver" output="screen" ns="core">
       <param name="dvl_topic" value="/$(arg namespace)/core/dvl"/>
       <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw_output"/>
       <param name="dvl_frame" value="$(arg namespace)/dvl_link"/>
       <param name="dvl_on_off_srv" value="/$(arg namespace)/core/toggle_dvl"/>
-    </node>
+      <param name="ip" value="192.168.2.147"/>
+    </node> -->
+
+    <!-- Node that enables us to disable the DVL in order to get GPS fixes to update DR -->
+    <!-- <node pkg="sam_actions" type="gps_fix_server.py" name="gps_fix_server" output="screen"/> -->
 
     <node pkg="sam_drivers" type="sam_startup_check.py" name="startup_check" output="screen">
        <remap from="~lcg_cmd" to="/$(arg namespace)/core/lcg_cmd"/>
@@ -70,16 +73,27 @@
        <remap from="~thrust_vector_cmd" to="/$(arg namespace)/core/thrust_vector_cmd"/>
     </node>
 
-    <!-- Node that enables us to disable the DVL in order to get GPS fixes to update DR -->
-    <node pkg="sam_actions" type="gps_fix_server.py" name="gps_fix_server" output="screen"/>
-
     <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)" ns="core">
       <param name="port" value="$(arg gps_port)"/>
       <param name="baud" value="$(arg gps_baud)"/>
       <param name="frame_id" value="$(arg namespace)/gps_link"/>
       <remap from="fix" to="gps"/>
     </node>
-    
+
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat_prt" respawn="true" if="$(arg with_gps)" ns="core">
+      <param name="port" value="/dev/ttyACM0"/>
+      <param name="baud" value="$(arg gps_baud)"/>
+      <param name="frame_id" value="$(arg namespace)/gps_link"/>
+      <remap from="fix" to="gps/prt"/>
+    </node>
+ 
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat_stb" respawn="true" if="$(arg with_gps)" ns="core">
+      <param name="port" value="/dev/ttyACM2"/>
+      <param name="baud" value="$(arg gps_baud)"/>
+      <param name="frame_id" value="$(arg namespace)/gps_link"/>
+      <remap from="fix" to="gps/stb"/>
+    </node>
+
   </group>
 
   <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
