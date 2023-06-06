@@ -14,16 +14,11 @@ UTM_BAND=V
 
 # IP Addresses to connect to neptus
 # The IP of the computer running neptus
-NEPTUS_IP=192.168.2.222
+# NEPTUS_IP=192.168.2.222
 # IP of SAM
 SAM_IP=192.168.2.85
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
-BRIDGE_PORT=6002
-
-# For the camera, 0:down, 1:right, 2: left. 
-# For now we only use one camera to avoid jetson  shutting down 
-SENSOR_ID=0 
-CAR_DEPTH=10
+# BRIDGE_PORT=6002
 
 SSS_SAVE_PATH=/xavier_ssd/sidescan
 
@@ -55,7 +50,7 @@ tmux select-window -t $SESSION:1
 tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --wait" C-m
 
 tmux select-window -t $SESSION:2
-tmux send-keys "mon launch sam_drivers sam_core.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_drivers sam_core.launch namespace:=sam  utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
 tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
