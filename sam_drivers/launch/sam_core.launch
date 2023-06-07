@@ -4,7 +4,7 @@
   <arg name="mode" default="default"/>
   <arg name="namespace" default="sam"/>
 
-  <arg name="gps_port" value="/dev/ttyACM0"/>
+  <arg name="gps_port" value="/dev/ttyACM1"/>
   <arg name="gps_baud" value="115200"/>
 
   <arg name="with_gps" default="true"/>
