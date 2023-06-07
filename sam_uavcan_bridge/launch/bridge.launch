@@ -29,6 +29,10 @@
             <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
             <remap from="~light_command" to="light_command"/>
             <remap from="~panic_forwarding_out" to="panic_cmd"/>
+            <remap from="~dropweight_command" to="dropweight_cmd"/>
+            <remap from="~led_command" to="led_cmd"/>
+            <remap from="~dvl_command" to="dvl_relay"/>
+            <remap from="~sss_command" to="sss_relay"/>
         </node>
 
         <node name="uavcan_time_master" pkg="sam_uavcan_bridge" type="sam_uavcan_time_master" respawn="true" output="screen">
