@@ -20,6 +20,9 @@
 #include <sam_uavcan_bridge/ros_to_uav/panic.h>
 #include <sam_uavcan_bridge/ros_to_uav/dropweights.h>
 #include <sam_uavcan_bridge/ros_to_uav/led.h>
+#include <sam_uavcan_bridge/ros_to_uav/dvl.h>
+#include <sam_uavcan_bridge/ros_to_uav/sss.h>
+
 extern uavcan::ICanDriver& getCanDriver(const std::string&);
 extern uavcan::ISystemClock& getSystemClock();
 
@@ -75,6 +78,10 @@ int main(int argc, char** argv)
     ros_to_uav::ConversionServer<uavcan::protocol::Panic, std_msgs::String> panic_forwardning_server(uav_node, pn, "panic_forwarding_out");
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> dropweight_server(uav_node, pn, "dropweight_command", 69);
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> led_server(uav_node, pn, "led_command", 70);
+    ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> dvl_server(uav_node, pn, "dvl_command", 71);
+    ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> sss_server(uav_node, pn, "sss_command", 72);
+
+
 
     /*
      * Running the node.
