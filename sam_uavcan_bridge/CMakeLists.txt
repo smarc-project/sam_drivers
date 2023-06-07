@@ -206,6 +206,22 @@ add_library(ros_to_uav_ballast_angles
   src/ros_to_uav/ballast_angles.cpp
 )
 
+add_library(ros_to_uav_dropweights
+  src/ros_to_uav/dropweights.cpp
+)
+
+add_library(ros_to_uav_dvl
+  src/ros_to_uav/dvl.cpp
+)
+
+add_library(ros_to_uav_sss
+  src/ros_to_uav/sss.cpp
+)
+
+add_library(ros_to_uav_led
+  src/ros_to_uav/led.cpp
+)
+
 add_library(ros_to_uav_thruster_rpm
   src/ros_to_uav/thruster_rpm.cpp
 )
@@ -265,6 +281,11 @@ add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS
 add_dependencies(ros_to_uav_light_command ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_uavcan_update_battery ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_dropweights ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_led ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_dvl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_sss ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -327,6 +348,11 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_dual_thruster_rpm
   ros_to_uav_light_command
   ros_to_uav_panic
+  ros_to_uav_dropweights
+  ros_to_uav_led
+  ros_to_uav_dvl
+  ros_to_uav_sss
+
   #${uavcan_ros_bridge_LIBRARIES}
   ${catkin_LIBRARIES}
   #${UAVCAN_LIB}
