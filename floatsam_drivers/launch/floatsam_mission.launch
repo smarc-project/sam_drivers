@@ -1,0 +1,26 @@
+<launch>
+
+    <arg name="namespace" default="sam"/>
+
+	<!-- Start all actions before the BT -->
+	<!--All the minute configs are in its own config file in the launch dir-->
+	<arg name="config_file" default="$(find smarc_bt)/launch/config.yaml"/>
+
+
+	<node name="smarc_bt" pkg="smarc_bt" type="bt_trunk.py" output="screen" ns="$(arg namespace)">
+		<!--Load this first so it can be over-written by other params later-->
+		<!--Cant use subst_value in melodic...-->
+		<rosparam file="$(arg config_file)" command="load"/>
+		<param name="robot_name" value="$(arg namespace)" />
+		<param name="config_file" value="$(arg config_file)"/>
+	</node>
+
+	<include file="$(find smarc_nodered)/launch/smarc_nodered.launch" ns="$(arg namespace)">
+		<arg name="robot_name" value="$(arg namespace)"/>
+	</include>
+
+	<include file="$(find floatsam_action_servers)/launch/floatsam_actions.launch" >
+		<arg name="namespace" value="$(arg namespace)"/>	
+	</include>
+    
+</launch>

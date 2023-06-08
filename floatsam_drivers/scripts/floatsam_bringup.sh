@@ -42,19 +42,19 @@ tmux send-keys "roscore" C-m
 # start the gui and new_gui in one launch file 
 
 tmux select-window -t $SESSION:1
-tmux send-keys "roslaunch sam_drivers floatsam_gui.launch rosbridge_ip:=$FLOATSAM_IP namespace:=floatsam --wait" C-m
+tmux send-keys "roslaunch floatsam_drivers floatsam_gui.launch rosbridge_ip:=$FLOATSAM_IP namespace:=floatsam --wait" C-m
 
 tmux select-window -t $SESSION:2
-tmux send-keys "mon launch sam_drivers floatsam_core.launch namespace:=floatsam  utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch floatsam_drivers floatsam_core.launch namespace:=floatsam  utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
-tmux send-keys "mon launch sam_dead_reckoning floatsam_dr.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch floatsam_dead_reckoning floatsam_dr.launch namespace:=floatsam utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:4
-# tmux send-keys "mon launch sam_basic_controllers floatsam_control.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_basic_controllers floatsam_control.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:5
-# tmux send-keys "mon launch smarc_bt mission.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch floatsam_drivers floatsam_mission.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:6
 # tmux send-keys "mon launch sam_drivers floatsam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
