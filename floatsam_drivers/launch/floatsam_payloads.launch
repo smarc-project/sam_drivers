@@ -1,0 +1,22 @@
+<launch>
+
+  <arg name="namespace" default="floatsam"/>
+
+  <group ns="$(arg namespace)">
+    <group ns="payload">
+
+    <!-- UW GPS antenna -->
+    <node name="uwgps" pkg="uw_gps" type="payload_uwgps_node.py" output="screen">
+      <param name="uwgps_frame" value="$(arg namespace)/uwgps_link"/>
+      <!-- <param name="uwgps_server_ip" value="http://192.168.2.94"/> -->
+      <param name="uwgps_server_ip" value="https://demo.waterlinked.com"/>
+      <param name="rpm_chase" value="500"/>
+      <param name="goto_wp_server" value="/$(arg namespace)/ctrl/goto_waypoint"/>
+      <param name="goal_tolerance" value="3."/>
+      <param name="node_freq" value="1."/>
+    </node>
+
+    </group>
+  </group>
+
+</launch>

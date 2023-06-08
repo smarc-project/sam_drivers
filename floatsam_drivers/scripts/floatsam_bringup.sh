@@ -51,13 +51,17 @@ tmux select-window -t $SESSION:3
 tmux send-keys "mon launch floatsam_dead_reckoning floatsam_dr.launch namespace:=floatsam utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:4
-tmux send-keys "mon launch sam_basic_controllers floatsam_control.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch floatsam_basic_controllers floatsam_control.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:5
 tmux send-keys "mon launch floatsam_drivers floatsam_mission.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # tmux select-window -t $SESSION:6
-# tmux send-keys "mon launch sam_drivers floatsam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch floatsam_drivers floatsam_rosbag.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux select-window -t $SESSION:7
+tmux send-keys "mon launch floatsam_drivers floatsam_payloads.launch namespace:=floatsam --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
 
 # Set default window
 tmux select-window -t $SESSION:0
