@@ -33,14 +33,14 @@
   </node>
 
   <!-- starboard forward -->
-  <node name="cam_forward" pkg="usb_cam" type="usb_cam_node" output="screen" >
+  <!-- <node name="cam_forward" pkg="usb_cam" type="usb_cam_node" output="screen" >
       <rosparam command="load" file="$(find sam_drivers)/config/cam_forward.yml"/>
-  </node>
+  </node> -->
 
   <!-- starboard down -->
-  <node name="cam_down" pkg="usb_cam" type="usb_cam_node" output="screen" >
+  <!-- <node name="cam_down" pkg="usb_cam" type="usb_cam_node" output="screen" >
       <rosparam command="load" file="$(find sam_drivers)/config/cam_down.yml"/>
-  </node>
+  </node> -->
 
   <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_starboard/stop_capture {}" /> -->
 
