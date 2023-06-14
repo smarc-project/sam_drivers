@@ -1,7 +1,7 @@
 SESSION=floatsam_bringup
 
 # Lidingo & Labbet
-UTM_ZONE=34
+UTM_ZONE=33
 UTM_BAND=V
 
 # Kristineberg
@@ -13,7 +13,7 @@ UTM_BAND=V
 # UTM_BAND=V
 
 # IP of SAM
-FLOATSAM_IP=192.168.2.195
+FLOATSAM_IP=192.168.2.205
 
 SSS_SAVE_PATH=/xavier_ssd/sidescan
 

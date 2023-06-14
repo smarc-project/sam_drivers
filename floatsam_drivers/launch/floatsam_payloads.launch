@@ -7,12 +7,12 @@
 
     <!-- UW GPS antenna -->
     <node name="uwgps" pkg="uw_gps" type="payload_uwgps_node.py" output="screen">
-      <param name="uwgps_frame" value="$(arg namespace)/uwgps_link"/>
+      <param name="uwgps_frame" value="$(arg namespace)/uw_gps_link"/>
       <param name="uwgps_server_ip" value="http://192.168.2.94"/>
       <!-- <param name="uwgps_server_ip" value="https://demo.waterlinked.com"/> -->
-      <param name="rpm_chase" value="500"/>
+      <param name="rpm_chase" value="1500"/>
       <param name="goto_wp_server" value="/$(arg namespace)/ctrl/goto_waypoint"/>
-      <param name="goal_tolerance" value="3."/>
+      <param name="goal_tolerance" value="6."/>
       <param name="node_freq" value="1."/>
     </node>
 
