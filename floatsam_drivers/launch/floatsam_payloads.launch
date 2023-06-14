@@ -16,6 +16,12 @@
       <param name="node_freq" value="1."/>
     </node>
 
+    <node name="acomm_uw_gps" pkg="uw_gps" type="uw_gps_comm.py" output="screen">
+      <param="utm_frame" value="utm">
+      <param="goto_wp_server_goal" value="/$(arg namespace)/ctrl/goto_waypoint/goal">
+      <param="uw_comm_out_top" value="/$(arg namespace)/core/acomms/outgoing/sam/uwgps">
+    </node>
+
     </group>
   </group>
 

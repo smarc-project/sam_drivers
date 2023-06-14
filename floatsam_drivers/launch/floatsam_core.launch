@@ -93,6 +93,11 @@
       <remap from="fix" to="rtk_stb"/>
     </node>
 
+    <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch" ns="core">
+      <arg name="robot_name" value="$(arg namespace)"/>
+      <arg name="driver_port" value="/dev/ttyUSB2"/>
+    </include>
+
   </group>
 
   <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
