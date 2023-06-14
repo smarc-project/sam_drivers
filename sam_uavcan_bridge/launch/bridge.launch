@@ -6,9 +6,9 @@
 <arg name="network_monitor_uav_node_id" default="99"/>
 <arg name="services_uav_node_id" default="100"/>
 <arg name="uav_can_interface" default="can0"/>
-<arg name="robot_name" default="sam"/>
+<arg name="namespace" default="sam"/>
 
-<group ns="$(arg robot_name)">
+<group ns="$(arg namespace)">
 
     <group ns="core">
 
