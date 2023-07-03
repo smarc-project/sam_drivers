@@ -3,8 +3,7 @@
   <arg name="debug" default="0"/>
   <arg name="mode" default="default"/>
   <arg name="namespace" default="sam"/>
-
-  <arg name="gps_port" value="/dev/ttyACM1"/>
+	<arg name="gps_port" value="/dev/ttyACM0"/>
   <arg name="gps_baud" value="115200"/>
 
   <arg name="with_gps" default="true"/>
@@ -94,12 +93,13 @@
       <remap from="fix" to="gps"/>
     </node>
     
-    <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch" ns="core">
-      <arg name="robot_name" value="$(arg namespace)"/>
-      <arg name="driver_port" value="/dev/ttyUSB2"/>
-    </include>
 
   </group>
+
+    <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
+      <arg name="robot_name" value="$(arg namespace)"/>
+      <arg name="driver_port" value="/dev/ttyUSB1"/>
+    </include>
 
   <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
     <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
