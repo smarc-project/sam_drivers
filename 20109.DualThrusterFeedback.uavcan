@@ -1,0 +1,6 @@
+#
+# Dual Thruster Feedback.
+#
+
+smarc_uavcan_messages.ThrusterFeedback thruster_front
+smarc_uavcan_messages.ThrusterFeedback thruster_back
