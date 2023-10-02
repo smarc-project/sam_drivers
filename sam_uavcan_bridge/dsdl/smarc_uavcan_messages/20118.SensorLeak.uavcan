@@ -1,0 +1,13 @@
+#
+# Leak Sensor
+#
+
+#
+# Leak feedback
+#
+bool leak = 0
+
+#
+# Sensor ID
+#
+uint8 sensor_id 
