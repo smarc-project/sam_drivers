@@ -5,7 +5,7 @@
 #
 # Leak feedback
 #
-bool leak = 0
+bool leak
 
 #
 # Sensor ID
