@@ -1,5 +1,5 @@
 #
-# Dual Thruster RPM with ID. RPM can be negative.
+# Thruster feedback
 #
 
 #
@@ -13,9 +13,10 @@ uint16 id
 uavcan.Timestamp timestamp
 
 #
-# Thruster RPM. Can be negative.
+# Thruster RPM. Can be negative. Duty cycle \in [-1.,1.]
 #
 smarc_uavcan_messages.ThrusterRPM thruster
+smarc_uavcan_messages.ThrusterDC thruster_dc
 
 float32 current
 float32 torque
