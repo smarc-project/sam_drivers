@@ -1,0 +1,13 @@
+#
+# Thruster Duty cycle with ID. Duty cycle \in[-1.,1.]
+#
+
+#
+# ID
+#
+uint16 id
+
+#
+# Thruster command
+#
+smarc_uavcan_messages.ThrusterDC thruster
