@@ -15,18 +15,18 @@
         <node name="ros_to_uavcan_bridge" pkg="sam_uavcan_bridge" type="sam_ros_to_uavcan_bridge" respawn="true" output="screen">
             <param name="uav_node_id" value="$(arg publisher_uav_node_id)"/>
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
-            <remap from="~command" to="util_cmd"/>
+            <!-- <remap from="~command" to="util_cmd"/> -->
             <!-- <remap from="~rpm1_command" to="thruster1_cmd"/> -->
             <!-- <remap from="~rpm2_command" to="thruster2_cmd"/> -->
+            <!-- <remap from="~array_command" to="util_array_cmd"/> -->
+            <!-- <remap from="~rpm_command" to="rpm_cmd"/> -->
             <remap from="~new_rpm1_command" to="thruster1_cmd"/>
             <remap from="~new_rpm2_command" to="thruster2_cmd"/>
-            <remap from="~rpm_command" to="rpm_cmd"/>
             <remap from="~vector_command" to="thrust_vector_cmd"/>
-            <remap from="~array_command" to="util_array_cmd"/>
+            <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
             <remap from="~vbs_command" to="vbs_cmd"/>
             <remap from="~tcg_command" to="tcg_cmd"/>
             <remap from="~lcg_command" to="lcg_cmd"/>
-            <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
             <remap from="~light_command" to="light_command"/>
             <remap from="~panic_forwarding_out" to="panic_cmd"/>
             <remap from="~dropweight_command" to="dropweight_cmd"/>
@@ -43,27 +43,27 @@
         <node name="uavcan_to_ros_bridge" pkg="sam_uavcan_bridge" type="sam_uavcan_to_ros_bridge" respawn="false" output="screen">
             <param name="uav_node_id" value="$(arg subscriber_uav_node_id)"/>
             <param name="uav_can_interface" value="$(arg uav_can_interface)"/>
-            <remap from="~vbs_feedback" to="vbs_fb"/>
+            <!-- <remap from="~esc_status0" to="esc_status0_fb"/>
+            <remap from="~esc_status1" to="esc_status1_fb"/> -->
+            <!-- <remap from="~gps_fix" to="can_gps"/> -->
+            <!-- <remap from="~thrusters_feedback" to="thrusters_fb"/> -->
+            <!-- <remap from="~magnetic_field" to="compass"/> -->
+            <remap from="~motor_temperature" to="motor_temp"/>
+            <remap from="~motor_oil_pressure" to="motor_oil_pressure"/>
+            <remap from="~vbs_tank_pressure" to="vbs_tank_pressure"/>
             <remap from="~vbs_tank_temperature" to="vbs_tank_temperature"/>
+            <remap from="~vbs_feedback" to="vbs_fb"/>
             <remap from="~lcg_feedback" to="lcg_fb"/>
-            <remap from="~esc_status0" to="esc_status0_fb"/>
-            <remap from="~esc_status1" to="esc_status1_fb"/>
             <remap from="~circuit_status" to="circuit_status"/>
             <remap from="~imu" to="yost_imu"/>
             <remap from="~sensor_pressure_bar02" to="depth20_pressure"/>
             <remap from="~sensor_pressure_bar30" to="depth300_pressure"/>
-            <remap from="~motor_temperature" to="motor_temp"/>
-            <remap from="~motor_oil_pressure" to="motor_oil_pressure"/>
-            <remap from="~vbs_tank_pressure" to="vbs_tank_pressure"/>
             <remap from="~leak" to="leak"/>
-            <remap from="~gps_fix" to="can_gps"/>
             <remap from="~battery_state_basic" to="battery"/>
             <remap from="~consumed_charge_array" to="consumed_charge_array"/>
             <remap from="~ctd_feedback" to="ctd"/>
-            <remap from="~thrusters_feedback" to="thrusters_fb"/>
             <remap from="~thruster1_feedback" to="thruster1_fb"/>
             <remap from="~thruster2_feedback" to="thruster2_fb"/>
-            <remap from="~magnetic_field" to="compass"/>
             <remap from="~panic_forwarding_in" to="panic_fb"/>
         </node>
 

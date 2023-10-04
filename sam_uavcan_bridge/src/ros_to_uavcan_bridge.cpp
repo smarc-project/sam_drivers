@@ -36,7 +36,6 @@ public:
 
     boost::shared_ptr<Node> uav_node;
 
-
     ~RosToUavBrigde(){
         // Set the mode to maintenance before going offline for the Teensy to know it was a controlled shutdown
         uav_node->setModeMaintenance();
@@ -69,20 +68,22 @@ public:
         }
 
         ros::NodeHandle pn("~");
-        ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Float32> command_server(*uav_node, pn, "command");
-        ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm1_server(*uav_node, pn, "rpm1_command", 0);
-        ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm2_server(*uav_node, pn, "rpm2_command", 1);
+        // ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Float32> command_server(*uav_node, pn, "command");
+        // ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm1_server(*uav_node, pn, "rpm1_command", 0);
+        // ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, smarc_msgs::ThrusterRPM> rpm2_server(*uav_node, pn, "rpm2_command", 1);
+        // ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::ArrayCommand> array_server(*uav_node, pn, "array_command");
+        // ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, sam_msgs::ThrusterRPMs> rpm_server(*uav_node, pn, "rpm_command");
+        //ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server2(uav_node, pn, "tcg_command2", 28);
+        
         ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterRpmID, smarc_msgs::ThrusterRPM> new_rpm1_server(*uav_node, pn, "new_rpm1_command", 1);
         ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterRpmID, smarc_msgs::ThrusterRPM> new_rpm2_server(*uav_node, pn, "new_rpm2_command", 2);
-        ros_to_uav::ConversionServer<uavcan::equipment::esc::RPMCommand, sam_msgs::ThrusterRPMs> rpm_server(*uav_node, pn, "rpm_command");
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::ThrusterAngles> thrust_vector_server(*uav_node, pn, "vector_command", 16);
+        ros_to_uav::ConversionServer<smarc_uavcan_messages::DualThrusterRPM, smarc_msgs::DualThrusterRPM> dual_thruster_rpm_server(*uav_node, pn, "dual_thruster_rpm");
 
-        ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::ArrayCommand> array_server(*uav_node, pn, "array_command");
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::PercentStamped> vbs_server(*uav_node, pn, "vbs_command", 13);
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::PercentStamped> lcg_server(*uav_node, pn, "lcg_command", 14);
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server1(*uav_node, pn, "tcg_command", 27);
-        //ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles> tcg_server2(uav_node, pn, "tcg_command2", 28);
-        ros_to_uav::ConversionServer<smarc_uavcan_messages::DualThrusterRPM, smarc_msgs::DualThrusterRPM> dual_thruster_rpm_server(*uav_node, pn, "dual_thruster_rpm");
+        
         ros_to_uav::ConversionServer<uavcan::equipment::indication::LightsCommand, sam_msgs::LightCommand> light_command_server(*uav_node, pn, "light_command");
         ros_to_uav::ConversionServer<uavcan::protocol::Panic, std_msgs::String> panic_forwardning_server(*uav_node, pn, "panic_forwarding_out");
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> dropweight_server(*uav_node, pn, "dropweight_command", 69);
