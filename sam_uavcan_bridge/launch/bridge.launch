@@ -22,6 +22,8 @@
             <!-- <remap from="~rpm_command" to="rpm_cmd"/> -->
             <remap from="~new_rpm1_command" to="thruster1_cmd"/>
             <remap from="~new_rpm2_command" to="thruster2_cmd"/>
+            <remap from="~dc_rpm1_command" to="thruster1_dc_cmd"/>
+            <remap from="~dc_rpm2_command" to="thruster2_dc_cmd"/>
             <remap from="~vector_command" to="thrust_vector_cmd"/>
             <remap from="~dual_thruster_rpm" to="thrusters_cmd"/>
             <remap from="~vbs_command" to="vbs_cmd"/>
@@ -48,6 +50,7 @@
             <!-- <remap from="~gps_fix" to="can_gps"/> -->
             <!-- <remap from="~thrusters_feedback" to="thrusters_fb"/> -->
             <!-- <remap from="~magnetic_field" to="compass"/> -->
+            <!-- <remap from="~imu" to="yost_imu"/> -->
             <remap from="~motor_temperature" to="motor_temp"/>
             <remap from="~motor_oil_pressure" to="motor_oil_pressure"/>
             <remap from="~vbs_tank_pressure" to="vbs_tank_pressure"/>
@@ -55,7 +58,6 @@
             <remap from="~vbs_feedback" to="vbs_fb"/>
             <remap from="~lcg_feedback" to="lcg_fb"/>
             <remap from="~circuit_status" to="circuit_status"/>
-            <remap from="~imu" to="yost_imu"/>
             <remap from="~sensor_pressure_bar02" to="depth20_pressure"/>
             <remap from="~sensor_pressure_bar30" to="depth300_pressure"/>
             <remap from="~leak" to="leak"/>

@@ -11,6 +11,7 @@ bool convert(const uavcan::ReceivedDataStructure<smarc_uavcan_messages::Thruster
 
     ros_msg.header.stamp = convert_timestamp(uav_msg.timestamp);
     ros_msg.rpm.rpm = uav_msg.thruster.rpm;
+    ros_msg.dc.dc = uav_msg.thruster_dc.dc;
     ros_msg.current = uav_msg.current;
     ros_msg.torque = uav_msg.torque;
 

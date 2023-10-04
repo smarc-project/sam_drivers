@@ -13,6 +13,7 @@
 #include <sam_uavcan_bridge/ros_to_uav/ballast_angles.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_rpm.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_rpm_id.h>
+#include <sam_uavcan_bridge/ros_to_uav/thruster_dc_id.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_rpms.h>
 #include <sam_uavcan_bridge/ros_to_uav/thruster_angles.h>
 #include <sam_uavcan_bridge/ros_to_uav/dual_thruster_rpm.h>
@@ -77,6 +78,9 @@ public:
         
         ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterRpmID, smarc_msgs::ThrusterRPM> new_rpm1_server(*uav_node, pn, "new_rpm1_command", 1);
         ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterRpmID, smarc_msgs::ThrusterRPM> new_rpm2_server(*uav_node, pn, "new_rpm2_command", 2);
+        ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterDcID, smarc_msgs::ThrusterDC> new_dc1_server(*uav_node, pn, "dc_rpm1_command", 1);
+        ros_to_uav::ConversionServer<smarc_uavcan_messages::ThrusterDcID, smarc_msgs::ThrusterDC> new_dc2_server(*uav_node, pn, "dc_rpm2_command", 2);
+        
         ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::ThrusterAngles> thrust_vector_server(*uav_node, pn, "vector_command", 16);
         ros_to_uav::ConversionServer<smarc_uavcan_messages::DualThrusterRPM, smarc_msgs::DualThrusterRPM> dual_thruster_rpm_server(*uav_node, pn, "dual_thruster_rpm");
 

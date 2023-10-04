@@ -230,6 +230,10 @@ add_library(ros_to_uav_thruster_rpm_id
   src/ros_to_uav/thruster_rpm_id.cpp
 )
 
+add_library(ros_to_uav_thruster_dc_id
+  src/ros_to_uav/thruster_dc_id.cpp
+)
+
 add_library(ros_to_uav_thruster_rpms
   src/ros_to_uav/thruster_rpms.cpp
 )
@@ -275,6 +279,7 @@ add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} 
 add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpm_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ros_to_uav_thruster_dc_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -343,6 +348,7 @@ target_link_libraries(sam_ros_to_uavcan_bridge
   ros_to_uav_ballast_angles
   ros_to_uav_thruster_rpm
   ros_to_uav_thruster_rpm_id
+  ros_to_uav_thruster_dc_id
   ros_to_uav_thruster_rpms
   ros_to_uav_thruster_angles
   ros_to_uav_dual_thruster_rpm

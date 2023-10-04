@@ -87,6 +87,7 @@ public:
         // uav_to_ros::ConversionServer<uavcan::equipment::esc::Status, uavcan_ros_msgs::ESCStatus> esc_status_server1(uav_node, pn, "esc_status1", 1);
         // uav_to_ros::ConversionServer<uavcan::equipment::gnss::Fix, sensor_msgs::NavSatFix> gps_server(uav_node, pn, "gps_fix");
         // uav_to_ros::ConversionServer<uavcan::equipment::ahrs::MagneticFieldStrength, sensor_msgs::MagneticField> magnetic_server(uav_node, pn, "magnetic_field");
+        // uav_to_ros::ConversionServer<uavcan::equipment::ahrs::Solution, sensor_msgs::Imu> imu_server(*uav_node, pn, "imu");
 
         uav_to_ros::ConversionServer<uavcan::equipment::device::Temperature, sensor_msgs::Temperature> motor_oil_temperature_server(*uav_node, pn, "motor_temperature", 1);
         uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> motor_oil_pressure_server(*uav_node, pn, "motor_oil_pressure", 1);
@@ -96,7 +97,6 @@ public:
         uav_to_ros::ConversionServer<uavcan::equipment::actuator::Status, sam_msgs::PercentStamped> lcg_feedback_server(*uav_node, pn, "lcg_feedback", 14);
 
         uav_to_ros::ConversionServer<uavcan::equipment::power::CircuitStatus, sam_msgs::CircuitStatusStamped> circuit_status_server(*uav_node, pn, "circuit_status");
-        uav_to_ros::ConversionServer<uavcan::equipment::ahrs::Solution, sensor_msgs::Imu> imu_server(*uav_node, pn, "imu");
         uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar30(*uav_node, pn, "sensor_pressure_bar30", 22);
         uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorPressureStamped, sensor_msgs::FluidPressure> sensor_pressure_bar02(*uav_node, pn, "sensor_pressure_bar02", 23);
         uav_to_ros::ConversionServer<smarc_uavcan_messages::SensorLeak, sam_msgs::Leak> leak_server(*uav_node, pn, "leak");
@@ -124,7 +124,7 @@ public:
                 ROS_ERROR("Transient failure or shutdown: %d", res);
                 uav_node->setModeMaintenance();
                 uav_node->getNodeStatusProvider().forcePublish();
-                // break;
+                break;
             }
         }
 
