@@ -1,0 +1,28 @@
+<launch>
+
+    <arg name="debug" default="0"/>
+    <arg name="mode" default="default"/>
+    <arg name="namespace" default="cm_station"/>
+
+    <arg name="uw_comm_port" value="/dev/ttyUSB1"/>
+
+    <group ns="$(arg namespace)">
+
+        <group ns="uwgps">
+
+            <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
+                <arg name="robot_name" value="$(arg namespace)"/>
+                <arg name="driver_port" value="$(arg uw_comm_port)"/>
+            </include>
+
+            <!-- <node name="acomm_uw_gps" pkg="uw_gps" type="uw_gps_comm.py" output="screen">
+                <param name="utm_frame" value="utm"/>
+                <param name="goto_wp_server_goal" value="/$(arg namespace)/ctrl/goto_waypoint/goal"/>
+                <param name="uw_comm_out_top" value="/$(arg namespace)/acomms/outgoing/sam/uwgps"/>
+            </node> -->
+
+        </group>
+
+    </group>
+
+</launch>
