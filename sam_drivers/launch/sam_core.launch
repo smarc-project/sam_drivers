@@ -93,24 +93,33 @@
       <remap from="fix" to="gps"/>
     </node>
     
-
   </group>
 
-   <!-- 
-   <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
+    <!-- TODO: move into its own launch file eventually -->
+    <!-- UW comms interface for SAM -->
+    <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
       <arg name="robot_name" value="$(arg namespace)"/>
       <arg name="driver_port" value="/dev/ttyUSB1"/>
     </include>
-    -->
 
-  <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
-    <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
-  </include>
+    <arg name="acomms_ns" default="$(arg namespace)/acomms"/>
+    <node pkg="smarc_acomms" type="vehicle_uwcomm_interface" name="vehicle_uwcomm_interface" output="screen" ns="$(arg acomms_ns)">
+        <param name="out_pose_top" value="/$(namespace)/acomms/outgoing/cm_station/vehicle_pose"/>
+        <param name="lat_lon_top" value="/$(namespace)/dr/lat_lon"/>
+        <param name="depth_top" value="/$(namespace)/dr/depth"/>
+        <param name="yaw_top" value="/$(namespace)/dr/yaw"/>
+        <param name="uwgps_odom_top" value="/$(arg namespace)/uwgps/locator"/>
+        <param name="in_uwgps_top" value="/$(namespace)/acomms/incoming/cm_station/navigation_report"/>
+    </node>
+   
+    <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
+      <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
+    </include>
 
-  <include file="$(find message_joiner)/launch/joiner.launch">
-    <!-- <arg name="joiner_publish_frequency" value="$(arg joiner_publish_frequency)"/> -->
-    <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
-  </include>
+    <include file="$(find message_joiner)/launch/joiner.launch">
+      <!-- <arg name="joiner_publish_frequency" value="$(arg joiner_publish_frequency)"/> -->
+      <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
+    </include>
   <!-- <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/> -->
 
 

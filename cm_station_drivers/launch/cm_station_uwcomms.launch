@@ -3,25 +3,31 @@
     <arg name="debug" default="0"/>
     <arg name="mode" default="default"/>
     <arg name="namespace" default="cm_station"/>
-
+    <arg name="broker_port" default="1884"/>
+    <!-- If you want to use the local node-red and mqtt brokers: -->
+    <arg name="local_broker_addr" default="localhost"/>
     <arg name="uw_comm_port" value="/dev/ttyUSB1"/>
 
     <group ns="$(arg namespace)">
 
-        <group ns="uwgps">
+        <!-- <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
+            <arg name="robot_name" value="$(arg namespace)"/>
+            <arg name="driver_port" value="$(arg uw_comm_port)"/>
+        </include> -->
 
-            <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
-                <arg name="robot_name" value="$(arg namespace)"/>
-                <arg name="driver_port" value="$(arg uw_comm_port)"/>
-            </include>
+        <node pkg="smarc_acomms" type="station_uwcomm_interface" name="station_uwcomm_interface" output="screen">
+            <param name="out_pose_top" value="/$(arg namespace)/acomms/outgoing/cm_station/vehicle_pose"/>
+            <param name="lat_lon_top" value="/$(arg namespace)/dr/lat_lon"/>
+            <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
+            <param name="yaw_top" value="/$(arg namespace)/dr/yaw"/>
+        </node>
 
-            <!-- <node name="acomm_uw_gps" pkg="uw_gps" type="uw_gps_comm.py" output="screen">
-                <param name="utm_frame" value="utm"/>
-                <param name="goto_wp_server_goal" value="/$(arg namespace)/ctrl/goto_waypoint/goal"/>
-                <param name="uw_comm_out_top" value="/$(arg namespace)/acomms/outgoing/sam/uwgps"/>
-            </node> -->
-
-        </group>
+        <node name="cm_station_mqtt_bridge_node" pkg="mqtt_bridge" type="mqtt_bridge_node.py" output="screen">
+            <rosparam subst_value="true"> mqtt/private_path: "smarc/$(optenv USER nouser)_$(arg namespace)" </rosparam>
+            <rosparam subst_value="true"> mqtt/connection/host: "$(arg local_broker_addr)" </rosparam>
+            <rosparam subst_value="true"> mqtt/connection/port: $(arg broker_port) </rosparam>
+            <rosparam file="$(find smarc_acomms)/config/config_acomms.yaml" command="load" />
+        </node>
 
     </group>
 
