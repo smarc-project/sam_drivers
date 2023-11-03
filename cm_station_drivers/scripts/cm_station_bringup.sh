@@ -23,7 +23,7 @@ tmux select-window -t $SESSION:1
 tmux send-keys "mon launch cm_station_drivers cm_station_core.launch namespace:=cm_station  --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:2
-tmux send-keys "roslaunch cm_station_drivers cm_station_uwcomms.launch namespace:=cm_station --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch cm_station_drivers cm_station_uwcomms.launch namespace:=cm_station --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:3
 tmux send-keys "mon launch cm_station_drivers cm_station_uwgps.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m

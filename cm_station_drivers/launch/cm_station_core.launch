@@ -30,7 +30,7 @@
 
         <!-- SBG IMU driver -->
         <node name="sbg_ellipseA" pkg="sbg_driver" type="sbg_device" output="screen">
-            <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_sam.yaml" />
+            <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_cm.yaml" />
         </node>
         
         <node pkg="sbg_driver" name="sbg_2_ros" type="sbg_to_ros.py" output="screen">
