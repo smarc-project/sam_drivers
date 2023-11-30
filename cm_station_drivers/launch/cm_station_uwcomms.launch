@@ -26,6 +26,7 @@
             <param name="utm_server" value="/$(arg namespace)/dr/utm_to_lat_lon"/>
             <param name="in_nav_report_top" value="/$(arg namespace)/acomms/incoming/sam/navigation_report"/>
             <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/broadcast/navigation_report"/>
+            <param name="send_uwgps_top" value="/$(arg namespace)/uwgps/send"/>
             <param name="uwgps_topic" value="/$(arg namespace)/uwgps/locator"/>
             <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/broadcast/mission_control"/>
             <param name="bt_mission_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
