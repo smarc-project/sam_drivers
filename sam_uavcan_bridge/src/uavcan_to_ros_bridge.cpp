@@ -108,16 +108,19 @@ int main(int argc, char** argv)
      */
     uav_node.setModeOperational();
     signal(SIGINT, [] (int) { ros::shutdown(); });
+    ros::Rate r(10);
 
     while (ros::ok()) {
         /*
          * The method spin() may return earlier if an error occurs (e.g. driver failure).
          * All error codes are listed in the header uavcan/error.hpp.
          */
-        const int res = uav_node.spin(uavcan::MonotonicDuration::getInfinite());
+        // const int res = uav_node.spin(uavcan::MonotonicDuration::getInfinite());
+        const int res = uav_node.spinOnce();
         if (res < 0) {
             ROS_ERROR("Transient failure or shutdown: %d", res);
         }
+        r.sleep();
     }
 
     return 0;
