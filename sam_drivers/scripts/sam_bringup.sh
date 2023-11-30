@@ -16,7 +16,7 @@ UTM_BAND=V
 # The IP of the computer running neptus
 # NEPTUS_IP=192.168.2.222
 # IP of SAM
-SAM_IP=192.168.2.85
+SAM_IP=192.168.2.92
 # Port for the imc-ros-bridge, usually doesnt change from 6002.
 # BRIDGE_PORT=6002
 
@@ -37,7 +37,7 @@ tmux new-window -t $SESSION:5 -n 'mission'
 tmux new-window -t $SESSION:6 -n 'rosbag'
 #tmux new-window -t $SESSION:6 -n 'sam_monitor'
 tmux new-window -t $SESSION:7 -n 'payloads'
-# tmux new-window -t $SESSION:8 -n 'camera'
+tmux new-window -t $SESSION:8 -n 'uwcomms'
 #tmux new-window -t $SESSION:8 -n 'rosbag'
 #tmux new-window -t $SESSION:9 -n 'payloads'
 
@@ -67,6 +67,9 @@ tmux send-keys "mon launch sam_drivers sam_rosbag.launch --name=$(tmux display-m
 
 tmux select-window -t $SESSION:7
 tmux send-keys "mon launch sam_drivers sam_payloads.launch sss_out_file:=$SSS_SAVE_PATH/ high_freq:=true range:=40 --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+
+tmux select-window -t $SESSION:8
+tmux send-keys "mon launch sam_drivers sam_uwcomms.launch --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 # hacky af, this sleep is.
 # somehow the mon launch version doesnt work properly, so hack it is.
