@@ -25,7 +25,7 @@
                 <param name="sbg_topic" value="/$(arg namespace)/core/sbg_imu"/>
                 <param name="uwgps_topic" value="/$(arg namespace)/uwgps/locator"/>
                 <param name="station_gps_top" value="/$(arg namespace)/core/gps"/>
-                <param name="gps_geo_top" value="/$(arg namespace)/dr/lat_lon"/>
+                <param name="gps_geo_top" value="/$(arg namespace)/core/lat_lon"/>
             </node>
 
         </group>

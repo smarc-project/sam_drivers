@@ -1,8 +1,8 @@
 SESSION=cm_station_bringup
 
-# Lidingo & Labbet
-# UTM_ZONE=34
-# UTM_BAND=V
+Lidingo & Labbet
+UTM_ZONE=34
+UTM_BAND=V
 
 # This is the workspace containing the ros packages that are needed
 
@@ -20,7 +20,7 @@ tmux send-keys "roscore" C-m
 # start the gui and new_gui in one launch file 
 
 tmux select-window -t $SESSION:1
-tmux send-keys "mon launch cm_station_drivers cm_station_core.launch namespace:=cm_station  --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch cm_station_drivers cm_station_core.launch namespace:=cm_station utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
 
 tmux select-window -t $SESSION:2
 tmux send-keys "mon launch cm_station_drivers cm_station_uwcomms.launch namespace:=cm_station --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
