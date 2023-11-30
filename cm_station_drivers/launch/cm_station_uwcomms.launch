@@ -3,7 +3,7 @@
     <arg name="debug" default="0"/>
     <arg name="mode" default="default"/>
     <arg name="namespace" default="cm_station"/>
-    <arg name="broker_port" default="1883"/>
+    <arg name="broker_port" default="1884"/>
     <!-- <arg name="broker_addr" default="192.168.2.135"/> -->
     <arg name="broker_addr" default="20.240.40.232"/>
 
