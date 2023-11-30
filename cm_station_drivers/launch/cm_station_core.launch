@@ -42,16 +42,6 @@
             <param name="sbg_imu_out" value="/$(arg namespace)/core/sbg_imu"/>
         </node>
 
-        <!-- STIM300 IMU driver -->
-        <!-- <node name="stim300driver" output="screen" pkg="driver_stim300" type="stim300_driver_node" ns="core">
-            <param name = "device_name" value="/dev/ttyUSB0" type="string" />
-            <param name = "stanard_deviation_of_gyro" value="0.0004" type="double" />
-            <param name = "stanard_deviation_of_acc" value="0.004" type="double" />
-            <param name = "imu_output" value="/$(arg namespace)/core/imu" type="string"/>
-            <param name = "imu_frame" value="$(arg namespace)/imu_link" type="string"/>
-            <param name = "sample_rate" value="125" type="double" />
-        </node> -->
-
         <node pkg="ublox_gps" type="ublox_gps" name="navsat" ns="core">
             <arg name="param_file_name" value="zed_f9p"/>
             <remap from="navsat/fix" to="/$(arg namespace)/core/gps"/>
