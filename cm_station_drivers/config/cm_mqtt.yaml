@@ -26,30 +26,10 @@ bridge:
 
 
 # MQTT to ROS
-  # - factory: mqtt_bridge.bridge:MqttToRosBridge
-  #   msg_type: sam_msgs.msg:PercentStamped
-  #   topic_from: ~/core/vbs_cmd
-  #   topic_to: core/vbs_cmd
-
-  # - factory: mqtt_bridge.bridge:MqttToRosBridge
-  #   msg_type: std_msgs.msg:Bool
-  #   topic_from: ~/bt_cmd/gui_wp/enable
-  #   topic_to: smarc_bt/gui_wp/enable
-
-  # - factory: mqtt_bridge.bridge:MqttToRosBridge
-  #   msg_type: smarc_bt.msg:GotoWaypoint
-  #   topic_from: ~/bt_cmd/gui_wp/wp
-  #   topic_to: smarc_bt/gui_wp/wp
-
-  # - factory: mqtt_bridge.bridge:MqttToRosBridge
-  #   msg_type: smarc_bt.msg:MissionControl
-  #   topic_from: ~/bt_cmd/mission_control
-  #   topic_to: smarc_bt/mission_control
-
-  # - factory: mqtt_bridge.bridge:MqttToRosBridge
-  #   msg_type: smarc_bt.msg:BTCommand
-  #   topic_from: ~/bt_cmd/bt_cmd
-  #   topic_to: smarc_bt/bt_command
+  - factory: mqtt_bridge.bridge:MqttToRosBridge
+    msg_type: std_msgs.msg:Bool
+    topic_from: smarc/torroba_sam/nachos_bool
+    topic_to: uwgps/send
 
 
 
