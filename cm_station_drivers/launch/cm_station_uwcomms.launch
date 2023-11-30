@@ -41,7 +41,7 @@
     </group>
 
     <!-- This bridge allows visualizing SAM's DR estimate from the UW comms in nodered -->
-    <arg name="namespace_sam" default="sam"/>
+    <arg name="namespace_sam" default="cm_station"/>
     <group ns="$(arg namespace_sam)">
         <node name="uw_mqtt_bridge_node" pkg="mqtt_bridge" type="mqtt_bridge_node.py" output="screen">
             <rosparam subst_value="true"> mqtt/private_path: "smarc/$(optenv USER nouser)_$(arg namespace_sam)" </rosparam>

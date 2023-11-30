@@ -16,8 +16,8 @@ bridge:
 
   - factory: mqtt_bridge.bridge:RosToMqttBridge
     msg_type: geographic_msgs.msg:GeoPoint
-    topic_from: core/lat_lon
-    topic_to: ~/core/lat_lon
+    topic_from: dr/lat_lon
+    topic_to: ~/dr/lat_lon
   
   # - factory: mqtt_bridge.bridge:RosToMqttBridge
   #   msg_type: geographic_msgs.msg:GeoPoint
@@ -28,7 +28,7 @@ bridge:
 # MQTT to ROS
   - factory: mqtt_bridge.bridge:MqttToRosBridge
     msg_type: std_msgs.msg:Bool
-    topic_from: smarc/ubuntu_sam/nachos_bool
+    topic_from: smarc/ubuntu_cm_station/nachos_bool
     topic_to: uwgps/send
 
 
