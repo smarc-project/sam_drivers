@@ -11,13 +11,20 @@
   <group ns="$(arg namespace)">
 
     <node pkg="smarc_acomms" type="vehicle_uwcomm_interface" name="vehicle_uwcomm_interface" output="screen">
-        <!-- <param name="lat_lon_top" value="/$(arg namespace)/dr/lat_lon"/>
+        <param name="lat_lon_top" value="/$(arg namespace)/dr/lat_lon"/>
         <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
         <param name="yaw_top" value="/$(arg namespace)/dr/yaw"/>
-        <param name="in_pose_top" value="/$(arg namespace)/acomms/incoming/sam/navigation_report"/> -->
         <param name="uwgps_odom_top" value="/$(arg namespace)/uwgps/odom"/>
-        <param name="in_uwgps_top" value="/$(arg namespace)/acomms/incoming/cm_station/navigation_report"/>
+        <param name="in_nav_report_top" value="/$(arg namespace)/acomms/incoming/cm_station/navigation_report"/>
+        <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/cm_station/mission_control"/>
+        <param name="mission_control_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
+        <param name="in_bt_top" value="/$(arg namespace)/acomms/incoming/cm_station/mission_control"/>
+        <param name="lat_lon_server" value="/$(arg namespace)/dr/lat_lon_to_utm"/>
+        <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/cm_station/navigation_report"/>
+        <param name="mission_fb_period" value="5."/>
+        <param name="nav_report_period" value="10."/>
     </node>
+
 </group>
 
 </launch>

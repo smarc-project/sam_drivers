@@ -3,6 +3,9 @@
     <arg name="debug" default="0"/>
     <arg name="mode" default="default"/>
     <arg name="namespace" default="cm_station"/>
+
+    <arg name="utm_zone" default="32"/>
+    <arg name="utm_band" default="V"/>
     <!-- <arg name="gps_port" value="/dev/ttyACM1"/>
     <arg name="gps_baud" value="115200"/> -->
 
@@ -47,6 +50,13 @@
             <remap from="navsat/fix" to="/$(arg namespace)/core/gps"/>
             <rosparam command="load"
                 file="$(arg param_file_dir)/$(arg param_file_name).yaml" />
+        </node>
+
+        <node pkg="tf_lat_lon" type="tf_lat_lon_node" name="tf_lat_lon_node" output="screen" ns="core">
+          <param name="frame" value="$(arg namespace)/base_link"/>
+          <param name="utm_zone" value="$(arg utm_zone)"/>
+          <param name="utm_band" value="$(arg utm_band)"/>
+          <remap from="tf_lat_lon" to="lat_lon"/>
         </node>
 
     </group>     
