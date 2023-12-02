@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> led_server(uav_node, pn, "led_command", 70);
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> dvl_server(uav_node, pn, "dvl_command", 71);
     ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> sss_server(uav_node, pn, "sss_command", 72);
-
+    ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, std_msgs::Bool> toggle_7v_server(uav_node, pn, "toggle_7v_command", 7);
 
 
     /*
