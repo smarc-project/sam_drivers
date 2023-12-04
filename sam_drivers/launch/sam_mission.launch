@@ -4,23 +4,27 @@
 
 	<!-- Start all actions before the BT -->
 	<!--All the minute configs are in its own config file in the launch dir-->
-	<arg name="config_file" default="$(find smarc_bt)/launch/config.yaml"/>
+	<arg name="config_file" default="$(find-pkg-prefix smarc_bt)/launch/config.yaml"/>
 
 
-	<node name="smarc_bt" pkg="smarc_bt" type="bt_trunk.py" output="screen" ns="$(arg namespace)">
-		<!--Load this first so it can be over-written by other params later-->
-		<!--Cant use subst_value in melodic...-->
-		<rosparam file="$(arg config_file)" command="load"/>
-		<param name="robot_name" value="$(arg namespace)" />
-		<param name="config_file" value="$(arg config_file)"/>
-	</node>
+	<group>
+		<push-ros-namespace namespace="$(var namespace)"/>
 
-	<include file="$(find smarc_nodered)/launch/smarc_nodered.launch" ns="$(arg namespace)">
-		<arg name="robot_name" value="$(arg namespace)"/>
-	</include>
+		<node name="smarc_bt" pkg="smarc_bt" exec="bt_trunk.py" output="screen">
+			<!--Load this first so it can be over-written by other params later-->
+			<param from="$(var config_file)"/>
+			<param name="robot_name" value="$(var namespace)" />
+			<param name="config_file" value="$(var config_file)"/>
+		</node>
 
-	<include file="$(find sam_action_servers)/launch/sam_actions.launch" >
-		<arg name="namespace" value="$(arg namespace)"/>	
+		<include file="$(find-pkg-prefix smarc_nodered)/launch/smarc_nodered.launch">
+			<arg name="robot_name" value="$(var namespace)"/>
+		</include>
+
+	</group>
+
+	<include file="$(find-pkg-prefix sam_action_servers)/launch/sam_actions.launch" >
+		<arg name="namespace" value="$(var namespace)"/>	
 	</include>
     
 </launch>
