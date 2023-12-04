@@ -7,12 +7,13 @@ endif()
 
 # find_package(<dependency> REQUIRED)
 find_package(ament_cmake REQUIRED)
+
 # If message generation is needed:
 # find_package(rosidl_default_generators REQUIRED)
 
-install(DIRECTORY
-launch
-DESTINATION share/${PROJECT_NAME}/launch/
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}/launch
 )
 
 if(BUILD_TESTING)
