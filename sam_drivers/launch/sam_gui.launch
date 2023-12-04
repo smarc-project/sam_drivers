@@ -3,13 +3,9 @@
   <arg name="rosbridge_ip" default="0.0.0.0" />
   <arg name="namespace" default="sam"/>
 
-  <!-- <include file="$(find flexxros)/launch/sam_controls.launch"> -->
-
-  <!-- </include> -->
-
-  <include file="$(find sam_webgui)/launch/webgui.launch">
-    <arg name="rosbridge_ip" value="$(arg rosbridge_ip)"/>
-    <arg name="namespace" value="$(arg namespace)"/>
+  <include file="$(find-pkg-prefix sam_webgui)/launch/webgui.launch">
+    <arg name="rosbridge_ip" value="$(var rosbridge_ip)"/>
+    <arg name="namespace" value="$(var namespace)"/>
   </include>
 
 </launch>
