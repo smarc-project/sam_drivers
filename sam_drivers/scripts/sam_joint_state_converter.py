@@ -1,17 +1,19 @@
 #!/usr/bin/python3
 
-import rospy
+import rclpy
+import sys
+import math
+
 from sensor_msgs.msg import JointState
 from sam_msgs.msg import ThrusterRPMs, ThrusterAngles
-import math
 
 class SamJointStateConverter(object):
 
-    def timer_callback(self, event):
+    def timer_callback(self):
 
         state = JointState()
         state.name = ["sam/thruster_joint_1", "sam/thruster_joint_2"]
-        duration = (rospy.Time.now() - self.start_time).to_sec()
+        duration = (self.rosnode.get_clock().now() - self.start_time).nanoseconds * 1e-9 #no .seconds.... bruh...
         state.position = [duration*vel for vel in self.velocities]
         self.joint_state_pub.publish(state)
 
@@ -32,18 +34,20 @@ class SamJointStateConverter(object):
 
     def __init__(self):
 
-        rospy.init_node("sam_joint_state_converter", anonymous=True)
-        self.start_time = rospy.Time.now()
+        rclpy.init(args=sys.argv)
+        self.rosnode = rclpy.create_node("sam_joint_state_converter")
+
+        self.start_time = self.rosnode.get_clock().now()
         self.velocities = [0., 0.]
 
-        self.thruster_sub = rospy.Subscriber("~rpm_cmd", ThrusterRPMs, self.thruster_callback)
-        self.vector_sub = rospy.Subscriber("~thrust_vector_cmd", ThrusterAngles, self.vector_callback)
+        self.thruster_sub = self.rosnode.create_subscription(ThrusterRPMs, "rpm_cmd",  self.thruster_callback, 10)
+        self.vector_sub = self.rosnode.create_subscription(ThrusterAngles, "thrust_vector_cmd", self.vector_callback, 10)
 
-        self.joint_state_pub = rospy.Publisher("/sam/command_states", JointState, queue_size=10)
+        self.joint_state_pub = self.rosnode.create_publisher(JointState, "/sam/command_states", 10)
 
-        self.timer = rospy.Timer(rospy.Duration(0.1), self.timer_callback)
+        self.timer = self.rosnode.create_timer(0.1, self.timer_callback) # period in seconds, callback
 
-        rospy.spin()
+        rclpy.spin(self.rosnode)
 
 if __name__ == "__main__":
     
