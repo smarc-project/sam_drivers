@@ -43,6 +43,7 @@ class SamJointStateConverter(object):
         self.thruster_sub = self.rosnode.create_subscription(ThrusterRPMs, "rpm_cmd",  self.thruster_callback, 10)
         self.vector_sub = self.rosnode.create_subscription(ThrusterAngles, "thrust_vector_cmd", self.vector_callback, 10)
 
+        # TODO: why use hardcoded /sam/ instead of namespacing this? The subs above are...
         self.joint_state_pub = self.rosnode.create_publisher(JointState, "/sam/command_states", 10)
 
         self.timer = self.rosnode.create_timer(0.1, self.timer_callback) # period in seconds, callback
