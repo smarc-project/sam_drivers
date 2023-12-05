@@ -4,19 +4,20 @@
   <arg name="driver_port" default="/dev/ttyUSB5"/>
 
   <include file= "$(find smarc_acomms_nm3)/launch/full_acomms_stack.launch">
-      <arg name="robot_name" value="$(arg namespace)"/>
-      <arg name="driver_port" value="$(arg driver_port)"/>
+      <arg name="robot_name" value="$(var namespace)"/>
+      <arg name="driver_port" value="$(var driver_port)"/>
   </include>
   
-  <group ns="$(arg namespace)">
+  <group>
+  <push-ros-namespace namespace="$(var namespace)"/>
 
-    <node pkg="smarc_acomms" type="vehicle_uwcomm_interface" name="vehicle_uwcomm_interface" output="screen">
-        <!-- <param name="lat_lon_top" value="/$(arg namespace)/dr/lat_lon"/>
-        <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
-        <param name="yaw_top" value="/$(arg namespace)/dr/yaw"/>
-        <param name="in_pose_top" value="/$(arg namespace)/acomms/incoming/sam/navigation_report"/> -->
-        <param name="uwgps_odom_top" value="/$(arg namespace)/uwgps/odom"/>
-        <param name="in_uwgps_top" value="/$(arg namespace)/acomms/incoming/cm_station/navigation_report"/>
+    <node pkg="smarc_acomms" exec="vehicle_uwcomm_interface" name="vehicle_uwcomm_interface" output="screen">
+        <!-- <param name="lat_lon_top" value="/$(var namespace)/dr/lat_lon"/>
+        <param name="depth_top" value="/$(var namespace)/dr/depth"/>
+        <param name="yaw_top" value="/$(var namespace)/dr/yaw"/>
+        <param name="in_pose_top" value="/$(var namespace)/acomms/incoming/sam/navigation_report"/> -->
+        <param name="uwgps_odom_top" value="/$(var namespace)/uwgps/odom"/>
+        <param name="in_uwgps_top" value="/$(var namespace)/acomms/incoming/cm_station/navigation_report"/>
     </node>
 </group>
 
