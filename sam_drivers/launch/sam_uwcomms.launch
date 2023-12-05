@@ -22,7 +22,7 @@
         <param name="lat_lon_server" value="/$(arg namespace)/dr/lat_lon_to_utm"/>
         <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/cm_station/navigation_report"/>
         <param name="uwcomms_heartbeat_top" value="/$(arg namespace)/uwcomms/heartbeat"/>
-        <param name="in_heartbeat_top" value="/$(arg namespace)/acomms/incoming/cm_station/heartbeat"/>
+        <param name="in_heartbeat_top" value="/$(arg namespace)/acomms/incoming/cm_station/uw_heartbeat"/>
         <param name="mission_fb_period" value="5."/>
         <param name="nav_report_period" value="10."/>
     </node>
