@@ -29,24 +29,24 @@
 
       <!-- board cam -->
       <node name="cam_port" pkg="usb_cam" exec="usb_cam_node" output="screen" >
-          <param from="$(find-pkg-prefix sam_drivers)/config/cam_port.yml"/>
+          <param from="$(find-pkg-share sam_drivers)/config/cam_port.yml"/>
       </node>
 
       <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_port/stop_capture {}" /> -->
 
       <!-- starboard cam -->
       <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node" output="screen" >
-          <param from="$(find-pkg-prefix sam_drivers)/config/cam_starboard.yml"/>
+          <param from="$(find-pkg-share sam_drivers)/config/cam_starboard.yml"/>
       </node>
 
       <!-- starboard forward -->
       <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node" output="screen" >
-          <param from="$(find-pkg-prefix sam_drivers)/config/cam_forward.yml"/>
+          <param from="$(find-pkg-share sam_drivers)/config/cam_forward.yml"/>
       </node>
 
       <!-- starboard down -->
       <node name="cam_down" pkg="usb_cam" exec="usb_cam_node" output="screen" >
-          <param from="$(find-pkg-prefix sam_drivers)/config/cam_down.yml"/>
+          <param from="$(find-pkg-share sam_drivers)/config/cam_down.yml"/>
       </node>
 
       <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_starboard/stop_capture {}" /> -->

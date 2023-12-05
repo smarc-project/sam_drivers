@@ -4,7 +4,7 @@
 
 	<!-- Start all actions before the BT -->
 	<!--All the minute configs are in its own config file in the launch dir-->
-	<arg name="config_file" default="$(find-pkg-prefix smarc_bt)/launch/config.yaml"/>
+	<arg name="config_file" default="$(find-pkg-share smarc_bt)/launch/config.yaml"/>
 
 
 	<group>
@@ -17,13 +17,13 @@
 			<param name="config_file" value="$(var config_file)"/>
 		</node>
 
-		<include file="$(find-pkg-prefix smarc_nodered)/launch/smarc_nodered.launch">
+		<include file="$(find-pkg-share smarc_nodered)/launch/smarc_nodered.launch">
 			<arg name="robot_name" value="$(var namespace)"/>
 		</include>
 
 	</group>
 
-	<include file="$(find-pkg-prefix sam_action_servers)/launch/sam_actions.launch" >
+	<include file="$(find-pkg-share sam_action_servers)/launch/sam_actions.launch" >
 		<arg name="namespace" value="$(var namespace)"/>	
 	</include>
     

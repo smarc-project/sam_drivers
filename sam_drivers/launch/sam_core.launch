@@ -10,22 +10,18 @@
   <arg name="uav_can_interface" default="can0"/>
 
 
+  <!-- This does its own namespacing already so keep it out of the one below -->
+  <include file="$(find-pkg-share sam_description)/launch/sam_description.launch">
+    <arg name="namespace" value="$(var namespace)"/>
+    <arg name="robot_xacro" value="sam_auv_$(var mode).urdf.xacro"/>
+  </include>
+
   <group>
     <push-ros-namespace namespace="$(var namespace)"/>
 
-    <node name="joint_state_publisher" pkg="joint_state_publisher" exec="joint_state_publisher" respawn="true" output="screen">
-      <param name="use_gui" value="false"/>
-      <param name="source_list" value="\'/sam/command_states\';" value-sep=";"/>
-    </node>
-
-    <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" respawn="true" output="screen">
-      <param name="robot_description" 
-           value="$(find-pkg-prefix xacro)/xacro '/$(var namespace)/$(find-pkg-prefix sam_description)/robots/sam_auv_$(var mode).urdf.xacro' debug:=$(var debug) namespace:=$(var namespace)" />
-    </node>
-
     <!-- SBG IMU driver -->
     <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen">
-      <param from="$(find-pkg-prefix sbg_driver)/config/ellipse_A_sam.yaml" />
+      <param from="$(find-pkg-share sbg_driver)/config/ellipse_A_sam.yaml" />
     </node>
     
     <node pkg="sbg_driver" name="sbg_2_ros" exec="sbg_to_ros.py" output="screen">
@@ -89,11 +85,11 @@
     
   </group>
        
-    <include file="$(find-pkg-prefix sam_uavcan_bridge)/launch/bridge.launch">
+    <include file="$(find-pkg-share sam_uavcan_bridge)/launch/bridge.launch">
       <arg name="uav_can_interface" value="$(var uav_can_interface)"/>
     </include>
 
-    <include file="$(find-pkg-prefix message_joiner)/launch/joiner.launch">
+    <include file="$(find-pkg-share message_joiner)/launch/joiner.launch">
       <!-- <arg name="joiner_publish_frequency" value="$(var joiner_publish_frequency)"/> -->
       <arg name="uav_can_interface" value="$(var uav_can_interface)"/>
     </include>

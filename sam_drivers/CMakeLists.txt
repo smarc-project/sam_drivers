@@ -12,8 +12,8 @@ find_package(ament_cmake REQUIRED)
 # find_package(rosidl_default_generators REQUIRED)
 
 install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}/launch
+  DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/launch/
 )
 
 if(BUILD_TESTING)
