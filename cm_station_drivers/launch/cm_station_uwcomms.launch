@@ -30,6 +30,8 @@
             <param name="uwgps_topic" value="/$(arg namespace)/uwgps/locator"/>
             <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/broadcast/mission_control"/>
             <param name="bt_mission_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
+            <param name="heartbeat_top" value="/$(arg namespace)/acomms/outgoing/broadcast/hearbeat"/>
+            <param name="heartbeat_period" value="10."/>
         </node>
 
         <!-- <node name="smarc_mqtt_bridge_node" pkg="mqtt_bridge" type="mqtt_bridge_node.py" output="screen">

@@ -63,15 +63,13 @@
     <node pkg="waterlinked_a50_ros_driver" type="dvl_driver.py" name="dvl_driver" output="screen">
 
         <param name="dvl_topic" value="/$(arg namespace)/core/dvl"/>
-        <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw_output"/>
+        <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw"/>
         <param name="dvl_frame" value="$(arg namespace)/dvl_link"/>
         <param name="dvl_on_off_srv" value="/$(arg namespace)/core/dvl/toggle_dvl"/>
-
         <param name="relay_topic" value="/$(arg namespace)/core/dvl_relay"/>
-
          <param name="ip" value="192.168.2.95"/>
          <param name="port" value="16171"/>
-    
+        <param name="do_log_raw_data" value="true"/>
     </node>
 
     <node pkg="sam_drivers" type="sam_startup_check.py" name="startup_check" output="screen">
