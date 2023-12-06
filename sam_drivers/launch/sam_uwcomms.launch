@@ -20,9 +20,11 @@
         <param name="mission_control_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
         <param name="in_bt_top" value="/$(arg namespace)/acomms/incoming/cm_station/mission_control"/>
         <param name="lat_lon_server" value="/$(arg namespace)/dr/lat_lon_to_utm"/>
-        <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/broadcast/navigation_report"/>
-        <param name="mission_fb_period" value="10."/>
-        <param name="nav_report_period" value="20."/>
+        <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/cm_station/navigation_report"/>
+        <param name="uwcomms_heartbeat_top" value="/$(arg namespace)/uwcomms/heartbeat"/>
+        <param name="in_heartbeat_top" value="/$(arg namespace)/acomms/incoming/cm_station/uw_heartbeat"/>
+        <param name="mission_fb_period" value="5."/>
+        <param name="nav_report_period" value="10."/>
     </node>
 
 </group>
