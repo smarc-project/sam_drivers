@@ -1,0 +1,16 @@
+#
+# Dual Thruster RPM. Can be negative.
+#
+
+#
+# Data acquisition timestamp.
+#
+uavcan.Timestamp timestamp
+
+#
+# Thruster RPM. Can be negative.
+#
+smarc_uavcan_messages.ThrusterRPM rpm
+
+float32 current
+float32 torque
