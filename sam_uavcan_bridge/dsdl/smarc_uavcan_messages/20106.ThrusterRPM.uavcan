@@ -1,5 +1,0 @@
-#
-# Thruster PRM. Can be negative.
-#
-
-int32 rpm

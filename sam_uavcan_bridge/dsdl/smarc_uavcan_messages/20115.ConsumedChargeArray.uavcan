@@ -1,7 +1,0 @@
-#
-# Consumed charge array
-#
-
-uavcan.Timestamp timestamp
-
-smarc_uavcan_messages.ConsumedCharge[<=15] array
