@@ -1,4 +1,0 @@
-[submodule "sam_uavcan_bridge/libuavcan"]
-	path = sam_uavcan_bridge/libuavcan
-	url = https://github.com/dronecan/libuavcan.git
-	branch = python3.10-fix
