@@ -1,0 +1,4 @@
+
+[submodule "sam_uavcan_bridge/libcanard"]
+	path = sam_uavcan_bridge/libcanard
+	url = https://github.com/dronecan/libcanard.git

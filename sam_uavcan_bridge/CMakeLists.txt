@@ -21,14 +21,8 @@ find_package(smarc_msgs REQUIRED)
 include_directories(
   include
   dsdl/dsdlc_generated
-  inlcude/
-  ${PROJECT_SOURCE_DIR}/libuavcan/libuavcan/include
-  ${PROJECT_SOURCE_DIR}/libuavcan/libuavcan_drivers/include
-  # ${PROJECT_SOURCE_DIR}/libuavcan/sam_uavcan_bridge/
-  ${PROJECT_SOURCE_DIR}/libuavcan/libuavcan/include/dsdlc_generated
-  ${PROJECT_SOURCE_DIR}/libuavcan/libuavcan_drivers/poxi/include
+  libcanard/
 )
-add_definitions(-DUAVCAN_CPP_VERSION=UAVCAN_CPP11)
 
  set(DEPENDS
   rclcpp
@@ -38,7 +32,7 @@ add_definitions(-DUAVCAN_CPP_VERSION=UAVCAN_CPP11)
   std_srvs
   sam_msgs
   smarc_msgs)
-add_subdirectory(libuavcan)
+add_subdirectory(libcanard)
 add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
 ament_target_dependencies(ros_to_uavcan_bridge ${DEPENDS})
 
