@@ -7,7 +7,7 @@
 namespace ros_to_uav {
 
 template <>
-bool convert(const std::shared_ptr<smarc_msgs::msg::ThrusterRPM> ros_msg, uavcan_equipment_esc_RPMCommand& uav_msg, unsigned char uid);
+bool convert(const std::shared_ptr<smarc_msgs::msg::ThrusterRPM> ros_msg, uavcan_equipment_esc_RPMCommand& uav_msg, unsigned char uid,DefaultTag);
 
 }
 

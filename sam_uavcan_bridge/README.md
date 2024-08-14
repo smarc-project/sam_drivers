@@ -11,7 +11,12 @@ After cloning, execute the following command in the cloned repo:
 git submodule update --init --recursive
 ```
 
+## Generate files
+To generate the dsdl message files use the following command in the dsdl directory:
+```
+python3 dronecan_dsdlc/dronecan_dsdlc.py -O dsdl_generated DSDL/uavcan smarc_uavcan_messages smarc_uavcan_services
 
+```
 ## Usage
 
 Launch conversion in both directions (between uavcan and ros) by running the launch file:
@@ -54,7 +59,12 @@ or
 uav_to_ros::ConversionServer<uavcan::equipment::ahrs::RawIMU, sensor_msgs::Imu> server(uav_node, ros_node, "uavcan_imu");
 ```
 where `uavcan_command` and `uavcan_imu` are the ros topics being subscribed to and published to respectively.
-
+## Testing conversions
+```
+sudo modprobe vcan
+sudo ip link add dev vcan0 type vcan
+sudo ip link set up vcan0
+```
 ## Existing conversions (*work in progress*)
 
 ### ROS to UAVCAN

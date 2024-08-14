@@ -3,7 +3,7 @@
 namespace ros_to_uav {
 
 template <>
-bool convert(const std::shared_ptr<sam_msgs::msg::LightCommand> ros_msg, uavcan_equipment_indication_LightsCommand& uav_msg)
+bool convert(const std::shared_ptr<sam_msgs::msg::LightCommand> ros_msg, uavcan_equipment_indication_LightsCommand& uav_msg,unsigned char,DefaultTag)
 {
     uavcan_equipment_indication_SingleLightCommand msg;
     msg.light_id = ros_msg->id;

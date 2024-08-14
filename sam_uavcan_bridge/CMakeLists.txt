@@ -77,7 +77,9 @@ smarc_msgs
 
 
 
-
+add_library(ros_to_uav_command
+src/ros_to_uavcan/command.cpp
+)
 
 add_library(ros_to_uav_percent_stamped
   src/ros_to_uavcan/percent_stamped.cpp
@@ -131,6 +133,17 @@ add_library(ros_to_uav_panic
   src/ros_to_uavcan/panic.cpp
 )
 
+add_library(ros_to_uav_array_command
+  src/ros_to_uavcan/array_command.cpp
+)
+
+ament_target_dependencies(ros_to_uav_array_command
+  ${CONVERT_DEPENDS}
+)
+
+ament_target_dependencies(ros_to_uav_command
+  ${CONVERT_DEPENDS}
+)
 
 
 ament_target_dependencies(ros_to_uav_percent_stamped
@@ -186,14 +199,13 @@ ament_target_dependencies(ros_to_uav_panic
 )
 
 
-add_custom_command(
-  OUTPUT ${DSDL_DIR}/dsdl_generated
-  COMMAND python3 ${DSDL_DIR}/dronecan_dsdlc/dronecan_dsdlc.py -O ${DSDL_DIR}/dsdl_generated ${DSDL_DIR}/DSDL/dronecan ${DSDL_DIR}/DSDL/uavcan ${DSDL_DIR}/DSDL/com ${DSDL_DIR}/DSDL/ardupilot ${DSDL_DIR}/smarc_uavcan_messages ${DSDL_DIR}/smarc_uavcan_services
-  DEPENDS ${DSDL_DIR}/DSDL ${DSDL_DIR}/dronecan_dsdlc
-  WORKING_DIRECTORY ${DSDL_DIR}
-)
+# add_custom_command(
+#   OUTPUT ${DSDL_DIR}/dsdl_generated
+#   COMMAND python3 ${DSDL_DIR}/dronecan_dsdlc/dronecan_dsdlc.py -O ${DSDL_DIR}/dsdl_generated ${DSDL_DIR}/DSDL/dronecan ${DSDL_DIR}/DSDL/uavcan ${DSDL_DIR}/DSDL/com ${DSDL_DIR}/DSDL/ardupilot ${DSDL_DIR}/smarc_uavcan_messages ${DSDL_DIR}/smarc_uavcan_services
+#   DEPENDS ${DSDL_DIR}/DSDL ${DSDL_DIR}/dronecan_dsdlc
+#   WORKING_DIRECTORY ${DSDL_DIR}
+# )
 add_custom_target(generate_dsdl DEPENDS ${DSDL_DIR}/dsdl_generated)
-
 
 
 
@@ -202,8 +214,9 @@ add_library(dsdl_lib ${DSDL_SOURCES})
 target_compile_options(dsdl_lib PRIVATE -Wall -Wextra -pedantic)
 
 # Create executable
-add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp  ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES} )
+add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp  ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
 # add_dependencies(ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} )
+add_dependencies(ros_to_uavcan_bridge generate_dsdl)
 ament_target_dependencies(ros_to_uavcan_bridge
   rclcpp
   geometry_msgs
@@ -230,6 +243,7 @@ target_link_libraries(ros_to_uavcan_bridge
   ros_to_uav_dual_thruster_rpm
   ros_to_uav_light_command
   ros_to_uav_panic
+  ros_to_uav_command
 
 )
 

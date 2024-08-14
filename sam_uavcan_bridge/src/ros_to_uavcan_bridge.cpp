@@ -4,13 +4,24 @@
 #include <unistd.h>
 #include <uavcan_ros_bridge.h>
 #include <dvl.h>
+#include <thruster_rpm.h>
+#include <thruster_rpm_id.h>
 #include <ballast_angles.h>
 #include <thruster_angles.h>
+#include <thruster_rpms.h>
 #include <dropweights.h>
+#include <percent_stamped.h>
+#include <light_command.h>
+#include <panic.h>
+// #include <toggle_7v.h>
+#include <command.h>
+#include <dual_thruster_rpm.h>
+#include <led.h>
+#include <light_command.h>
+#include <sss.h>
+#include <array_command.h>
+
 #define MY_NODE_ID 113
-
-
-
 
 
 DEFINE_HANDLER_LIST_HEADS();
@@ -45,10 +56,29 @@ private:
     std::string can_interface_;
     CanardInterface canard_interface{0};    
     Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface};
-    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>> dvl_server_;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool, ros_to_uav::DVLTag>> dvl_server_;
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ThrusterAngles>> thrust_vector_server;
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::BallastAngles>> tcg_server1;
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>> dropweight_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Float32>> command_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, smarc_msgs::msg::ThrusterRPM>> rpm1_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, smarc_msgs::msg::ThrusterRPM>> rpm2_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<smarc_uavcan_messages_ThrusterRpmID, smarc_msgs::msg::ThrusterRPM>> new_rpm1_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<smarc_uavcan_messages_ThrusterRpmID, smarc_msgs::msg::ThrusterRPM>> new_rpm2_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, sam_msgs::msg::ThrusterRPMs>> rpm_server;
+
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ArrayCommand>> array_server ;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>> vbs_server ;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>> lcg_server;
+    // std::unique_ptr<ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles>> tcg_server2;
+    std::unique_ptr<ros_to_uav::ConversionServer<smarc_uavcan_messages_DualThrusterRPM, smarc_msgs::msg::DualThrusterRPM>> dual_thruster_rpm_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_indication_LightsCommand, sam_msgs::msg::LightCommand>> light_command_server ;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_protocol_Panic, std_msgs::msg::String>> panic_forwardning_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>> led_server; 
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>> sss_server ;
+    // std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>> toggle_7v_server; 
+
+
 };
 
 
@@ -196,27 +226,26 @@ bool CanardInterface::request(uint8_t destination_node_id, const Canard::Transfe
 
 
 bool CanardInterface::respond(uint8_t destination_node_id, const Canard::Transfer &res_transfer) {
-    tx_transfer.transfer_type = res_transfer.transfer_type; // .transfer_type
-    tx_transfer.data_type_signature = res_transfer.data_type_signature; // .data_type_signature
-    tx_transfer.data_type_id = res_transfer.data_type_id; // .data_type_id
-    tx_transfer.inout_transfer_id = res_transfer.inout_transfer_id; // .inout_transfer_id
-    tx_transfer.priority = res_transfer.priority; // .priority
-    tx_transfer.payload = (const uint8_t*)res_transfer.payload; // .payload
+    tx_transfer.transfer_type = res_transfer.transfer_type; 
+    tx_transfer.data_type_signature = res_transfer.data_type_signature; 
+    tx_transfer.data_type_id = res_transfer.data_type_id; 
+    tx_transfer.inout_transfer_id = res_transfer.inout_transfer_id; 
+    tx_transfer.priority = res_transfer.priority; 
+    tx_transfer.payload = (const uint8_t*)res_transfer.payload; 
     tx_transfer.payload_len = uint16_t(res_transfer.payload_len); 
     
     return canardRequestOrRespondObj(&canard, destination_node_id, &tx_transfer) > 0;
 }
 
 void RosToUavcanBridge::start_canard_node() {
-    // Start the Canard node using private members
     start_node(can_interface_.c_str(), self_node_id_);
 }
 void RosToUavcanBridge::start_node(const char *can_interface_, u_int8_t node_id) {
     canard_interface.init(can_interface_, node_id);
     auto shared_this = shared_from_this();
 
-    dvl_server_ = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>>(
-        &canard_interface, shared_this, "dvl_command", 71);
+    dvl_server_ = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool, ros_to_uav::DVLTag>>(
+        &canard_interface, shared_this, "dvl_command", 71, ros_to_uav::DVLTag{});
 
     thrust_vector_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ThrusterAngles>>(
         &canard_interface, shared_this, "vector_command", 16);
@@ -226,7 +255,55 @@ void RosToUavcanBridge::start_node(const char *can_interface_, u_int8_t node_id)
 
     dropweight_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>>(
         &canard_interface, shared_this, "dropweight_command", 69);
+
+    rpm1_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, smarc_msgs::msg::ThrusterRPM>>(
+        &canard_interface, shared_this, "rpm1_command", 0);
+
+    rpm2_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, smarc_msgs::msg::ThrusterRPM>>(
+        &canard_interface, shared_this, "rpm2_command", 1);
+
+    new_rpm1_server = std::make_unique<ros_to_uav::ConversionServer<smarc_uavcan_messages_ThrusterRpmID, smarc_msgs::msg::ThrusterRPM>>(
+        &canard_interface, shared_this, "new_rpm1_command", 1);
     
+    new_rpm2_server = std::make_unique<ros_to_uav::ConversionServer<smarc_uavcan_messages_ThrusterRpmID, smarc_msgs::msg::ThrusterRPM>>(
+        &canard_interface, shared_this, "new_rpm2_command", 2);
+
+    rpm_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, sam_msgs::msg::ThrusterRPMs>>(
+        &canard_interface, shared_this, "rpm_command");
+
+    vbs_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>>(
+        &canard_interface, shared_this, "vbs_command", 13);
+    
+    lcg_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>>(
+        &canard_interface, shared_this, "lcg_command", 14);
+
+    array_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ArrayCommand>>(
+        &canard_interface, shared_this, "array_command");
+
+    // tcg_server2 = std::make_unique<ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles>>(
+    //     &canard_interface, shared_this, "tcg_command2", 28);
+
+    dual_thruster_rpm_server = std::make_unique<ros_to_uav::ConversionServer<smarc_uavcan_messages_DualThrusterRPM, smarc_msgs::msg::DualThrusterRPM>>(
+        &canard_interface, shared_this, "dual_thruster_rpm");
+
+    light_command_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_indication_LightsCommand, sam_msgs::msg::LightCommand>>(
+        &canard_interface, shared_this, "light_command");
+    
+    panic_forwardning_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_protocol_Panic, std_msgs::msg::String>>(
+        &canard_interface, shared_this, "panic_forwardning_out");
+    
+
+    led_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>>(
+        &canard_interface, shared_this, "led_command",70);
+    
+    sss_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>>(
+        &canard_interface, shared_this, "sss_command", 72);
+
+    // toggle_7v_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool>>(
+    //     &canard_interface, shared_this, "toggle_7v_command", 7);
+    command_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Float32>>(
+        &canard_interface, shared_this, "command");
+
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(20), // Adjust the period as needed
         [this]() {

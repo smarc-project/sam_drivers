@@ -138,6 +138,11 @@ private:
 // }
 
 namespace ros_to_uav {
+    struct DefaultTag {};
+    struct DVLTag {};
+    struct LEDTag {};
+    struct SSSTag {};
+    // add more tags if the convertion uses the same variables as other convert fucntions
 
 inline u_int64_t convert_timestamp(const rclcpp::Time& ros_time)
 {
@@ -155,11 +160,12 @@ bool convert(const std::shared_ptr<ROSMSG>, UAVMSG&)
     return false;
 }
 
-template <typename ROSMSG, typename UAVMSG>
-bool convert(const std::shared_ptr<ROSMSG> ros_msg, UAVMSG& uav_msg, unsigned char)
+template <typename ROSMSG, typename UAVMSG,typename TAG>
+bool convert(const std::shared_ptr<ROSMSG> ros_msg, UAVMSG& uav_msg, unsigned char, TAG )
 {
     return convert(ros_msg, uav_msg);
 }
+
 
 template <typename ROSREQ, typename UAVREQ>
 bool convert_request(const ROSREQ&, UAVREQ&)
@@ -175,22 +181,11 @@ bool convert_response(const UAVRES&, ROSRES&)
     return false;
 }
 
-template <typename UAVMSG, typename ROSMSG>//unsigned NodeMemoryPoolSize=16384
+template <typename UAVMSG, typename ROSMSG, typename TAG = DefaultTag>
 class ConversionServer {
 public:
-    // typedef uavcan::Node<NodeMemoryPoolSize> UavNode;
-    using UavNode = CanardInstance*; //uavcan::Node<NodeMemoryPoolSize>;
-
-    // uavcan::Publisher<UAVMSG> uav_pub;
-    // ros::Subscriber ros_sub;
-    // CanardInstance uav_node;
-    // typename rclcpp::Subscription<ROSMSG>::SharedPtr ros_sub;
-    // Canard::Publisher<UAVMSG> uav_pub{uav_node};
-    // ros::ServiceServer ros_service;
-    // rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr ros_service;
-
-    ConversionServer(CanardInterface* canard_interface, rclcpp::Node::SharedPtr ros_node, const std::string& ros_topic, unsigned char uid=0) :
-     uav_node_(canard_interface), uid_(uid), running_(true), transfer_id_(0)
+    ConversionServer(CanardInterface* canard_interface, rclcpp::Node::SharedPtr ros_node, const std::string& ros_topic, unsigned char uid=0, TAG tag = DefaultTag{}) :
+     uav_node_(canard_interface), uid_(uid), running_(true), transfer_id_(0), tag_(tag)
     {
         
         // const int uav_pub_init_res = uav_pub.init();
@@ -230,7 +225,7 @@ public:
             return;
         }
         UAVMSG uav_msg;
-        bool success = convert(ros_msg, uav_msg, uid_);
+        bool success = convert(ros_msg, uav_msg, uid_, tag_);
         if (success) {
             canard_publisher.broadcast(uav_msg);
         }
@@ -247,6 +242,7 @@ private:
     unsigned char uid_;
     bool running_;
     uint8_t transfer_id_;
+    TAG tag_;
 };
 
 // template <typename UAVSRV, typename ROSSRV, unsigned NodeMemoryPoolSize=16384>
