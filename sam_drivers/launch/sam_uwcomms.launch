@@ -14,17 +14,18 @@
         <param name="lat_lon_top" value="/$(arg namespace)/dr/lat_lon"/>
         <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
         <param name="heading_top" value="/$(arg namespace)/sbg/ekf_euler"/>
+        <param name="battery_top" value="/$(arg namespace)/core/battery"/>
         <param name="uwgps_odom_top" value="/$(arg namespace)/uwgps/odom"/>
         <param name="in_nav_report_top" value="/$(arg namespace)/acomms/incoming/cm_station/navigation_report"/>
         <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/broadcast/mission_control"/>
         <param name="mission_control_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
         <param name="in_bt_top" value="/$(arg namespace)/acomms/incoming/cm_station/mission_control"/>
         <param name="lat_lon_server" value="/$(arg namespace)/dr/lat_lon_to_utm"/>
-        <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/cm_station/navigation_report"/>
+        <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/broadcast/navigation_report"/>
         <param name="uwcomms_heartbeat_top" value="/$(arg namespace)/uwcomms/uw_heartbeat"/>
         <param name="in_heartbeat_top" value="/$(arg namespace)/acomms/incoming/cm_station/heartbeat"/>
-        <param name="mission_fb_period" value="10."/>
-        <param name="nav_report_period" value="20."/>
+        <param name="mission_fb_period" value="20."/>
+        <param name="nav_report_period" value="10."/>
     </node>
 
 </group>
