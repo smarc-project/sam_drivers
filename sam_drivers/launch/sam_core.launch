@@ -65,7 +65,7 @@
         <param name="dvl_topic" value="/$(arg namespace)/core/dvl"/>
         <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw"/>
         <param name="dvl_frame" value="$(arg namespace)/dvl_link"/>
-        <param name="dvl_on_off_srv" value="/$(arg namespace)/core/dvl/toggle_dvl"/>
+        <param name="dvl_on_off_srv" value="/$(arg namespace)/core/toggle_dvl"/>
         <param name="relay_topic" value="/$(arg namespace)/core/dvl_relay"/>
          <param name="ip" value="192.168.2.95"/>
          <param name="port" value="16171"/>
