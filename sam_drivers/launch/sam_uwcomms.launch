@@ -15,6 +15,7 @@
         <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
         <param name="heading_top" value="/$(arg namespace)/sbg/ekf_euler"/>
         <param name="battery_top" value="/$(arg namespace)/core/battery"/>
+        <param name="abort_top" value="/$(arg namespace)/core/abort"/>
         <param name="uwgps_odom_top" value="/$(arg namespace)/uwgps/odom"/>
         <param name="in_nav_report_top" value="/$(arg namespace)/acomms/incoming/cm_station/navigation_report"/>
         <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/broadcast/mission_control"/>
