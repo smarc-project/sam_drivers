@@ -23,6 +23,7 @@
             <param name="uwgps_lat_lon_top" value="/$(arg namespace)/uwgps/lat_lon"/>
             <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
             <param name="yaw_top" value="/$(arg namespace)/dr/yaw"/>
+            <param name="battery_top" value="/$(arg namespace)/uw_comms/battery"/>
             <param name="utm_server" value="/$(arg namespace)/core/utm_to_lat_lon"/>
             <param name="in_nav_report_top" value="/$(arg namespace)/acomms/incoming/sam/navigation_report"/>
             <param name="out_nav_report_top" value="/$(arg namespace)/acomms/outgoing/broadcast/navigation_report"/>
