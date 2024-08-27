@@ -20,8 +20,9 @@
 
         <node pkg="smarc_acomms" type="station_uwcomm_interface" name="station_uwcomm_interface" output="screen">
             <param name="uw_lat_lon_top" value="/$(arg namespace)/uw_comms/lat_lon"/>
+            <param name="uw_heading_top" value="/$(arg namespace)/uw_comms/yaw"/>
             <param name="uwgps_lat_lon_top" value="/$(arg namespace)/uwgps/lat_lon"/>
-            <param name="depth_top" value="/$(arg namespace)/dr/depth"/>
+            <param name="depth_top" value="/$(arg namespace)/uw_comms/depth"/>
             <param name="yaw_top" value="/$(arg namespace)/dr/yaw"/>
             <param name="battery_top" value="/$(arg namespace)/uw_comms/battery"/>
             <param name="utm_server" value="/$(arg namespace)/core/utm_to_lat_lon"/>
@@ -31,9 +32,13 @@
             <param name="uwgps_topic" value="/$(arg namespace)/uwgps/locator"/>
             <param name="out_bt_top" value="/$(arg namespace)/acomms/outgoing/broadcast/mission_control"/>
             <param name="bt_mission_top" value="/$(arg namespace)/smarc_bt/mission_control"/>
-            <param name="heartbeat_top" value="/$(arg namespace)/acomms/outgoing/broadcast/hearbeat"/>
+            <param name="in_bt_top" value="/$(arg namespace)/smarc_bt/mission_control_fb"/>
+            <param name="in_mission_control_top" value="/$(arg namespace)/acomms/incoming/sam/mission_control"/>
+            <param name="heartbeat_top" value="/$(arg namespace)/acomms/outgoing/broadcast/heartbeat"/>
             <param name="heartbeat_period" value="10."/>
         </node>
+
+        <node pkg="leak_alarm" type="leak_alarm.py" name="emergency_alarm" output="screen"/>
 
         <!-- <node name="smarc_mqtt_bridge_node" pkg="mqtt_bridge" type="mqtt_bridge_node.py" output="screen">
             <rosparam subst_value="true"> mqtt/private_path: "smarc/$(optenv USER nouser)_$(arg robot_name)" </rosparam>
@@ -44,7 +49,7 @@
     </group>
 
     <!-- This bridge allows visualizing SAM's DR estimate from the UW comms in nodered -->
-    <arg name="namespace_sam" default="cm_station"/>
+    <arg name="namespace_sam" default="uwcomms_sam"/>
     <group ns="$(arg namespace_sam)">
         <node name="uw_mqtt_bridge_node" pkg="mqtt_bridge" type="mqtt_bridge_node.py" output="screen">
             <rosparam subst_value="true"> mqtt/private_path: "smarc/$(optenv USER nouser)_$(arg namespace_sam)" </rosparam>

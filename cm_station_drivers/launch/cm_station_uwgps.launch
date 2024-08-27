@@ -18,9 +18,9 @@
                 <param name="map_frame" value="map"/>
                 <param name="utm_frame" value="utm"/>
                 <param name="uwgps_frame" value="$(arg namespace)/uw_gps_link"/>
-                <!-- <param name="uwgps_server_ip" value="http://192.168.2.94"/> -->
-                <param name="uwgps_server_ip" value="https://demo.waterlinked.com"/>
-                <param name="node_freq" value="0.2"/>
+                <param name="uwgps_server_ip" value="http://192.168.2.94"/> 
+                <!--<param name="uwgps_server_ip" value="https://demo.waterlinked.com"/>-->
+                <param name="node_freq" value="1"/>
                 <param name="gps_topic" value="/$(arg namespace)/core/gps"/>
                 <param name="sbg_topic" value="/$(arg namespace)/core/sbg_imu"/>
                 <param name="uwgps_topic" value="/$(arg namespace)/uwgps/locator"/>
