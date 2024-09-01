@@ -15,6 +15,7 @@ find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(sam_msgs REQUIRED)
 find_package(smarc_msgs REQUIRED)
+find_package(uavcan_ros_msgs REQUIRED)
 
 # Set Canard base directory
 set(CANARD_BASE ${PROJECT_SOURCE_DIR}/libcanard)
@@ -24,6 +25,7 @@ set(DSDL_DIR ${PROJECT_SOURCE_DIR}/dsdl)
 include_directories(
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/include/ros_to_uavcan/
+  ${PROJECT_SOURCE_DIR}/include/uavcan_to_ros/
   ${PROJECT_SOURCE_DIR}/include/uavcan_ros_bridge
   ${PROJECT_SOURCE_DIR}/dsdl
   ${CANARD_BASE}
@@ -60,7 +62,8 @@ set(MESSAGE_CPP_FILES
     ${DSDL_DIR}/dsdl_generated/src/*c
 )
 set(CONVERT_FUNCTIONS
-    ${PROJECT_SOURCE_DIR}/src/ros_to_uavcan/*cpp)
+    ${PROJECT_SOURCE_DIR}/src/ros_to_uavcan/*cpp
+    ${PROJECT_SOURCE_DIR}/src/uavcan_to_ros/*cpp)
     file(GLOB_RECURSE MESSAGE_CPP_FILES_FILES ${MESSAGE_CPP_FILES})
     file(GLOB_RECURSE CONVERT_FUNCTIONS_FILES ${CONVERT_FUNCTIONS})
 # Create Canard library
@@ -73,9 +76,19 @@ rclcpp
 std_srvs
 sam_msgs
 smarc_msgs
+uavcan_ros_msgs
+sensor_msgs
 )
 
 
+
+add_library(uav_to_ros_pressure
+  src/uavcan_to_ros/pressure.cpp
+)
+
+add_library(uav_to_ros_actuator_status
+  src/uavcan_to_ros/actuator_status.cpp
+)
 
 add_library(ros_to_uav_command
 src/ros_to_uavcan/command.cpp
@@ -135,6 +148,27 @@ add_library(ros_to_uav_panic
 
 add_library(ros_to_uav_array_command
   src/ros_to_uavcan/array_command.cpp
+)
+
+add_library(ros_to_uav_uavcan_update_battery
+  src/ros_to_uavcan/uavcan_update_battery.cpp
+)
+
+add_library(ros_to_uavcan_get_node_info_service
+  src/ros_to_uavcan/uavcan_node_info.cpp
+)
+ament_target_dependencies(uav_to_ros_pressure
+${CONVERT_DEPENDS})
+
+ament_target_dependencies(uav_to_ros_actuator_status
+${CONVERT_DEPENDS})
+
+ament_target_dependencies(ros_to_uavcan_get_node_info_service
+  ${CONVERT_DEPENDS}
+)
+
+ament_target_dependencies(ros_to_uav_uavcan_update_battery
+  ${CONVERT_DEPENDS}
 )
 
 ament_target_dependencies(ros_to_uav_array_command
@@ -204,7 +238,7 @@ ament_target_dependencies(ros_to_uav_panic
 #   COMMAND python3 ${DSDL_DIR}/dronecan_dsdlc/dronecan_dsdlc.py -O ${DSDL_DIR}/dsdl_generated ${DSDL_DIR}/DSDL/dronecan ${DSDL_DIR}/DSDL/uavcan ${DSDL_DIR}/DSDL/com ${DSDL_DIR}/DSDL/ardupilot ${DSDL_DIR}/smarc_uavcan_messages ${DSDL_DIR}/smarc_uavcan_services
 #   DEPENDS ${DSDL_DIR}/DSDL ${DSDL_DIR}/dronecan_dsdlc
 #   WORKING_DIRECTORY ${DSDL_DIR}
-# )
+# )w
 add_custom_target(generate_dsdl DEPENDS ${DSDL_DIR}/dsdl_generated)
 
 
@@ -214,9 +248,13 @@ add_library(dsdl_lib ${DSDL_SOURCES})
 target_compile_options(dsdl_lib PRIVATE -Wall -Wextra -pedantic)
 
 # Create executable
-add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp  ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp src/canard_interface.cpp src/time_utils.cpp ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+add_executable(ros_to_uavcan_services src/ros_to_uavcan_services.cpp src/canard_interface.cpp src/time_utils.cpp ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+add_executable(uavcan_ros_bridge src/uavcan_to_ros_bridge.cpp src/canard_interface.cpp src/time_utils.cpp  ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
 # add_dependencies(ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} )
 add_dependencies(ros_to_uavcan_bridge generate_dsdl)
+add_dependencies(ros_to_uavcan_services generate_dsdl)
+add_dependencies(uavcan_ros_bridge generate_dsdl)
 ament_target_dependencies(ros_to_uavcan_bridge
   rclcpp
   geometry_msgs
@@ -225,6 +263,26 @@ ament_target_dependencies(ros_to_uavcan_bridge
   std_srvs
   sam_msgs
   smarc_msgs
+)
+ament_target_dependencies(ros_to_uavcan_services
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+  std_msgs
+  std_srvs
+  sam_msgs
+  smarc_msgs
+  uavcan_ros_msgs
+)
+ament_target_dependencies(uavcan_ros_bridge
+rclcpp
+geometry_msgs
+sensor_msgs
+std_msgs
+std_srvs
+sam_msgs
+smarc_msgs
+uavcan_ros_msgs
 )
 # Link libraries
 target_link_libraries(ros_to_uavcan_bridge
@@ -246,7 +304,17 @@ target_link_libraries(ros_to_uavcan_bridge
   ros_to_uav_command
 
 )
+target_link_libraries(ros_to_uavcan_services
+ros_to_uav_uavcan_update_battery
+canard_lib
+dsdl_lib
+ros_to_uavcan_get_node_info_service)
 
+target_link_libraries(uavcan_ros_bridge
+canard_lib
+dsdl_lib
+uav_to_ros_pressure
+uav_to_ros_actuator_status)
 # Add compile options
 target_compile_options(ros_to_uavcan_bridge PRIVATE 
   -Wall -Wextra -pedantic
@@ -256,6 +324,8 @@ target_compile_options(ros_to_uavcan_bridge PRIVATE
 # Install targets
 install(TARGETS
   ros_to_uavcan_bridge
+  ros_to_uavcan_services
+  uavcan_ros_bridge
   DESTINATION lib/${PROJECT_NAME}
 )
 

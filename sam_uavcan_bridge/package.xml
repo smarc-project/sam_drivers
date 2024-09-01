@@ -16,6 +16,7 @@
   <depend>sam_msgs</depend>
   <depend>smarc_msgs</depend>
   <depend>socketcan</depend>
+  <depend>uavcan_ros_msgs</depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
