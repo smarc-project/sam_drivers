@@ -86,6 +86,10 @@ add_library(uav_to_ros_pressure
   src/uavcan_to_ros/pressure.cpp
 )
 
+add_library(uav_to_ros_panic
+  src/uavcan_to_ros/panic.cpp
+)
+
 add_library(uav_to_ros_actuator_status
   src/uavcan_to_ros/actuator_status.cpp
 )
@@ -161,6 +165,10 @@ ament_target_dependencies(uav_to_ros_pressure
 ${CONVERT_DEPENDS})
 
 ament_target_dependencies(uav_to_ros_actuator_status
+${CONVERT_DEPENDS})
+
+
+ament_target_dependencies(uav_to_ros_panic
 ${CONVERT_DEPENDS})
 
 ament_target_dependencies(ros_to_uavcan_get_node_info_service
@@ -314,7 +322,9 @@ target_link_libraries(uavcan_ros_bridge
 canard_lib
 dsdl_lib
 uav_to_ros_pressure
-uav_to_ros_actuator_status)
+uav_to_ros_actuator_status
+uav_to_ros_panic
+)
 # Add compile options
 target_compile_options(ros_to_uavcan_bridge PRIVATE 
   -Wall -Wextra -pedantic

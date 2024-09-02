@@ -63,7 +63,7 @@ public:
 private:
     CanardInterface* uav_node_;
     void conversion_callback(const CanardRxTransfer& transfer, const UAVMSG& uav_msg);
-    Canard::ObjCallback<ConversionServer,UAVMSG> sub_callback{this, &ConversionServer::conversion_callback};
+    Canard::ObjCallback<ConversionServer,UAVMSG> sub_callback{this, &ConversionServer<UAVMSG,ROSMSG>::conversion_callback};
     Canard::Subscriber<UAVMSG> uav_sub_{sub_callback,0};
 
     rclcpp::Publisher<ROSMSG>::SharedPtr ros_pub_;

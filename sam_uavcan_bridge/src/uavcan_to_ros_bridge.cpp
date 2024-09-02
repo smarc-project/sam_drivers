@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <uavcan_to_ros/pressure.h>
 #include <uavcan_to_ros/actuator_status.h>
+#include <uavcan_to_ros/panic.h>
 #include <time_utils.h>
 #include <sam_msgs/msg/percent_stamped.hpp>
 
@@ -38,6 +39,8 @@ private:
     Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface}; 
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_air_data_StaticPressure,sensor_msgs::msg::FluidPressure>> sensore_pressure_server1;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>> lcg_feedback_server;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_protocol_Panic,std_msgs::msg::String>> panic_forwarding_server;
+
 
 
 };
@@ -67,7 +70,7 @@ static void getUniqueID(uint8_t id[16])
 void UavcanToRosBridge::handle_GetNodeInfo(const CanardRxTransfer& transfer, const uavcan_protocol_GetNodeInfoRequest& req) {
     uavcan_protocol_GetNodeInfoResponse response{};
     
-    response.name.len = snprintf((char*)response.name.data, sizeof(response.name.data), "RosToUavcanBridge");
+    response.name.len = snprintf((char*)response.name.data, sizeof(response.name.data), "UavcanToRosBridge");
     response.software_version.major = 1;
     response.software_version.minor = 2;
     response.hardware_version.major = 3;
@@ -92,6 +95,13 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
 
     lcg_feedback_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
     &canard_interface , shared_this, "lcg_feedback",14);
+
+    panic_forwarding_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_protocol_Panic,std_msgs::msg::String>>(
+    &canard_interface , shared_this, "panic_forwarding_in");
+
+
+
+
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(20), // Adjust the period as needed
         [this]() {
