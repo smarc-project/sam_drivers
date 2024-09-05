@@ -3,9 +3,27 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <signal.h>
+#include <uavcan_to_ros/esc_status.h>
+#include <uavcan_to_ros/gps_fix.h>
+#include <uavcan_to_ros/magnetic_field.h>
+#include <uavcan_to_ros/imu.h>
+#include <uavcan_to_ros/sensor_pressure.h>
+
 #include <uavcan_to_ros/pressure.h>
 #include <uavcan_to_ros/actuator_status.h>
 #include <uavcan_to_ros/panic.h>
+#include <uavcan_to_ros/battery_info.h>
+#include <uavcan_to_ros/battery_state_basic.h>
+#include <uavcan_to_ros/circuit_status_stamped.h>
+#include <uavcan_to_ros/consumed_charge_array.h>
+#include <uavcan_to_ros/consumed_charge_feedback.h>
+#include <uavcan_to_ros/ctd_feedback.h>
+#include <uavcan_to_ros/dual_thruster_feedback.h>
+#include <uavcan_to_ros/leak.h>
+#include <uavcan_to_ros/sensor_pressure_stamped.h>
+#include <uavcan_to_ros/servo_feedback_double.h>
+#include <uavcan_to_ros/temperature.h>
+#include <uavcan_to_ros/thruster_feedback_id.h>
 #include <time_utils.h>
 #include <sam_msgs/msg/percent_stamped.hpp>
 
@@ -14,36 +32,52 @@ DEFINE_TRANSFER_OBJECT_HEADS();
 
 class UavcanToRosBridge : public rclcpp::Node
 {
-    public:
+public:
     UavcanToRosBridge() : Node("uavcan_to_ros_bridge")
     {
-        self_node_id_= this ->declare_parameter("uav_node_id",117);
-        can_interface_ = this -> declare_parameter("uav_can_interface","vcan0"); 
+        self_node_id_ = this->declare_parameter("uav_node_id", 117);
+        can_interface_ = this->declare_parameter("uav_can_interface", "vcan0");
     }
- 
+
     void start_node(const char *can_interface_, uint8_t node_id);
     void start_canard_node();
-private:
 
-    void handle_GetNodeInfo(const CanardRxTransfer& transfer, const uavcan_protocol_GetNodeInfoRequest& req);
+private:
+    void handle_GetNodeInfo(const CanardRxTransfer &transfer, const uavcan_protocol_GetNodeInfoRequest &req);
     Canard::ObjCallback<UavcanToRosBridge, uavcan_protocol_GetNodeInfoRequest> node_info_req_cb{this, &UavcanToRosBridge::handle_GetNodeInfo};
     Canard::Server<uavcan_protocol_GetNodeInfoRequest> node_info_server{canard_interface, node_info_req_cb};
 
-    
     void send_NodeStatus(void);
     rclcpp::TimerBase::SharedPtr timer_;
     uavcan_protocol_NodeStatus msg;
     int self_node_id_;
     std::string can_interface_;
-    CanardInterface canard_interface{0};   
-    Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface}; 
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_air_data_StaticPressure,sensor_msgs::msg::FluidPressure>> sensore_pressure_server1;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>> lcg_feedback_server;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_protocol_Panic,std_msgs::msg::String>> panic_forwarding_server;
+    CanardInterface canard_interface{0};
+    Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface};
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_Solution, sensor_msgs::msg::Imu>> imu_server;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_gnss_Fix, sensor_msgs::msg::NavSatFix>> gps_fix;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_protocol_Panic, std_msgs::msg::String>> panic_forwarding_server;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_MagneticFieldStrength, sensor_msgs::msg::MagneticField>> magnetic_field;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped, sensor_msgs::msg::FluidPressure>> sensor_pressure_bar30;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped, sensor_msgs::msg::FluidPressure>> sensor_pressure_bar02;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped, sensor_msgs::msg::FluidPressure>> motor_oil_pressure;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped, sensor_msgs::msg::FluidPressure>> vbs_tank_pressure;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature, sensor_msgs::msg::Temperature>> vbs_tank_temperature;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature, sensor_msgs::msg::Temperature>> motor_oil_temperature;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::PercentStamped>> vbs_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::PercentStamped>> lcg_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::Leak>> leak;
+    // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server0;
+    // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server1;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus, sam_msgs::msg::CircuitStatusStamped>> circuit_status;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_BatteryStateBasic, sensor_msgs::msg::BatteryState>> battery_server2;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_power_BatteryInfo, sensor_msgs::msg::BatteryState>> battery_server3;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray, sam_msgs::msg::ConsumedChargeArray>> consumed_charge_array;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_CTDFeedback, smarc_msgs::msg::CTD>> ctd_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID, smarc_msgs::msg::ThrusterFeedback>> thruster1_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID, smarc_msgs::msg::ThrusterFeedback>> thruster2_feedback;
 
-
-
-};
+};;
 
 
 //Functions to send NodeStatus to the Dronecan Gui
@@ -90,11 +124,68 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     canard_interface.init(can_interface_, node_id);
     auto shared_this = shared_from_this();
 
-    sensore_pressure_server1 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_air_data_StaticPressure,sensor_msgs::msg::FluidPressure>>(
-    &canard_interface , shared_this, "sensore_pressure1",1);
+    imu_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_Solution,sensor_msgs::msg::Imu>>(
+    &canard_interface , shared_this, "imu");
 
-    lcg_feedback_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
+    gps_fix = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_gnss_Fix,sensor_msgs::msg::NavSatFix>>(
+    &canard_interface , shared_this, "gps_fix");
+
+    magnetic_field = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_MagneticFieldStrength,sensor_msgs::msg::MagneticField>>(
+    &canard_interface , shared_this, "magnetic_field");
+
+    sensor_pressure_bar30 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
+    &canard_interface , shared_this, "sensor_pressure_bar30",22);
+
+    sensor_pressure_bar02 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
+    &canard_interface , shared_this, "sensor_pressure_bar02",23);
+
+    motor_oil_pressure = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
+    &canard_interface , shared_this, "motor_oil_pressure",1);
+
+    vbs_tank_pressure = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
+    &canard_interface , shared_this, "vbs_tank_pressure",2);
+
+    vbs_tank_temperature = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature,sensor_msgs::msg::Temperature>>(
+    &canard_interface , shared_this, "vbs_tank_temperature",2);
+
+    motor_oil_temperature = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature,sensor_msgs::msg::Temperature>>(
+    &canard_interface , shared_this, "motor_temperature",1);
+
+    vbs_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
+    &canard_interface , shared_this, "vbs_feedback",13);
+    
+    lcg_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
     &canard_interface , shared_this, "lcg_feedback",14);
+
+    leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::Leak>>(
+    &canard_interface , shared_this, "leak",200);
+
+    // esc_status_server0 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
+    // &canard_interface , shared_this, "esc_status0",0);
+
+    // esc_status_server1 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
+    // &canard_interface , shared_this, "esc_status1",1);
+
+    circuit_status = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus,sam_msgs::msg::CircuitStatusStamped>>(
+    &canard_interface , shared_this, "circuit_status");
+
+    battery_server2 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_BatteryStateBasic,sensor_msgs::msg::BatteryState>>(
+    &canard_interface , shared_this, "battery_state_basic");
+
+    battery_server3 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_BatteryInfo,sensor_msgs::msg::BatteryState>>(
+    &canard_interface , shared_this, "battery_state_basic");
+
+    consumed_charge_array = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray,sam_msgs::msg::ConsumedChargeArray>>(
+    &canard_interface , shared_this, "consumed_charge_array");
+
+    ctd_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_CTDFeedback,smarc_msgs::msg::CTD>>(
+    &canard_interface , shared_this, "ctd_feedback");
+
+    thruster1_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID,smarc_msgs::msg::ThrusterFeedback>>(
+    &canard_interface , shared_this, "thruster1_feedback",1);
+
+    thruster2_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID,smarc_msgs::msg::ThrusterFeedback>>(
+    &canard_interface , shared_this, "thruster2_feedback",2);
 
     panic_forwarding_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_protocol_Panic,std_msgs::msg::String>>(
     &canard_interface , shared_this, "panic_forwarding_in");

@@ -74,7 +74,7 @@ private:
 };
 template <typename UAVMSG, typename ROSMSG>
 void ConversionServer<UAVMSG, ROSMSG>::conversion_callback(const CanardRxTransfer& transfer, const UAVMSG& uav_msg)
-{   RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received UAVCAN message");
+{
     auto ros_msg = std::make_shared<ROSMSG>();
     bool success = convert(uav_msg, ros_msg, uid_);
     if (success) {
@@ -88,9 +88,9 @@ void ConversionServer<UAVMSG, ROSMSG>::conversion_callback(const CanardRxTransfe
         }
     }
 
+};
 
 
-}
 
 namespace ros_to_uav {
     struct DefaultTag {};

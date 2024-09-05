@@ -81,165 +81,67 @@ sensor_msgs
 )
 
 
-
-add_library(uav_to_ros_pressure
+# UAVCAN to ROS messages library
+add_library(uav_to_ros_msgs
   src/uavcan_to_ros/pressure.cpp
-)
-
-add_library(uav_to_ros_panic
+  src/uavcan_to_ros/battery_info.cpp
   src/uavcan_to_ros/panic.cpp
-)
-
-add_library(uav_to_ros_actuator_status
   src/uavcan_to_ros/actuator_status.cpp
+  src/uavcan_to_ros/battery_state_basic.cpp
+  src/uavcan_to_ros/circuit_status_stamped.cpp
+  src/uavcan_to_ros/consumed_charge_array.cpp
+  src/uavcan_to_ros/consumed_charge_feedback.cpp
+  src/uavcan_to_ros/ctd_feedback.cpp
+  src/uavcan_to_ros/dual_thruster_feedback.cpp
+  src/uavcan_to_ros/leak.cpp
+  src/uavcan_to_ros/sensor_pressure_stamped.cpp
+  src/uavcan_to_ros/servo_feedback_double.cpp
+  src/uavcan_to_ros/temperature.cpp
+  src/uavcan_to_ros/thruster_feedback_id.cpp
+  src/uavcan_to_ros/esc_status.cpp
+  src/uavcan_to_ros/imu.cpp
+  src/uavcan_to_ros/gps_fix.cpp
+  src/uavcan_to_ros/magnetic_field.cpp
+  src/uavcan_to_ros/sensor_pressure.cpp
 )
 
-add_library(ros_to_uav_command
-src/ros_to_uavcan/command.cpp
+ament_target_dependencies(uav_to_ros_msgs
+  ${CONVERT_DEPENDS}
 )
 
-add_library(ros_to_uav_percent_stamped
+# ROS to UAVCAN messages library
+add_library(ros_to_uav_msgs
+  src/ros_to_uavcan/command.cpp
   src/ros_to_uavcan/percent_stamped.cpp
-)
-
-add_library(ros_to_uav_ballast_angles
   src/ros_to_uavcan/ballast_angles.cpp
-)
-
-add_library(ros_to_uav_dropweights
   src/ros_to_uavcan/dropweights.cpp
-)
-
-add_library(ros_to_uav_dvl
   src/ros_to_uavcan/dvl.cpp
-)
-
-add_library(ros_to_uav_sss
   src/ros_to_uavcan/sss.cpp
-)
-
-add_library(ros_to_uav_led
   src/ros_to_uavcan/led.cpp
-)
-
-add_library(ros_to_uav_thruster_rpm
   src/ros_to_uavcan/thruster_rpm.cpp
-)
-
-add_library(ros_to_uav_thruster_rpm_id
   src/ros_to_uavcan/thruster_rpm_id.cpp
-)
-
-add_library(ros_to_uav_thruster_rpms
   src/ros_to_uavcan/thruster_rpms.cpp
-)
-
-add_library(ros_to_uav_thruster_angles
   src/ros_to_uavcan/thruster_angles.cpp
-)
-
-add_library(ros_to_uav_dual_thruster_rpm
   src/ros_to_uavcan/dual_thruster_rpm.cpp
-)
-
-add_library(ros_to_uav_light_command
   src/ros_to_uavcan/light_command.cpp
-)
-
-add_library(ros_to_uav_panic
   src/ros_to_uavcan/panic.cpp
-)
-
-add_library(ros_to_uav_array_command
   src/ros_to_uavcan/array_command.cpp
 )
 
-add_library(ros_to_uav_uavcan_update_battery
-  src/ros_to_uavcan/uavcan_update_battery.cpp
+ament_target_dependencies(ros_to_uav_msgs
+  ${CONVERT_DEPENDS}
 )
 
-add_library(ros_to_uavcan_get_node_info_service
+# Services library
+add_library(ros_to_uavcan_services_library
   src/ros_to_uavcan/uavcan_node_info.cpp
+  src/ros_to_uavcan/uavcan_update_battery.cpp
+
 )
-ament_target_dependencies(uav_to_ros_pressure
-${CONVERT_DEPENDS})
 
-ament_target_dependencies(uav_to_ros_actuator_status
-${CONVERT_DEPENDS})
-
-
-ament_target_dependencies(uav_to_ros_panic
-${CONVERT_DEPENDS})
-
-ament_target_dependencies(ros_to_uavcan_get_node_info_service
+ament_target_dependencies(ros_to_uavcan_services_library
   ${CONVERT_DEPENDS}
 )
-
-ament_target_dependencies(ros_to_uav_uavcan_update_battery
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_array_command
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_command
-  ${CONVERT_DEPENDS}
-)
-
-
-ament_target_dependencies(ros_to_uav_percent_stamped
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_ballast_angles
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_dropweights
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_dvl
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_sss
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_led
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_thruster_rpm
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_thruster_rpm_id
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_thruster_rpms
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_thruster_angles
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_dual_thruster_rpm
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_light_command
-  ${CONVERT_DEPENDS}
-)
-
-ament_target_dependencies(ros_to_uav_panic
-  ${CONVERT_DEPENDS}
-)
-
 
 # add_custom_command(
 #   OUTPUT ${DSDL_DIR}/dsdl_generated
@@ -296,35 +198,20 @@ uavcan_ros_msgs
 target_link_libraries(ros_to_uavcan_bridge
   canard_lib
   dsdl_lib
-  ros_to_uav_dvl
-  ros_to_uav_thruster_angles
-  ros_to_uav_ballast_angles
-  ros_to_uav_dropweights
-  ros_to_uav_percent_stamped
-  ros_to_uav_sss
-  ros_to_uav_led
-  ros_to_uav_thruster_rpm
-  ros_to_uav_thruster_rpm_id
-  ros_to_uav_thruster_rpms
-  ros_to_uav_dual_thruster_rpm
-  ros_to_uav_light_command
-  ros_to_uav_panic
-  ros_to_uav_command
+  ros_to_uav_msgs
 
 )
 target_link_libraries(ros_to_uavcan_services
-ros_to_uav_uavcan_update_battery
 canard_lib
 dsdl_lib
-ros_to_uavcan_get_node_info_service)
+ros_to_uavcan_services_library
+)
 
 target_link_libraries(uavcan_ros_bridge
 canard_lib
 dsdl_lib
-uav_to_ros_pressure
-uav_to_ros_actuator_status
-uav_to_ros_panic
-)
+uav_to_ros_msgs)
+
 # Add compile options
 target_compile_options(ros_to_uavcan_bridge PRIVATE 
   -Wall -Wextra -pedantic
