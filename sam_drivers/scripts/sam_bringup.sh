@@ -50,7 +50,7 @@ tmux select-window -t $SESSION:1
 tmux send-keys "roslaunch sam_drivers sam_gui.launch rosbridge_ip:=$SAM_IP namespace:=sam --wait" C-m
 
 tmux select-window -t $SESSION:2
-tmux send-keys "mon launch sam_drivers sam_core.launch namespace:=sam  utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
+tmux send-keys "mon launch sam_drivers sam_core.launch namespace:=sam  utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W')" C-m
 
 tmux select-window -t $SESSION:3
 tmux send-keys "mon launch sam_dead_reckoning sam_dr.launch utm_zone:=$UTM_ZONE utm_band:=$UTM_BAND --name=$(tmux display-message -p 'p#I_#W') --no-start" C-m
@@ -90,5 +90,3 @@ tmux send-keys "mon launch sam_drivers sam_uwcomms.launch --name=$(tmux display-
 # Set default window
 tmux select-window -t $SESSION:0
 
-# Attach to session
-tmux -2 attach-session -t $SESSION
