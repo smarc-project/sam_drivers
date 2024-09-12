@@ -20,8 +20,11 @@ find_package(builtin_interfaces REQUIRED)
 # find_package(<dependency> REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
 "srv/UavcanGetNodeInfo.srv"
+"srv/UavcanRestartNode.srv"
+"srv/UavcanGetTransportStats.srv"
 "msg/UavcanNodeStatus.msg"
 "msg/ESCStatus.msg"
+
   DEPENDENCIES geometry_msgs geographic_msgs nav_msgs sensor_msgs std_msgs builtin_interfaces
 )
 if(BUILD_TESTING)

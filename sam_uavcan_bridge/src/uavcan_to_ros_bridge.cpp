@@ -26,6 +26,7 @@
 #include <uavcan_to_ros/thruster_feedback_id.h>
 #include <time_utils.h>
 #include <sam_msgs/msg/percent_stamped.hpp>
+#include <sam_msgs/msg/topics.hpp>
 
 DEFINE_HANDLER_LIST_HEADS();
 DEFINE_TRANSFER_OBJECT_HEADS(); 
@@ -125,40 +126,40 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     auto shared_this = shared_from_this();
 
     imu_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_Solution,sensor_msgs::msg::Imu>>(
-    &canard_interface , shared_this, "imu");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::YOST_IMU_TOPIC);
 
     gps_fix = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_gnss_Fix,sensor_msgs::msg::NavSatFix>>(
-    &canard_interface , shared_this, "gps_fix");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::GPS_FIX_TOPIC);
 
     magnetic_field = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_MagneticFieldStrength,sensor_msgs::msg::MagneticField>>(
-    &canard_interface , shared_this, "magnetic_field");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::MAGNETIC_FIELD_TOPIC);
 
     sensor_pressure_bar30 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
-    &canard_interface , shared_this, "sensor_pressure_bar30",22);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::PRESS_DEPTH300_TOPIC,22);
 
     sensor_pressure_bar02 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
-    &canard_interface , shared_this, "sensor_pressure_bar02",23);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::PRESS_DEPTH20_TOPIC,23);
 
     motor_oil_pressure = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
-    &canard_interface , shared_this, "motor_oil_pressure",1);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::MOTOR_OIL_PRESSURE_TOPIC,1);
 
     vbs_tank_pressure = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped,sensor_msgs::msg::FluidPressure>>(
-    &canard_interface , shared_this, "vbs_tank_pressure",2);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::VBS_TANK_PRESSURE_TOPIC,2);
 
     vbs_tank_temperature = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature,sensor_msgs::msg::Temperature>>(
-    &canard_interface , shared_this, "vbs_tank_temperature",2);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::VBS_TANK_TEMPERATURE_TOPIC,2);
 
     motor_oil_temperature = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature,sensor_msgs::msg::Temperature>>(
-    &canard_interface , shared_this, "motor_temperature",1);
+    &canard_interface , shared_this,sam_msgs::msg::Topics::MOTOR_TEMP_TOPIC ,1);
 
     vbs_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
-    &canard_interface , shared_this, "vbs_feedback",13);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::VBS_FB_TOPIC,13);
     
     lcg_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
-    &canard_interface , shared_this, "lcg_feedback",14);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::LCG_FB_TOPIC,14);
 
     leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::Leak>>(
-    &canard_interface , shared_this, "leak",200);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::LEAK_TOPIC,200);
 
     // esc_status_server0 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
     // &canard_interface , shared_this, "esc_status0",0);
@@ -167,28 +168,28 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     // &canard_interface , shared_this, "esc_status1",1);
 
     circuit_status = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus,sam_msgs::msg::CircuitStatusStamped>>(
-    &canard_interface , shared_this, "circuit_status");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::CIRCUIT_STATUS_TOPIC);
 
     battery_server2 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_BatteryStateBasic,sensor_msgs::msg::BatteryState>>(
-    &canard_interface , shared_this, "battery_state_basic");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::BATTERY_STATUS_TOPIC);
 
     battery_server3 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_BatteryInfo,sensor_msgs::msg::BatteryState>>(
-    &canard_interface , shared_this, "battery_state_basic");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::BATTERY_STATUS_TOPIC);
 
     consumed_charge_array = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray,sam_msgs::msg::ConsumedChargeArray>>(
-    &canard_interface , shared_this, "consumed_charge_array");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::CONSUMED_CHARED_ARRAY_TOPIC);
 
     ctd_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_CTDFeedback,smarc_msgs::msg::CTD>>(
-    &canard_interface , shared_this, "ctd_feedback");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::CTD_FB_TOPIC);
 
     thruster1_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID,smarc_msgs::msg::ThrusterFeedback>>(
-    &canard_interface , shared_this, "thruster1_feedback",1);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::THRUSTER1_FB_TOPIC,1);
 
     thruster2_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID,smarc_msgs::msg::ThrusterFeedback>>(
-    &canard_interface , shared_this, "thruster2_feedback",2);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::THRUSTER2_FB_TOPIC,2);
 
     panic_forwarding_server = std::make_unique<uav_to_ros::ConversionServer<uavcan_protocol_Panic,std_msgs::msg::String>>(
-    &canard_interface , shared_this, "panic_forwarding_in");
+    &canard_interface , shared_this, sam_msgs::msg::Topics::PANIC_FB_TOPIC);
 
 
 

@@ -136,6 +136,8 @@ ament_target_dependencies(ros_to_uav_msgs
 add_library(ros_to_uavcan_services_library
   src/ros_to_uavcan/uavcan_node_info.cpp
   src/ros_to_uavcan/uavcan_update_battery.cpp
+  src/ros_to_uavcan/uavcan_restart.cpp
+  src/ros_to_uavcan/uavcan_transport_stats.cpp
 
 )
 
@@ -226,10 +228,10 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# install(DIRECTORY
-#   launch
-#   DESTINATION share/${PROJECT_NAME}
-# )
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(DIRECTORY include/
   DESTINATION include/${PROJECT_NAME}
