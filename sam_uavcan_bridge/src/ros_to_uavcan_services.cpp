@@ -4,8 +4,11 @@
 #include <time_utils.h>
 #include <uavcan_ros_msgs/msg/uavcan_node_status.hpp>
 #include <uavcan_ros_msgs/srv/uavcan_get_node_info.hpp>
-#include <uavcan_node_info.h>
+#include <ros_to_uavcan/uavcan_node_info.h>
 #include <sam_msgs/msg/topics.hpp>
+#include <ros_to_uavcan/uavcan_restart.h>
+#include <ros_to_uavcan/uavcan_transport_stats.h>
+#include <ros_to_uavcan/uavcan_update_battery.h>
 // Include necessary UAVCAN and ROS service message types here
 // For example:
 // #include <uavcan/protocol/param/GetSet.h>
@@ -31,6 +34,7 @@ private:
     void send_NodeStatus(void);
     int self_node_id_;
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr timer_1hz;
     std::string can_interface_;
     uavcan_protocol_NodeStatus msg;
     CanardInterface canard_interface{0};
@@ -40,8 +44,8 @@ private:
     // For example:
     // std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_param_GetSetRequest,uavcan_protocol_param_GetSetResponse, your_ros_package::srv::YourService>> param_get_set_server_;
     std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetNodeInfoRequest,uavcan_protocol_GetNodeInfoResponse, uavcan_ros_msgs::srv::UavcanGetNodeInfo>> node_info_server_service_;
-    std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocal_GetTransportStatsRequest,uavcan_protocal_GetTransportStatsResponse, uavcan_ros_msgs::srv::UavcanGetTransportsStats>> transport_stats_server ;
-    std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocal_RestartNodeRequest,uavcan_protocal_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>> restart_server ;
+    std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetTransportStatsRequest,uavcan_protocol_GetTransportStatsResponse, uavcan_ros_msgs::srv::UavcanGetTransportStats>> transport_stats_server ;
+    std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_RestartNodeRequest,uavcan_protocol_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>> restart_server ;
     std::unique_ptr<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, sam_msgs::srv::UavcanUpdateBattery>> update_battery_server ;
     
     void setup_service_servers();
@@ -100,12 +104,18 @@ void ServiceConversionBridge::setup_service_servers() {
         std::chrono::milliseconds(50), // Adjust the period as needed
         [this]() {
             canard_interface.process(1);
-            const uint64_t ts = micros64();
-            static uint64_t next_50hz_service_at = ts;
-            if (ts >= next_50hz_service_at) {
-                next_50hz_service_at += 1000000ULL / 50U;w
-                this->send_NodeStatus();
-            }
+//             const uint64_t ts = micros64();
+//             static uint64_t next_50hz_service_at = ts;
+//             if (ts >= next_50hz_service_at) {
+//                 next_50hz_service_at += 1000000ULL / 50U;
+//                 this->send_NodeStatus();
+//             }
+        }
+    );
+    timer_1hz = this->create_wall_timer(
+        std::chrono::milliseconds(1000), // Adjust the period as needed
+        [this]() {
+            this->send_NodeStatus();
         }
     );
 
@@ -115,16 +125,16 @@ void ServiceConversionBridge::setup_service_servers() {
     //     &canard_interface, shared_this, "param_get_set");
 
     node_info_server_service_ = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetNodeInfoRequest,uavcan_protocol_GetNodeInfoResponse, uavcan_ros_msgs::srv::UavcanGetNodeInfo>>(
-        &canard_interface, shared_this, sam_msgs::msg::topics::GET_NODE_INFO_SRV);
+        &canard_interface, shared_this, sam_msgs::msg::Topics::GET_NODE_INFO_SRV);
 
-    transport_stats_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocal_GetTransportStatsRequest,uavcan_protocal_GetTransportStatsResponse, uavcan_ros_msgs::srv::UavcanGetTransportsStats>>(
-        &canard_interface, shared_this, sam_msgs::msg::topics::GET_TRANSPORT_STATS_SRV);
+    transport_stats_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetTransportStatsRequest,uavcan_protocol_GetTransportStatsResponse, uavcan_ros_msgs::srv::UavcanGetTransportStats>>(
+        &canard_interface, shared_this, sam_msgs::msg::Topics::GET_TRANSPORT_STATS_SRV);
 
-    restart_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocal_RestartNodeRequest,uavcan_protocal_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>>(
-        &canard_interface, shared_this, sam_msgs::msg::topics::RESTART_NODE_SRV);
+    restart_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocol_RestartNodeRequest,uavcan_protocol_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>>(
+        &canard_interface, shared_this, sam_msgs::msg::Topics::RESTART_NODE_SRV);
 
     update_battery_server = std::make_unique<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, sam_msgs::srv::UavcanUpdateBattery>>(
-        &canard_interface, shared_this, sam_msgs::msg::topics::UPDATE_BATTERY_SRV);
+        &canard_interface, shared_this, sam_msgs::msg::Topics::UPDATE_BATTERY_SRV);
 }
 
 int main(int argc, char** argv)

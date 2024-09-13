@@ -50,6 +50,7 @@ private:
 
     void send_NodeStatus(void);
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr timer_1hz;
     uavcan_protocol_NodeStatus msg;
     int self_node_id_;
     std::string can_interface_;
@@ -198,15 +199,22 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
         std::chrono::milliseconds(20), // Adjust the period as needed
         [this]() {
             canard_interface.process(1);
-            const uint64_t ts = micros64();
-            static uint64_t next_50hz_service_at = ts;
-            if (ts >= next_50hz_service_at) {
-                next_50hz_service_at += 1000000ULL / 50U;
-                this->send_NodeStatus();
-            }
+//             const uint64_t ts = micros64();
+//             static uint64_t next_50hz_service_at = ts;
+//             if (ts >= next_50hz_service_at) {
+//                 next_50hz_service_at += 1000000ULL / 50U;
+//                 this->send_NodeStatus();
+            // }
         }
     );
-    
+
+
+    timer_1hz = this->create_wall_timer(
+        std::chrono::milliseconds(1000), // Adjust the period as needed
+        [this]() {
+            this->send_NodeStatus();
+        }
+    );   
 }
 
 int main(int argc, char** argv)
