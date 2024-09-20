@@ -39,7 +39,7 @@ public:
     void start_node(const char *can_interface_, uint8_t node_id);
     void start_canard_node();
 private:
-
+    CanardInterface canard_interface{0};
     void handle_GetNodeInfo(const CanardRxTransfer& transfer, const uavcan_protocol_GetNodeInfoRequest& req);
     Canard::ObjCallback<RosToUavcanBridge, uavcan_protocol_GetNodeInfoRequest> node_info_req_cb{this, &RosToUavcanBridge::handle_GetNodeInfo};
     Canard::Server<uavcan_protocol_GetNodeInfoRequest> node_info_server{canard_interface, node_info_req_cb};
@@ -50,8 +50,7 @@ private:
     rclcpp::TimerBase::SharedPtr timer_1hz;
     uavcan_protocol_NodeStatus msg;
     int self_node_id_;
-    std::string can_interface_;
-    CanardInterface canard_interface{0};    
+    std::string can_interface_;    
     Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface};
 
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, std_msgs::msg::Bool, ros_to_uav::DVLTag>> dvl_server_;
@@ -78,7 +77,6 @@ private:
 
 
 };
-//Function to send NodeStatus to the Dronecan Gui
 void RosToUavcanBridge::send_NodeStatus(void)
  {
     msg.uptime_sec = millis32() / 1000UL;

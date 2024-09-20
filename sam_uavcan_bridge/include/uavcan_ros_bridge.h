@@ -7,6 +7,7 @@
 #include "std_srvs/srv/set_bool.hpp"
 #include <chrono>
 #include <thread>
+#include <condition_variable>
 #ifndef CANARD_MTU_CAN_CLASSIC
 #define CANARD_MTU_CAN_CLASSIC 8
 #endif
@@ -200,100 +201,100 @@ private:
     TAG tag_;
 };
 
-
 template <typename UAVSRV_REQUEST, typename UAVSRV_RESPONSE, typename ROSSRV>
 class ServiceConversionServer {
 public:
-    ServiceConversionServer(CanardInterface* canard_interface, rclcpp::Node::SharedPtr ros_node, const std::string& ros_service_name)
-     : uav_node_(canard_interface), transfer_id_(0), response_received_(false), ros_node_(ros_node)
-    {   
-        // uav_client_ = std::make_unique<Canard::Client<UAVSRV_RESPONSE>>(*uav_node_,client_callback_);
-        // uav_server_ = std::make_unique<Canard::Server<UAVSRV_REQUEST>>(*uav_node_,server_callback_);
-        
-        ros_service_ = ros_node_->create_service<ROSSRV>(ros_service_name, 
-            std::bind(&ServiceConversionServer::service_callback, this, std::placeholders::_1, std::placeholders::_2));
+    ServiceConversionServer(
+        CanardInterface* canard_interface,
+        rclcpp::Node::SharedPtr ros_node,
+        const std::string& ros_service_name)
+        : uav_node_(canard_interface), ros_node_(ros_node) {
+        ros_service_ = ros_node_->create_service<ROSSRV>(
+            ros_service_name,
+            std::bind(
+                &ServiceConversionServer::service_callback,
+                this,
+                std::placeholders::_1,  
+                std::placeholders::_2,  
+                std::placeholders::_3   
+            )
+        );
     }
 
-    bool service_callback(const std::shared_ptr<typename ROSSRV::Request> ros_req, std::shared_ptr<typename ROSSRV::Response> ros_res)
-    {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received service request");
-        UAVSRV_REQUEST uav_req;
-        bool success = convert_request(ros_req, uav_req);
-        if (!success) {
-            RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "There was an error trying to convert Droencan service ");
-            return false;
-        }
+void service_callback(
+    const std::shared_ptr<rmw_request_id_t> request_header,
+    const std::shared_ptr<typename ROSSRV::Request> ros_req,
+    std::shared_ptr<typename ROSSRV::Response> ros_res)
+{
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received ROS2 service request");
 
-        // Store the ROS response pointer for later use
-        ros_res_ = ros_res;
-        response_received_ = false;
-        // Make the DroneCAN service request
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Sending UAVCAN service request...");
-        bool request_success = uav_client_.request(uav_node_->get_node_id(), uav_req);
-        if (!request_success) { 
-            RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Unable to perform service call");
-            return false;
-        }
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Service request success: %s", request_success ? "true" : "false");
-        // auto start_time = std::chrono::steady_clock::now();
-        // while (!response_received_) {
-        //     if (std::chrono::duration_cast<std::chrono::milliseconds>(
-        //         std::chrono::steady_clock::now() - start_time).count() > 3000) {
-        //         RCLCPP_WARN(ros_node_->get_logger(), "Timeout waiting for Dronecan response");
-        //         return false;
-        //     }
-        //     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        // }
-        // RCLCPP_INFO(ros_node_->get_logger(), "Dronecan response received and processed"); 
-        while(uav_node_->peekTxQueue()!= NULL){
-            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "TxQueue not empty ");
-        uav_node_->process(10);
-        }
-        return success;        
+    UAVSRV_REQUEST uav_req;
+    bool success = convert_request(ros_req, uav_req);
+    if (!success) {
+        RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to convert ROS2 request to UAVCAN request.");
+        ros_service_->send_response(*request_header, *ros_res);
+        return;
     }
 
-    // Callback for UAVCAN response
-    void canard_response(const CanardRxTransfer& transfer, const UAVSRV_RESPONSE& uav_res)
-    {
+    // Prepare a flag to indicate when the response is received
+    bool response_received = false;
+
+    auto response_callback = [&, ros_res, &response_received](const CanardRxTransfer& transfer, const UAVSRV_RESPONSE& uav_res) {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received UAVCAN response");
 
-        if (ros_res_) {
-            if (!convert_response(uav_res, ros_res_)) {
-                RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to convert UAVCAN response to ROS2 response.");
-            }
-            response_received_ = true;
+        if (!convert_response(uav_res, ros_res)) {
+            RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to convert UAVCAN response to ROS2 response.");
+        } else {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Successfully converted UAVCAN response to ROS2 response.");
+        }
+
+        response_received = true; // Set the flag when response is received
+    };
+
+    callback_ = std::unique_ptr<Canard::LambdaCallback<UAVSRV_RESPONSE>>(
+        Canard::allocate_lambda_callback<UAVSRV_RESPONSE>(response_callback)
+    );
+
+    uav_client_ = std::make_unique<Canard::Client<UAVSRV_RESPONSE>>(*uav_node_, *callback_);
+
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Sending UAVCAN service request...");
+    bool request_success = uav_client_->request(ros_req->node_id, uav_req);
+    if (!request_success) {
+        RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Unable to perform service call.");
+        ros_service_->send_response(*request_header, *ros_res);
+        return;
+    }
+
+    auto start_time = std::chrono::steady_clock::now();
+    auto timeout = std::chrono::seconds(5); 
+    while(!response_received) {
+        uav_node_->process(10); 
+
+        if (std::chrono::steady_clock::now() - start_time > timeout) {
+            RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Timeout waiting for UAVCAN response.");
+            break;
         }
     }
 
-    // // Callback for UAVCAN server response (when UAVCAN server receives a request)
-     void response(const CanardRxTransfer& transfer, const UAVSRV_REQUEST& uav_req)
-     {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received UAVCAN service request");
+    if (!response_received) {
+        RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to receive UAVCAN response.");
+    }
 
-        UAVSRV_RESPONSE uav_res;
-        // Logic to handle the UAVCAN request and prepare a response
-        // ...
-
-        // Send the response back to the UAVCAN requester
-        uav_server_.respond(transfer, uav_res);
-     }
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Sending ROS2 response back to the client");
+    ros_service_->send_response(*request_header, *ros_res);
+}
 
 private:
     CanardInterface* uav_node_;
-    // std::unique_ptr<Canard::Client<UAVSRV_RESPONSE>> uav_client_;
-    // std::unique_ptr<Canard::Server<UAVSRV_REQUEST>> uav_server_;
+    std::unique_ptr<Canard::Client<UAVSRV_RESPONSE>> uav_client_;  
+    std::unique_ptr<Canard::LambdaCallback<UAVSRV_RESPONSE>> callback_;  
     typename rclcpp::Service<ROSSRV>::SharedPtr ros_service_;
-    std::shared_ptr<typename ROSSRV::Response> pending_ros_response_;
-    std::atomic<bool> response_received_{false};
     rclcpp::Node::SharedPtr ros_node_;
-    uint8_t node_id_;
-    uint8_t transfer_id_;
+
+    std::shared_ptr<rmw_request_id_t> request_header_;
     std::shared_ptr<typename ROSSRV::Response> ros_res_;
-    Canard::ObjCallback<ServiceConversionServer, UAVSRV_RESPONSE> client_callback_{this, &ServiceConversionServer::canard_response};
-    Canard::ObjCallback<ServiceConversionServer, UAVSRV_REQUEST> server_callback_{this, &ServiceConversionServer::response};
-    Canard::Server<UAVSRV_REQUEST> uav_server_{*uav_node_,server_callback_};
-    Canard::Client<UAVSRV_RESPONSE> uav_client_{*uav_node_,client_callback_};
 };
+
 };
 #endif // UAVCAN_ROS_BRIDGE
 

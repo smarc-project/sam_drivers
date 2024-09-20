@@ -9,6 +9,8 @@
 #include <ros_to_uavcan/uavcan_restart.h>
 #include <ros_to_uavcan/uavcan_transport_stats.h>
 #include <ros_to_uavcan/uavcan_update_battery.h>
+#include <rclcpp/executors/multi_threaded_executor.hpp>
+
 // Include necessary UAVCAN and ROS service message types here
 // For example:
 // #include <uavcan/protocol/param/GetSet.h>
@@ -101,7 +103,7 @@ void ServiceConversionBridge::start_node(const char *can_interface_, uint8_t nod
 void ServiceConversionBridge::setup_service_servers() {
     auto shared_this = shared_from_this();
      timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(50), // Adjust the period as needed
+        std::chrono::milliseconds(20), // Adjust the period as needed
         [this]() {
             canard_interface.process(1);
 //             const uint64_t ts = micros64();
@@ -141,8 +143,10 @@ int main(int argc, char** argv)
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<ServiceConversionBridge>();
+    rclcpp::executors::MultiThreadedExecutor executor;
     node->start_canard_node();
-    rclcpp::spin(node);
+    executor.add_node(node);
+    executor.spin(); 
     rclcpp::shutdown();
     return 0;
 }

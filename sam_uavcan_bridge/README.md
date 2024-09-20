@@ -60,10 +60,9 @@ uav_to_ros::ConversionServer<uavcan::equipment::ahrs::RawIMU, sensor_msgs::Imu> 
 ```
 where `uavcan_command` and `uavcan_imu` are the ros topics being subscribed to and published to respectively.
 ## Testing conversions
+To test converison between ros2 and Dronecan one can use virtual can, run the script to start vcan:
 ```
-sudo modprobe vcan
-sudo ip link add dev vcan0 type vcan
-sudo ip link set up vcan0
+./setup_vcan.sh
 ```
 ## Existing conversions (*work in progress*)
 

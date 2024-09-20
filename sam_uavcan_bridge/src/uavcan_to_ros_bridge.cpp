@@ -44,6 +44,7 @@ public:
     void start_canard_node();
 
 private:
+    CanardInterface canard_interface{0};
     void handle_GetNodeInfo(const CanardRxTransfer &transfer, const uavcan_protocol_GetNodeInfoRequest &req);
     Canard::ObjCallback<UavcanToRosBridge, uavcan_protocol_GetNodeInfoRequest> node_info_req_cb{this, &UavcanToRosBridge::handle_GetNodeInfo};
     Canard::Server<uavcan_protocol_GetNodeInfoRequest> node_info_server{canard_interface, node_info_req_cb};
@@ -54,7 +55,6 @@ private:
     uavcan_protocol_NodeStatus msg;
     int self_node_id_;
     std::string can_interface_;
-    CanardInterface canard_interface{0};
     Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface};
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_ahrs_Solution, sensor_msgs::msg::Imu>> imu_server;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_gnss_Fix, sensor_msgs::msg::NavSatFix>> gps_fix;
