@@ -30,6 +30,7 @@ public:
     void start_canard_node();
 
 private:
+    CanardInterface canard_interface{0};
     void handle_GetNodeInfo(const CanardRxTransfer& transfer, const uavcan_protocol_GetNodeInfoRequest& req);
     Canard::ObjCallback<ServiceConversionBridge, uavcan_protocol_GetNodeInfoRequest> node_info_req_cb{this, &ServiceConversionBridge::handle_GetNodeInfo};
     Canard::Server<uavcan_protocol_GetNodeInfoRequest> node_info_server{canard_interface, node_info_req_cb};
@@ -39,7 +40,6 @@ private:
     rclcpp::TimerBase::SharedPtr timer_1hz;
     std::string can_interface_;
     uavcan_protocol_NodeStatus msg;
-    CanardInterface canard_interface{0};
     Canard::Publisher<uavcan_protocol_NodeStatus> node_status_pub{canard_interface};
 
     // Declare your service conversion servers here

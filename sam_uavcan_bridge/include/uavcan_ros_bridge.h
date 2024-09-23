@@ -226,7 +226,6 @@ void service_callback(
     const std::shared_ptr<typename ROSSRV::Request> ros_req,
     std::shared_ptr<typename ROSSRV::Response> ros_res)
 {
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received ROS2 service request");
 
     UAVSRV_REQUEST uav_req;
     bool success = convert_request(ros_req, uav_req);
@@ -244,11 +243,10 @@ void service_callback(
 
         if (!convert_response(uav_res, ros_res)) {
             RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to convert UAVCAN response to ROS2 response.");
-        } else {
-            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Successfully converted UAVCAN response to ROS2 response.");
         }
+        
 
-        response_received = true; // Set the flag when response is received
+        response_received = true; 
     };
 
     callback_ = std::unique_ptr<Canard::LambdaCallback<UAVSRV_RESPONSE>>(
@@ -257,7 +255,6 @@ void service_callback(
 
     uav_client_ = std::make_unique<Canard::Client<UAVSRV_RESPONSE>>(*uav_node_, *callback_);
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Sending UAVCAN service request...");
     bool request_success = uav_client_->request(ros_req->node_id, uav_req);
     if (!request_success) {
         RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Unable to perform service call.");
@@ -268,7 +265,7 @@ void service_callback(
     auto start_time = std::chrono::steady_clock::now();
     auto timeout = std::chrono::seconds(5); 
     while(!response_received) {
-        uav_node_->process(10); 
+        uav_node_->process(1); 
 
         if (std::chrono::steady_clock::now() - start_time > timeout) {
             RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Timeout waiting for UAVCAN response.");
@@ -276,11 +273,7 @@ void service_callback(
         }
     }
 
-    if (!response_received) {
-        RCLCPP_WARN(rclcpp::get_logger("rclcpp"), "Failed to receive UAVCAN response.");
-    }
 
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Sending ROS2 response back to the client");
     ros_service_->send_response(*request_header, *ros_res);
 }
 
