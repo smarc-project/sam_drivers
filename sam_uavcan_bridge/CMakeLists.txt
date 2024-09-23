@@ -214,10 +214,11 @@ canard_lib
 dsdl_lib
 uav_to_ros_msgs)
 
-# Add compile options
-target_compile_options(ros_to_uavcan_bridge PRIVATE 
-  -Wall -Wextra -pedantic
-  -Wno-pedantic  # To suppress zero-size array warnings
+target_compile_options(ros_to_uavcan_bridge PRIVATE  -Wno-unused-parameter
+)
+target_compile_options(uavcan_ros_bridge PRIVATE  -Wno-unused-parameter
+)
+target_compile_options(ros_to_uavcan_services PRIVATE  -Wno-unused-parameter
 )
 
 # Install targets

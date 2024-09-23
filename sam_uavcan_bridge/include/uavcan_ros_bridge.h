@@ -238,7 +238,7 @@ void service_callback(
     // Prepare a flag to indicate when the response is received
     bool response_received = false;
 
-    auto response_callback = [&, ros_res, &response_received](const CanardRxTransfer& transfer, const UAVSRV_RESPONSE& uav_res) {
+    auto response_callback = [&, ros_res](const CanardRxTransfer& transfer, const UAVSRV_RESPONSE& uav_res) {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received UAVCAN response");
 
         if (!convert_response(uav_res, ros_res)) {
