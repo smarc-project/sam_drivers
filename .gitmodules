@@ -1,6 +1,3 @@
-[submodule "sam_uavcan_bridge/libcanard"]
-	path = sam_uavcan_bridge/libcanard
-	url = https://github.com/dronecan/libcanard.git
 [submodule "sam_uavcan_bridge/dsdl/dronecan_dsdlc"]
 	path = sam_uavcan_bridge/dsdl/dronecan_dsdlc
 	url = https://github.com/dronecan/dronecan_dsdlc.git
