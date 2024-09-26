@@ -20,7 +20,7 @@
         <param name="out_file" value="$(var sss_out_file)"/>
         <param name="high_freq" value="$(var high_freq)"/>
         <param name="range" value="$(var range)"/>
-    </node> 
+    </node>     
 
 
 

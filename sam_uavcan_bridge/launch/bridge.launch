@@ -5,8 +5,8 @@
 <!-- <arg name="time_master_uav_node_id" default="1"/> -->
 <!-- <arg name="network_monitor_uav_node_id" default="99"/> -->
 <arg name="services_uav_node_id" default="100"/>
-<arg name="uav_can_interface" default="vcan0"/>
 <arg name="robot_name" default="sam"/>
+<arg name="uav_can_interface" default="can0"/>
 
 
         <node name="ros_to_uavcan_bridge" pkg="sam_uavcan_bridge" exec="ros_to_uavcan_bridge" respawn="true" output="screen" namespace ="$(var robot_name)">
