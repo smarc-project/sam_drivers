@@ -33,7 +33,7 @@ You can add new conversion headers for ros to uavcan and uavcan to ros with corr
 template <>
 bool convert(const uavcan_equipment_ahrs_RawIMU& uav_msg, std::shared_ptr<sensor_msgs::msg::Imu> ros_msg)
 {
-    ros_msg->zheader.stamp = convert_timestamp(uav_msg.timestamp);
+    ros_msg->header.stamp = convert_timestamp(uav_msg.timestamp);
     ros_msg->linear_acceleration.x = uav_msg.accelerometer_latest[0];
     ros_msg->linear_acceleration.y = uav_msg.accelerometer_latest[1];
     ros_msg->linear_acceleration.z = uav_msg.accelerometer_latest[2];
