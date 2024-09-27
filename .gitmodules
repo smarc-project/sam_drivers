@@ -4,3 +4,6 @@
 [submodule "sam_uavcan_bridge/libcanard"]
 	path = sam_uavcan_bridge/libcanard
 	url = git@github.com:AxelBrask/libcanard.git
+[submodule "sam_uavcan_bridge/dsdl/DSDL"]
+	path = sam_uavcan_bridge/dsdl/DSDL
+	url = git@github.com:dronecan/DSDL.git
