@@ -22,7 +22,7 @@ class StartupCheckServer(Node):
         self.get_logger().info("Checking leak sensor...")
 
         # feedback_topic = "/sam/core/leak_fb"
-        feedback_topic = Topics.LEAK_TOPIC
+        feedback_topic = Topics.LEAK_TOPIC_FB
 
         try:
              leak = self.wait_for_message(Leak,feedback_topic,3.)

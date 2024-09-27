@@ -160,7 +160,7 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     &canard_interface , shared_this, sam_msgs::msg::Topics::LCG_FB_TOPIC,14);
 
     leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::Leak>>(
-    &canard_interface , shared_this, sam_msgs::msg::Topics::LEAK_TOPIC,200);
+    &canard_interface , shared_this, sam_msgs::msg::Topics::LEAK_TOPIC_FB,200);
 
     // esc_status_server0 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
     // &canard_interface , shared_this, "esc_status0",0);

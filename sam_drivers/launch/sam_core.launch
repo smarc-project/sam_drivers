@@ -39,7 +39,7 @@
             <param name = "stanard_deviation_of_acc" value="0.004" />
             <param name = "sample_rate" value = "125" />
         </node>
-        <!-- 
+        
         <node pkg="dvl_driver" exec="dvl_driver" name="dvl_driver"  output="screen" namespace="$(var robot_name)">
             <param name="robot_name" value="$(var robot_name)" />
             <param name="ip" value="192.168.2.95" />
@@ -50,7 +50,7 @@
         <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check" output="screen" namespace="$(var robot_name)"></node>
 
         <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter" output="screen" namespace="$(var robot_name)"> </node>
-        -->
+       
         <node name="navsat" pkg="nmea_navsat_driver" exec="nmea_serial_driver" output="screen" if="$(var with_gps)" namespace="$(var robot_name)">
             <param name="port" value="$(var gps_port)"/>
             <param name="baud" value="$(var gps_baud)"/>
@@ -58,14 +58,14 @@
             <remap from="fix" to="gps"/>
         </node> 
     </group>
-    <!--
-    <include file="$(find-pkg-share sam_uavcan_bridge)/launch/bridge.launch.xml">
-        <param name="uav_can_interface" value="$(var uav_can_interface)"/>
+    
+    <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
+        <arg name="uav_can_interface" value="$(var uav_can_interface)"/>
     </include>
 
-    <include file="$(find-pkg-share message_joiner)/launch/joiner.launch.xml">
+    <!-- <include file="$(find-pkg-share message_joiner)/launch/joiner.launch.xml">
         <param name="uav_can_interface" value="$(var uav_can_interface)"/>
-    </include>
-    -->
+    </include> -->
+   
 </launch>
 
