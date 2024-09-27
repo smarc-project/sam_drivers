@@ -1,107 +1,71 @@
 <launch>
+    <arg name="debug" default="0"/>
+    <arg name="mode" default="default"/>
+    <arg name="robot_name" default="sam"/>
+    <arg name="gps_port" default="/dev/ttyACM1"/>
+    <arg name="gps_baud" default="115200"/>
+    <arg name="prefix" default="$(var robot_name)/"/>
+    <arg name="with_gps" default="true"/>
+    <arg name="uav_can_interface" default="can0"/>
+    <arg name="robot_urdf" default="sam_auv.urdf"/>
 
-  <arg name="debug" default="0"/>
-  <arg name="mode" default="default"/>
-  <arg name="namespace" default="sam"/>
-  <arg name="gps_port" value="/dev/ttyACM1"/>
-  <arg name="gps_baud" value="115200"/>
+<group>
 
-  <arg name="with_gps" default="true"/>
-  <arg name="uav_can_interface" default="can0"/>
+        
+        <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" respawn="true" output="screen" >
+            <param name="robot_description" 
+            value="$(command 'xacro $(find-pkg-share sam_description)/urdf/$(var robot_urdf).xacro') "/>
+        </node>
 
-  <!-- <arg name="utm_zone" default="32"/> -->
-  <!-- <arg name="utm_band" default="V"/> -->
-  <!-- <param name="utm_zone" type="int" value="$(arg utm_zone)"/> -->
-  <!-- <param name="utm_band" type="string" value="$(arg utm_band)"/>  -->
+        <node name="joint_state_publisher" pkg="joint_state_publisher" exec="joint_state_publisher">
+            <param name="rate" value="300"/>
+            <param name="source_list" value="['command_states']"/>
+        </node> 
 
-  <group ns="$(arg namespace)">
+        <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
+            <param from="$(find-pkg-share sbg_driver)/config/ellipse_A_sam.yaml"/>
+        </node>
 
-    <param name="robot_description"
-           command="$(find xacro)/xacro '$(find sam_description)/robots/sam_auv_$(arg mode).urdf.xacro' debug:=$(arg debug) namespace:=$(arg namespace)" />
+        <node name="sbg_2_ros" pkg="sbg_driver" exec="sbg_to_ros.py" output="screen" namespace="$(var robot_name)">
+            <param name="sbg_imu_data" value="sbg/imu_data"/>
+            <param name="sbg_ekf_quat" value="sbg/ekf_quat"/>
+            <param name="sbg_mag" value="sbg/mag"/>
+            <param name="sbg_utc_time" value="sbg/utc_time"/>
+        </node> 
+      
+        <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
+            <param name = "device_name" value="/dev/ttyUSB1" />
+            <param name =  "stanard_deviation_of_gyro" value="0.0004" />
+            <param name = "stanard_deviation_of_acc" value="0.004" />
+            <param name = "sample_rate" value = "125" />
+        </node>
+        
+        <node pkg="dvl_driver" exec="dvl_driver" name="dvl_driver"  output="screen" namespace="$(var robot_name)">
+            <param name="robot_name" value="$(var robot_name)" />
+            <param name="ip" value="192.168.2.95" />
+            <param name="port" value="16171" />
+            <param name="log_raw_data" value="false" />
+        </node>
 
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen">
-      <param name="use_gui" value="false"/>
-      <rosparam param="source_list">["/sam/command_states"]</rosparam>
-    </node>
+        <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check" output="screen" namespace="$(var robot_name)"></node>
 
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
-      <param name="robot_description" value="/$(arg namespace)/robot_description" />
-    </node>
-
-    <!-- SBG IMU driver -->
-    <node name="sbg_ellipseA" pkg="sbg_driver" type="sbg_device" output="screen">
-      <rosparam command="load" file="$(find sbg_driver)/config/ellipse_A_sam.yaml" />
-    </node>
-    
-    <node pkg="sbg_driver" name="sbg_2_ros" type="sbg_to_ros.py" output="screen">
-		  <param name="sbg_imu_data" value="/$(arg namespace)/sbg/imu_data"/>
-		  <param name="sbg_ekf_quat" value="/$(arg namespace)/sbg/ekf_quat"/>
-		  <param name="sbg_mag" value="/$(arg namespace)/sbg/mag"/>
-		  <param name="sbg_utc_time" value="/$(arg namespace)/sbg/utc_time"/>
-		  <param name="sbg_frame" value="$(arg namespace)/sbg_link"/>
-		  <param name="sbg_imu_out" value="/$(arg namespace)/core/sbg_imu"/>
-	  </node>
-
-    <!-- STIM300 IMU driver -->
-    <node name="stim300driver" output="screen" pkg="driver_stim300" type="stim300_driver_node" ns="core">
-    	<param name = "device_name" value="/dev/ttyUSB0" type="string" />
-    	<param name = "stanard_deviation_of_gyro" value="0.0004" type="double" />
-    	<param name = "stanard_deviation_of_acc" value="0.004" type="double" />
-    	<param name = "imu_output" value="/$(arg namespace)/core/imu" type="string"/>
-    	<param name = "imu_frame" value="$(arg namespace)/imu_link" type="string"/>
-    	<param name = "sample_rate" value="125" type="double" />
-    </node>
-
-    <!-- DV DVL
-    <node pkg="deepvision_dvl_driver" type="dvl_driver.py" name="dvl_driver" output="screen" ns="core">
-      <param name="dvl_topic" value="/$(arg namespace)/core/dvl"/>
-      <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw_output"/>
-      <param name="dvl_frame" value="$(arg namespace)/dvl_link"/>
-      <param name="dvl_on_off_srv" value="/$(arg namespace)/core/toggle_dvl"/>
-    </node> -->
-
-    <node pkg="waterlinked_a50_ros_driver" type="dvl_driver.py" name="dvl_driver" output="screen">
-
-        <param name="dvl_topic" value="/$(arg namespace)/core/dvl"/>
-        <param name="dvl_raw_topic" value="/$(arg namespace)/core/dvl_raw"/>
-        <param name="dvl_frame" value="$(arg namespace)/dvl_link"/>
-        <param name="dvl_on_off_srv" value="/$(arg namespace)/core/toggle_dvl"/>
-        <param name="relay_topic" value="/$(arg namespace)/core/dvl_relay"/>
-         <param name="ip" value="192.168.2.95"/>
-         <param name="port" value="16171"/>
-        <param name="do_log_raw_data" value="true"/>
-    </node>
-
-    <node pkg="sam_drivers" type="sam_startup_check.py" name="startup_check" output="screen">
-       <remap from="~lcg_cmd" to="/$(arg namespace)/core/lcg_cmd"/>
-       <remap from="~vbs_cmd" to="/$(arg namespace)/core/vbs_cmd"/>
-    </node>
-    <node pkg="sam_drivers" type="sam_joint_state_converter.py" name="sam_joint_state_converter" output="screen">
-       <remap from="~rpm_cmd" to="/$(arg namespace)/core/rpm_cmd"/>
-       <remap from="~thrust_vector_cmd" to="/$(arg namespace)/core/thrust_vector_cmd"/>
-    </node>
-
-    <!-- Node that enables us to disable the DVL in order to get GPS fixes to update DR -->
-    <!-- <node pkg="sam_actions" type="gps_fix_server.py" name="gps_fix_server" output="screen"/> -->
-
-    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="navsat" respawn="true" if="$(arg with_gps)" ns="core">
-      <param name="port" value="$(arg gps_port)"/>
-      <param name="baud" value="$(arg gps_baud)"/>
-      <param name="frame_id" value="$(arg namespace)/gps_link"/>
-      <remap from="fix" to="gps"/>
-    </node>
-    
-  </group>
+        <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter" output="screen" namespace="$(var robot_name)"> </node>
        
+        <node name="navsat" pkg="nmea_navsat_driver" exec="nmea_serial_driver" output="screen" if="$(var with_gps)" namespace="$(var robot_name)">
+            <param name="port" value="$(var gps_port)"/>
+            <param name="baud" value="$(var gps_baud)"/>
+            <param name="frame_id" value="gps_link"/>
+            <remap from="fix" to="gps"/>
+        </node> 
+    </group>
+    
     <include file="$(find sam_uavcan_bridge)/launch/bridge.launch">
-      <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
+        <arg name="uav_can_interface" value="$(var uav_can_interface)"/>
     </include>
 
-    <include file="$(find message_joiner)/launch/joiner.launch">
-      <!-- <arg name="joiner_publish_frequency" value="$(arg joiner_publish_frequency)"/> -->
-      <arg name="uav_can_interface" value="$(arg uav_can_interface)"/>
-    </include>
-  <!-- <node pkg="flexxros" type="sam_controls.py" name="sam_controls_interface" output="screen"/> -->
-
-
+    <!-- <include file="$(find-pkg-share message_joiner)/launch/joiner.launch.xml">
+        <param name="uav_can_interface" value="$(var uav_can_interface)"/>
+    </include> -->
+   
 </launch>
+

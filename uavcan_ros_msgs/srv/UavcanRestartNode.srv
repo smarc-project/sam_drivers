@@ -1,0 +1,10 @@
+#
+# Restart the node.
+#
+# Some nodes may require restart before the new configuration will be applied.
+#
+uint8 node_id
+
+---
+
+bool ok

@@ -1,8 +1,0 @@
-Useful commands to interact with the cams
-
-v4l2-ctl --device=6 --list-formats-ext
-
-v4l2-ctl --list-devices
-
-H.264 vs MJPEG
-https://ipvm.com/reports/h264-mjpeg-bandwidth-quality-test

@@ -1,431 +1,241 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(sam_uavcan_bridge)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++11")
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  uavcan_ros_bridge
-  uavcan_ros_msgs
+# Find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(sam_msgs REQUIRED)
+find_package(smarc_msgs REQUIRED)
+find_package(uavcan_ros_msgs REQUIRED)
+
+# Set Canard base directory
+set(CANARD_BASE ${PROJECT_SOURCE_DIR}/libcanard)
+set(DSDL_DIR ${PROJECT_SOURCE_DIR}/dsdl)
+
+# Include directories
+include_directories(
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/include/ros_to_uavcan/
+  ${PROJECT_SOURCE_DIR}/include/uavcan_to_ros/
+  ${PROJECT_SOURCE_DIR}/include/uavcan_ros_bridge
+  ${PROJECT_SOURCE_DIR}/dsdl
+  ${CANARD_BASE}
+  ${CANARD_BASE}/drivers/socketcan
+  ${DSDL_DIR}/dsdl_generated/include/
+  ${DSDL_DIR}/dsdl_generated/src/
+)
+
+# Enable C++ API
+add_definitions(-DDRONECAN_CXX_WRAPPERS)
+
+# Add Canard library sources
+set(CANARD_SOURCES
+  ${CANARD_BASE}/canard.c
+  ${CANARD_BASE}/drivers/socketcan/socketcan.c
+)
+
+# Add generated DSDL sources
+set(DSDL_SOURCES
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.NodeStatus.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.GetNodeInfo_res.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.GetNodeInfo_req.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.equipment.esc.RawCommand.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.equipment.esc.Status.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.param.GetSet_req.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.param.GetSet_res.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.param.ExecuteOpcode_req.c
+  ${DSDL_DIR}/dsdl_generated/src/uavcan.protocol.param.ExecuteOpcode_res.c
+)
+
+
+set(MESSAGE_CPP_FILES
+    ${DSDL_DIR}/dsdl_generated/src/*c
+)
+set(CONVERT_FUNCTIONS
+    ${PROJECT_SOURCE_DIR}/src/ros_to_uavcan/*cpp
+    ${PROJECT_SOURCE_DIR}/src/uavcan_to_ros/*cpp)
+    file(GLOB_RECURSE MESSAGE_CPP_FILES_FILES ${MESSAGE_CPP_FILES})
+    file(GLOB_RECURSE CONVERT_FUNCTIONS_FILES ${CONVERT_FUNCTIONS})
+# Create Canard library
+add_library(canard_lib ${CANARD_SOURCES})
+target_compile_options(canard_lib PRIVATE -Wall -Wextra -pedantic)
+
+set(CONVERT_DEPENDS
+std_msgs
+rclcpp
+std_srvs
+sam_msgs
+smarc_msgs
+uavcan_ros_msgs
+sensor_msgs
+)
+
+
+# UAVCAN to ROS messages library
+add_library(uav_to_ros_msgs
+  src/uavcan_to_ros/pressure.cpp
+  src/uavcan_to_ros/battery_info.cpp
+  src/uavcan_to_ros/panic.cpp
+  src/uavcan_to_ros/actuator_status.cpp
+  src/uavcan_to_ros/battery_state_basic.cpp
+  src/uavcan_to_ros/circuit_status_stamped.cpp
+  src/uavcan_to_ros/consumed_charge_array.cpp
+  src/uavcan_to_ros/consumed_charge_feedback.cpp
+  src/uavcan_to_ros/ctd_feedback.cpp
+  src/uavcan_to_ros/dual_thruster_feedback.cpp
+  src/uavcan_to_ros/leak.cpp
+  src/uavcan_to_ros/sensor_pressure_stamped.cpp
+  src/uavcan_to_ros/servo_feedback_double.cpp
+  src/uavcan_to_ros/temperature.cpp
+  src/uavcan_to_ros/thruster_feedback_id.cpp
+  src/uavcan_to_ros/esc_status.cpp
+  src/uavcan_to_ros/imu.cpp
+  src/uavcan_to_ros/gps_fix.cpp
+  src/uavcan_to_ros/magnetic_field.cpp
+  src/uavcan_to_ros/sensor_pressure.cpp
+)
+
+ament_target_dependencies(uav_to_ros_msgs
+  ${CONVERT_DEPENDS}
+)
+
+# ROS to UAVCAN messages library
+add_library(ros_to_uav_msgs
+  src/ros_to_uavcan/command.cpp
+  src/ros_to_uavcan/percent_stamped.cpp
+  src/ros_to_uavcan/ballast_angles.cpp
+  src/ros_to_uavcan/dropweights.cpp
+  src/ros_to_uavcan/dvl.cpp
+  src/ros_to_uavcan/sss.cpp
+  src/ros_to_uavcan/led.cpp
+  src/ros_to_uavcan/thruster_rpm.cpp
+  src/ros_to_uavcan/thruster_rpm_id.cpp
+  src/ros_to_uavcan/thruster_rpms.cpp
+  src/ros_to_uavcan/thruster_angles.cpp
+  src/ros_to_uavcan/dual_thruster_rpm.cpp
+  src/ros_to_uavcan/light_command.cpp
+  src/ros_to_uavcan/panic.cpp
+  src/ros_to_uavcan/array_command.cpp
+)
+
+ament_target_dependencies(ros_to_uav_msgs
+  ${CONVERT_DEPENDS}
+)
+
+# Services library
+add_library(ros_to_uavcan_services_library
+  src/ros_to_uavcan/uavcan_node_info.cpp
+  src/ros_to_uavcan/uavcan_update_battery.cpp
+  src/ros_to_uavcan/uavcan_restart.cpp
+  src/ros_to_uavcan/uavcan_transport_stats.cpp
+
+)
+
+ament_target_dependencies(ros_to_uavcan_services_library
+  ${CONVERT_DEPENDS}
+)
+
+# add_custom_command(
+#   OUTPUT ${DSDL_DIR}/dsdl_generated
+#   COMMAND python3 ${DSDL_DIR}/dronecan_dsdlc/dronecan_dsdlc.py -O ${DSDL_DIR}/dsdl_generated ${DSDL_DIR}/DSDL/dronecan ${DSDL_DIR}/DSDL/uavcan ${DSDL_DIR}/DSDL/com ${DSDL_DIR}/DSDL/ardupilot ${DSDL_DIR}/smarc_uavcan_messages ${DSDL_DIR}/smarc_uavcan_services
+#   DEPENDS ${DSDL_DIR}/DSDL ${DSDL_DIR}/dronecan_dsdlc
+#   WORKING_DIRECTORY ${DSDL_DIR}
+# )w
+add_custom_target(generate_dsdl DEPENDS ${DSDL_DIR}/dsdl_generated)
+
+
+
+# Create DSDL library
+add_library(dsdl_lib ${DSDL_SOURCES})
+target_compile_options(dsdl_lib PRIVATE -Wall -Wextra -pedantic)
+
+# Create executable
+add_executable(ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp src/canard_interface.cpp src/time_utils.cpp ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+add_executable(ros_to_uavcan_services src/ros_to_uavcan_services.cpp src/canard_interface.cpp src/time_utils.cpp ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+add_executable(uavcan_ros_bridge src/uavcan_to_ros_bridge.cpp src/canard_interface.cpp src/time_utils.cpp  ${CONVERT_FUNCTIONS_FILES} ${MESSAGE_CPP_FILES_FILES})
+# add_dependencies(ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} )
+add_dependencies(ros_to_uavcan_bridge generate_dsdl)
+add_dependencies(ros_to_uavcan_services generate_dsdl)
+add_dependencies(uavcan_ros_bridge generate_dsdl)
+ament_target_dependencies(ros_to_uavcan_bridge
+  rclcpp
   geometry_msgs
   sensor_msgs
   std_msgs
   std_srvs
   sam_msgs
   smarc_msgs
-  message_generation
-  message_runtime
+)
+ament_target_dependencies(ros_to_uavcan_services
+  rclcpp
+  geometry_msgs
+  sensor_msgs
+  std_msgs
+  std_srvs
+  sam_msgs
+  smarc_msgs
+  uavcan_ros_msgs
+)
+ament_target_dependencies(uavcan_ros_bridge
+rclcpp
+geometry_msgs
+sensor_msgs
+std_msgs
+std_srvs
+sam_msgs
+smarc_msgs
+uavcan_ros_msgs
+)
+# Link libraries
+target_link_libraries(ros_to_uavcan_bridge
+  canard_lib
+  dsdl_lib
+  ros_to_uav_msgs
+
+)
+target_link_libraries(ros_to_uavcan_services
+canard_lib
+dsdl_lib
+ros_to_uavcan_services_library
 )
 
-find_library(UAVCAN_LIB uavcan libuavcan_dsdlc REQUIRED)
+target_link_libraries(uavcan_ros_bridge
+canard_lib
+dsdl_lib
+uav_to_ros_msgs)
 
-#set(UAVCAN_DSDL_DEFINITIONS "/usr/local/share/uavcan/dsdl/uavcan") # For Linux, if the library is installed
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
-
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and global scripts declared therein get installed
-## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
-
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-
-## To declare and build messages, services or actions from within this
-## package, follow these steps:
-## * Let MSG_DEP_SET be the set of packages whose message types you use in
-##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
-## * In the file package.xml:
-##   * add a build_depend tag for "message_generation"
-##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
-##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
-##     but can be declared for certainty nonetheless:
-##     * add a run_depend tag for "message_runtime"
-## * In this file (CMakeLists.txt):
-##   * add "message_generation" and every package in MSG_DEP_SET to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
-##   * uncomment the add_*_files sections below as needed
-##     and list every .msg/.srv/.action file to be processed
-##   * uncomment the generate_messages entry below
-##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
-
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
-
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
-
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
-
-################################################
-## Declare ROS dynamic reconfigure parameters ##
-################################################
-
-## To declare and build dynamic reconfigure parameters within this
-## package, follow these steps:
-## * In the file package.xml:
-##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"
-## * In this file (CMakeLists.txt):
-##   * add "dynamic_reconfigure" to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * uncomment the "generate_dynamic_reconfigure_options" section below
-##     and list every .cfg file to be processed
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS include dsdl/dsdlc_generated
-#  LIBRARIES sam_uavcan_bridge
-  CATKIN_DEPENDS uavcan_ros_bridge
-#  DEPENDS system_lib
+target_compile_options(ros_to_uavcan_bridge PRIVATE  -Wno-unused-parameter
+)
+target_compile_options(uavcan_ros_bridge PRIVATE  -Wno-unused-parameter
+)
+target_compile_options(ros_to_uavcan_services PRIVATE  -Wno-unused-parameter
 )
 
-###########
-## Build ##
-###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-  include
-  dsdl/dsdlc_generated
-  ${catkin_INCLUDE_DIRS}
+# Install targets
+install(TARGETS
+  ros_to_uavcan_bridge
+  ros_to_uavcan_services
+  uavcan_ros_bridge
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-add_custom_target(sam_dsdlc ${DSDL_COMPILER} # If the library is installed
-                  "smarc_uavcan_messages" "smarc_uavcan_services" -I${UAVCAN_DSDL_DEFINITIONS}
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dsdl)
-
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/sam_uavcan_bridge.cpp
-# )
-add_library(sam_uavcan_platform_linux
-  src/uavcan_platform_linux.cpp
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
-add_library(uav_to_ros_actuator_status
-  src/uav_to_ros/actuator_status.cpp
+install(DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}
 )
 
-add_library(uav_to_ros_leak
-  src/uav_to_ros/leak.cpp
-)
-
-add_library(uav_to_ros_sensor_pressure_stamped
-  src/uav_to_ros/sensor_pressure_stamped.cpp
-)
-
-add_library(uav_to_ros_servo_feedback_double
-  src/uav_to_ros/servo_feedback_double.cpp
-)
-
-add_library(uav_to_ros_temperature
-  src/uav_to_ros/temperature.cpp
-)
-
-add_library(uav_to_ros_battery_state_basic
-  src/uav_to_ros/battery_state_basic.cpp
-)
-
-add_library(uav_to_ros_battery_info
-  src/uav_to_ros/battery_info.cpp
-)
-
-add_library(uav_to_ros_consumed_charge_feedback
-  src/uav_to_ros/consumed_charge_feedback.cpp
-)
-
-add_library(uav_to_ros_consumed_charge_array
-  src/uav_to_ros/consumed_charge_array.cpp
-)
-
-add_library(uav_to_ros_ctd_feedback
-  src/uav_to_ros/ctd_feedback.cpp
-)
-
-add_library(uav_to_ros_thruster_feedback_id
-  src/uav_to_ros/thruster_feedback_id.cpp
-)
-
-add_library(uav_to_ros_circuit_status_stamped
-  src/uav_to_ros/circuit_status_stamped.cpp
-)
-
-add_library(uav_to_ros_panic
-  src/uav_to_ros/panic.cpp
-)
-
-add_library(ros_to_uav_percent_stamped
-  src/ros_to_uav/percent_stamped.cpp
-)
-
-add_library(ros_to_uav_ballast_angles
-  src/ros_to_uav/ballast_angles.cpp
-)
-
-add_library(ros_to_uav_dropweights
-  src/ros_to_uav/dropweights.cpp
-)
-
-add_library(ros_to_uav_dvl
-  src/ros_to_uav/dvl.cpp
-)
-
-add_library(ros_to_uav_sss
-  src/ros_to_uav/sss.cpp
-)
-
-add_library(ros_to_uav_led
-  src/ros_to_uav/led.cpp
-)
-
-add_library(ros_to_uav_thruster_rpm
-  src/ros_to_uav/thruster_rpm.cpp
-)
-
-add_library(ros_to_uav_thruster_rpm_id
-  src/ros_to_uav/thruster_rpm_id.cpp
-)
-
-add_library(ros_to_uav_thruster_rpms
-  src/ros_to_uav/thruster_rpms.cpp
-)
-
-add_library(ros_to_uav_thruster_angles
-  src/ros_to_uav/thruster_angles.cpp
-)
-
-add_library(ros_to_uav_dual_thruster_rpm
-  src/ros_to_uav/dual_thruster_rpm.cpp
-)
-
-add_library(ros_to_uav_light_command
-  src/ros_to_uav/light_command.cpp
-)
-
-add_library(ros_to_uav_panic
-  src/ros_to_uav/panic.cpp
-)
-
-add_library(ros_to_uav_uavcan_update_battery
-  src/ros_to_uav/uavcan_update_battery.cpp
-)
-
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_actuator_status ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_leak ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_sensor_pressure_stamped sam_dsdlc)
-add_dependencies(uav_to_ros_servo_feedback_double sam_dsdlc)
-add_dependencies(uav_to_ros_temperature ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_battery_state_basic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_battery_info ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_consumed_charge_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_consumed_charge_array ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_ctd_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_thruster_feedback_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_circuit_status_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(uav_to_ros_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_percent_stamped ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_ballast_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_thruster_rpm_id ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_thruster_rpms ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_thruster_angles ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_dual_thruster_rpm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_light_command ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_panic ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_uavcan_update_battery ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_dropweights ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_led ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_dvl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ros_to_uav_sss ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sam_uavcan_bridge_node.cpp)
-add_executable(sam_uavcan_to_ros_bridge src/uavcan_to_ros_bridge.cpp)
-add_executable(sam_ros_to_uavcan_bridge src/ros_to_uavcan_bridge.cpp)
-add_executable(sam_uavcan_time_master src/uavcan_time_master.cpp)
-add_executable(sam_uavcan_network_monitor src/uavcan_network_monitor.cpp)
-add_executable(sam_ros_to_uavcan_services src/ros_to_uavcan_services.cpp)
-add_dependencies(sam_uavcan_to_ros_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(sam_ros_to_uavcan_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(sam_uavcan_time_master ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(sam_uavcan_network_monitor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(sam_ros_to_uavcan_services ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-## Rename C++ executable without prefix
-## The above recommended prefix causes long target names, the following renames the
-## target back to the shorter version for ease of user use
-## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
-
-## Add cmake target dependencies of the executable
-## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
-target_link_libraries(sam_uavcan_to_ros_bridge
-  sam_uavcan_platform_linux
-  uav_to_ros_actuator_status
-  uav_to_ros_leak
-  uav_to_ros_sensor_pressure_stamped
-  uav_to_ros_servo_feedback_double
-  uav_to_ros_temperature
-  uav_to_ros_battery_state_basic
-  uav_to_ros_battery_info
-  uav_to_ros_consumed_charge_feedback
-  uav_to_ros_consumed_charge_array
-  uav_to_ros_ctd_feedback
-  uav_to_ros_thruster_feedback_id
-  uav_to_ros_circuit_status_stamped
-  uav_to_ros_panic
-  #${uavcan_ros_bridge_LIBRARIES}
-  ${catkin_LIBRARIES}
-  #${UAVCAN_LIB}
-  rt
-)
-
-target_link_libraries(sam_ros_to_uavcan_bridge
-  sam_uavcan_platform_linux
-  ros_to_uav_percent_stamped
-  ros_to_uav_ballast_angles
-  ros_to_uav_thruster_rpm
-  ros_to_uav_thruster_rpm_id
-  ros_to_uav_thruster_rpms
-  ros_to_uav_thruster_angles
-  ros_to_uav_dual_thruster_rpm
-  ros_to_uav_light_command
-  ros_to_uav_panic
-  ros_to_uav_dropweights
-  ros_to_uav_led
-  ros_to_uav_dvl
-  ros_to_uav_sss
-
-  #${uavcan_ros_bridge_LIBRARIES}
-  ${catkin_LIBRARIES}
-  #${UAVCAN_LIB}
-  #uavcan_dsdlc
-  rt
-)
-
-target_link_libraries(sam_uavcan_time_master
-  sam_uavcan_platform_linux
-  ${catkin_LIBRARIES}
-  #${UAVCAN_LIB}
-  rt
-)
-
-target_link_libraries(sam_uavcan_network_monitor
-  sam_uavcan_platform_linux
-  ${catkin_LIBRARIES}
-  #${UAVCAN_LIB}
-  rt
-)
-
-target_link_libraries(sam_ros_to_uavcan_services
-  sam_uavcan_platform_linux
-  ros_to_uav_uavcan_update_battery
-  ${catkin_LIBRARIES}
-  #${UAVCAN_LIB}
-  rt
-)
-
-#############
-## Install ##
-#############
-
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
-
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
-
-#############
-## Testing ##
-#############
-
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sam_uavcan_bridge.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+ament_package()
