@@ -32,4 +32,4 @@ tmux send-keys "mon launch cm_station_drivers cm_station_uwgps.launch --name=$(t
 tmux select-window -t $SESSION:0
 
 # Attach to session
-tmux -2 attach-session -t $SESSION
+# tmux -2 attach-session -t $SESSION
