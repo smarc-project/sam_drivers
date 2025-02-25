@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 import time
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
-from sam_msgs.msg import PercentStamped, Topics
+from smarc_msgs.msg import PercentStamped, Topics
 from smarc_msgs.msg import Leak
 from sensor_msgs.msg import FluidPressure
 from std_msgs.msg import Header

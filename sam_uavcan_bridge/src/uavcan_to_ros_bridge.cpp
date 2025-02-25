@@ -66,8 +66,8 @@ private:
     std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_SensorPressureStamped, sensor_msgs::msg::FluidPressure>> vbs_tank_pressure;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature, sensor_msgs::msg::Temperature>> vbs_tank_temperature;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature, sensor_msgs::msg::Temperature>> motor_oil_temperature;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::PercentStamped>> vbs_feedback;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::PercentStamped>> lcg_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, smarc_msgs::msg::PercentStamped>> vbs_feedback;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, smarc_msgs::msg::PercentStamped>> lcg_feedback;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::Leak>> leak;
     // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server0;
     // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server1;
@@ -153,10 +153,10 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     motor_oil_temperature = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature,sensor_msgs::msg::Temperature>>(
     &canard_interface , shared_this,sam_msgs::msg::Topics::MOTOR_TEMP_TOPIC ,1);
 
-    vbs_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
+    vbs_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,smarc_msgs::msg::PercentStamped>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::VBS_FB_TOPIC,13);
     
-    lcg_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::PercentStamped>>(
+    lcg_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,smarc_msgs::msg::PercentStamped>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::LCG_FB_TOPIC,14);
 
     leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::Leak>>(

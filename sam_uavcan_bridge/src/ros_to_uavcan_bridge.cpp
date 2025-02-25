@@ -65,8 +65,8 @@ private:
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, sam_msgs::msg::ThrusterRPMs>> rpm_server;
 
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ArrayCommand>> array_server ;
-    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>> vbs_server ;
-    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>> lcg_server;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, smarc_msgs::msg::PercentStamped>> vbs_server ;
+    std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, smarc_msgs::msg::PercentStamped>> lcg_server;
     // std::unique_ptr<ros_to_uav::ConversionServer<uavcan::equipment::actuator::ArrayCommand, sam_msgs::BallastAngles>> tcg_server2;
     std::unique_ptr<ros_to_uav::ConversionServer<smarc_uavcan_messages_DualThrusterRPM, smarc_msgs::msg::DualThrusterRPM>> dual_thruster_rpm_server;
     std::unique_ptr<ros_to_uav::ConversionServer<uavcan_equipment_indication_LightsCommand, sam_msgs::msg::LightCommand>> light_command_server ;
@@ -148,10 +148,10 @@ void RosToUavcanBridge::start_node(const char *can_interface_, u_int8_t node_id)
     rpm_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_esc_RPMCommand, sam_msgs::msg::ThrusterRPMs>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::RPM_CMD_TOPIC, 3);
 
-    vbs_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>>(
+    vbs_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, smarc_msgs::msg::PercentStamped>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::VBS_CMD_TOPIC, 13);
     
-    lcg_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::PercentStamped>>(
+    lcg_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, smarc_msgs::msg::PercentStamped>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::LCG_CMD_TOPIC, 14);
 
     array_server = std::make_unique<ros_to_uav::ConversionServer<uavcan_equipment_actuator_ArrayCommand, sam_msgs::msg::ArrayCommand>>(
