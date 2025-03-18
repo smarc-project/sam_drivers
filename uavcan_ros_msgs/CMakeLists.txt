@@ -21,9 +21,20 @@ find_package(builtin_interfaces REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
 "srv/UavcanGetNodeInfo.srv"
 "srv/UavcanRestartNode.srv"
+#"srv/UavcanGetNodeInfo.srv"
+"srv/UavcanUpdateBattery.srv"
 "srv/UavcanGetTransportStats.srv"
 "msg/UavcanNodeStatus.msg"
 "msg/ESCStatus.msg"
+"msg/BallastAngles.msg"
+"msg/ConsumedCharge.msg"
+"msg/ConsumedChargeArray.msg"
+"msg/ConsumedChargeFeedback.msg"
+"msg/CircuitStatus.msg"
+"msg/CircuitStatusStamped.msg"
+"msg/Command.msg"
+"msg/ArrayCommand.msg"
+"msg/LightCommand.msg"
 
   DEPENDENCIES geometry_msgs geographic_msgs nav_msgs sensor_msgs std_msgs builtin_interfaces
 )
