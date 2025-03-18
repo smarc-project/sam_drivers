@@ -3,7 +3,7 @@
 namespace ros_to_uav {
 
 template <>
-bool convert(const std::shared_ptr<sam_msgs::msg::ArrayCommand> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg)
+bool convert(const std::shared_ptr<uavcan_ros_msgs::msg::ArrayCommand> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg)
 {
     // Ensure we do not exceed the array's bounds
     size_t num_commands = std::min(ros_msg->commands.size(), sizeof(uav_msg.commands.data) / sizeof(uav_msg.commands.data[0]));

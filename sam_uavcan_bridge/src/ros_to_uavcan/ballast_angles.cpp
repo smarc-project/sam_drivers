@@ -3,7 +3,7 @@
 namespace ros_to_uav {
 
 template <>
-bool convert(const std::shared_ptr<sam_msgs::msg::BallastAngles> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg, unsigned char uid,DefaultTag)
+bool convert(const std::shared_ptr<uavcan_ros_msgs::msg::BallastAngles> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg, unsigned char uid,DefaultTag)
 {
 
     uav_msg.commands.data[0].actuator_id = uid;

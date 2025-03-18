@@ -3,13 +3,13 @@
 namespace uav_to_ros {
 
 template <>
-bool convert(const smarc_uavcan_messages_ConsumedChargeArray& uav_msg, std::shared_ptr<sam_msgs::msg::ConsumedChargeArray> ros_msg)
+bool convert(const smarc_uavcan_messages_ConsumedChargeArray& uav_msg, std::shared_ptr<uavcan_ros_msgs::msg::ConsumedChargeArray> ros_msg)
 {
     ros_msg->header.stamp = convert_timestamp(uav_msg.timestamp.usec);
 
     for(auto c:uav_msg.array.data)
     {
-        sam_msgs::msg::ConsumedCharge msg;
+        uavcan_ros_msgs::msg::ConsumedCharge msg;
         msg.header.stamp = rclcpp::Clock().now();
         msg.circuit_id = c.circuit_id;
         msg.charge = c.charge;

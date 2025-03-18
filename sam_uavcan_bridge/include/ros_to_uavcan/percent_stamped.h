@@ -2,7 +2,7 @@
 #define ROS_TO_UAV_PERCENT_STAMPED_H
 
 #include <uavcan_ros_bridge.h>
-#include <sam_msgs/msg/percent_stamped.hpp>
+#include <smarc_msgs/msg/percent_stamped.hpp>
 
 namespace ros_to_uav {
 

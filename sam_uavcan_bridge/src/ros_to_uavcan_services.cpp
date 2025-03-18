@@ -4,6 +4,7 @@
 #include <time_utils.h>
 #include <uavcan_ros_msgs/msg/uavcan_node_status.hpp>
 #include <uavcan_ros_msgs/srv/uavcan_get_node_info.hpp>
+#include <uavcan_ros_msgs/srv/uavcan_update_battery.hpp>
 #include <ros_to_uavcan/uavcan_node_info.h>
 #include <sam_msgs/msg/topics.hpp>
 #include <ros_to_uavcan/uavcan_restart.h>
@@ -48,7 +49,7 @@ private:
     std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetNodeInfoRequest,uavcan_protocol_GetNodeInfoResponse, uavcan_ros_msgs::srv::UavcanGetNodeInfo>> node_info_server_service_;
     std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_GetTransportStatsRequest,uavcan_protocol_GetTransportStatsResponse, uavcan_ros_msgs::srv::UavcanGetTransportStats>> transport_stats_server ;
     std::unique_ptr<ros_to_uav::ServiceConversionServer<uavcan_protocol_RestartNodeRequest,uavcan_protocol_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>> restart_server ;
-    std::unique_ptr<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, sam_msgs::srv::UavcanUpdateBattery>> update_battery_server ;
+    std::unique_ptr<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, uavcan_ros_msgs::srv::UavcanUpdateBattery>> update_battery_server ;
     
     void setup_service_servers();
 };
@@ -135,7 +136,7 @@ void ServiceConversionBridge::setup_service_servers() {
     restart_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocol_RestartNodeRequest,uavcan_protocol_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::RESTART_NODE_SRV);
 
-    update_battery_server = std::make_unique<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, sam_msgs::srv::UavcanUpdateBattery>>(
+    update_battery_server = std::make_unique<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, uavcan_ros_msgs::srv::UavcanUpdateBattery>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::UPDATE_BATTERY_SRV);
 }
 

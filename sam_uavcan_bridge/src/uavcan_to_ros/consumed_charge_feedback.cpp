@@ -3,7 +3,7 @@
 namespace uav_to_ros {
 
 template <>
-bool convert(const smarc_uavcan_messages_ConsumedChargeFeedback& uav_msg, std::shared_ptr<sam_msgs::msg::ConsumedChargeFeedback> ros_msg)
+bool convert(const smarc_uavcan_messages_ConsumedChargeFeedback& uav_msg, std::shared_ptr<uavcan_ros_msgs::msg::ConsumedChargeFeedback> ros_msg)
 {
     ros_msg->header.stamp = convert_timestamp(uav_msg.timestamp.usec);
     ros_msg->main = uav_msg.main;

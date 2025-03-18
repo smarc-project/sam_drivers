@@ -3,12 +3,12 @@
 
 #include <uavcan_ros_bridge.h>
 #include <array_command.h>
-#include <sam_msgs/msg/array_command.hpp>
+#include <uavcan_ros_msgs/msg/array_command.hpp>
 
 namespace ros_to_uav {
 
 template <>
-bool convert(const std::shared_ptr<sam_msgs::msg::ArrayCommand> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg);
+bool convert(const std::shared_ptr<uavcan_ros_msgs::msg::ArrayCommand> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg);
 
 }
 

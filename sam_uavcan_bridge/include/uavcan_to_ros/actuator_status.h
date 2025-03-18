@@ -2,7 +2,7 @@
 #define UAV_TO_ROS_ACTUATOR_STATUS_H
 
 #include <uavcan_ros_bridge.h>
-#include <sam_msgs/msg/percent_stamped.hpp>
+#include <smarc_msgs/msg/percent_stamped.hpp>
 
 namespace uav_to_ros {
 

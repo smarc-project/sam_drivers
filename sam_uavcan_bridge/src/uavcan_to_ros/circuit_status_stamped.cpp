@@ -3,7 +3,7 @@
 namespace uav_to_ros {
 
 template <>
-bool convert(const uavcan_equipment_power_CircuitStatus& uav_msg, std::shared_ptr<sam_msgs::msg::CircuitStatusStamped> ros_msg)
+bool convert(const uavcan_equipment_power_CircuitStatus& uav_msg, std::shared_ptr<uavcan_ros_msgs::msg::CircuitStatusStamped> ros_msg)
 {
     ros_msg->header.stamp = rclcpp::Clock().now();
     ros_msg->circuit.error_flags = uav_msg.error_flags;

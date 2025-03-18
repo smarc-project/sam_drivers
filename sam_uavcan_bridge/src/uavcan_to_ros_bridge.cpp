@@ -25,7 +25,7 @@
 #include <uavcan_to_ros/temperature.h>
 #include <uavcan_to_ros/thruster_feedback_id.h>
 #include <time_utils.h>
-#include <sam_msgs/msg/percent_stamped.hpp>
+#include <smarc_msgs/msg/percent_stamped.hpp>
 #include <sam_msgs/msg/topics.hpp>
 
 DEFINE_HANDLER_LIST_HEADS();
@@ -68,13 +68,13 @@ private:
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_device_Temperature, sensor_msgs::msg::Temperature>> motor_oil_temperature;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, smarc_msgs::msg::PercentStamped>> vbs_feedback;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, smarc_msgs::msg::PercentStamped>> lcg_feedback;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, sam_msgs::msg::Leak>> leak;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status, smarc_msgs::msg::Leak>> leak;
     // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server0;
     // std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status, uavcan_ros_msgs::ESCStatus>> esc_status_server1;
-    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus, sam_msgs::msg::CircuitStatusStamped>> circuit_status;
+    std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus, uavcan_ros_msgs::msg::CircuitStatusStamped>> circuit_status;
     std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_BatteryStateBasic, sensor_msgs::msg::BatteryState>> battery_server2;
     std::unique_ptr<uav_to_ros::ConversionServer<uavcan_equipment_power_BatteryInfo, sensor_msgs::msg::BatteryState>> battery_server3;
-    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray, sam_msgs::msg::ConsumedChargeArray>> consumed_charge_array;
+    std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray, uavcan_ros_msgs::msg::ConsumedChargeArray>> consumed_charge_array;
     std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_CTDFeedback, smarc_msgs::msg::CTD>> ctd_feedback;
     std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID, smarc_msgs::msg::ThrusterFeedback>> thruster1_feedback;
     std::unique_ptr<uav_to_ros::ConversionServer<smarc_uavcan_messages_ThrusterFeedbackID, smarc_msgs::msg::ThrusterFeedback>> thruster2_feedback;
@@ -159,7 +159,7 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     lcg_feedback = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,smarc_msgs::msg::PercentStamped>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::LCG_FB_TOPIC,14);
 
-    leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,sam_msgs::msg::Leak>>(
+    leak = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_actuator_Status,smarc_msgs::msg::Leak>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::LEAK_TOPIC_FB,200);
 
     // esc_status_server0 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
@@ -168,7 +168,7 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     // esc_status_server1 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_esc_Status,uavcan_ros_msgs::msg::ESCStatus>>(
     // &canard_interface , shared_this, "esc_status1",1);
 
-    circuit_status = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus,sam_msgs::msg::CircuitStatusStamped>>(
+    circuit_status = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_CircuitStatus,uavcan_ros_msgs::msg::CircuitStatusStamped>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::CIRCUIT_STATUS_TOPIC);
 
     battery_server2 = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_BatteryStateBasic,sensor_msgs::msg::BatteryState>>(
@@ -177,7 +177,7 @@ void UavcanToRosBridge::start_node(const char *can_interface_, u_int8_t node_id)
     battery_server3 = std::make_unique<uav_to_ros::ConversionServer<uavcan_equipment_power_BatteryInfo,sensor_msgs::msg::BatteryState>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::BATTERY_STATUS_TOPIC);
 
-    consumed_charge_array = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray,sam_msgs::msg::ConsumedChargeArray>>(
+    consumed_charge_array = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_ConsumedChargeArray,uavcan_ros_msgs::msg::ConsumedChargeArray>>(
     &canard_interface , shared_this, sam_msgs::msg::Topics::CONSUMED_CHARED_ARRAY_TOPIC);
 
     ctd_feedback = std::make_unique<uav_to_ros::ConversionServer<smarc_uavcan_messages_CTDFeedback,smarc_msgs::msg::CTD>>(
