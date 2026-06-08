@@ -1,0 +1,42 @@
+<launch>
+
+  <arg name="robot_name" default="sam"/>
+  <arg name="driver_port" default="/dev/ttyUSB3"/>
+  <arg name="use_sim_time" default="false" />
+
+  <include file= "$(find-pkg-share smarc_acomms_client)/launch/full_acomms_stack.launch">
+      <arg name="robot_name" value="$(var robot_name)"/>
+      <arg name="driver_port" value="$(var driver_port)"/>
+  </include>
+
+  <push-ros-namespace namespace="$(var robot_name)"/>
+
+    <!-- <node pkg="smarc_acomms" exec="vehicle_uwcomm_interface" name="vehicle_uwcomm_interface" output="screen">
+        <param name="lat_lon_top" value="/$(var robot_name)/dr/lat_lon"/>
+        <param name="depth_top" value="/$(var robot_name)/dr/depth"/>
+        <param name="heading_top" value="/$(var robot_name)/sbg/ekf_euler"/>
+        <param name="battery_top" value="/$(var robot_name)/core/battery"/>
+        <param name="abort_top" value="/$(var robot_name)/core/abort"/>
+        <param name="uwgps_odom_top" value="/$(var robot_name)/uwgps/odom"/>
+        <param name="in_nav_report_top" value="/$(var robot_name)/acomms/incoming/cm_station/navigation_report"/>
+        <param name="out_bt_top" value="/$(var robot_name)/acomms/outgoing/broadcast/mission_control"/>
+        <param name="mission_control_top" value="/$(var robot_name)/smarc_bt/mission_control"/>
+        <param name="in_bt_top" value="/$(var robot_name)/acomms/incoming/cm_station/mission_control"/>
+        <param name="lat_lon_server" value="/$(var robot_name)/dr/lat_lon_to_utm"/>
+        <param name="out_nav_report_top" value="/$(var robot_name)/acomms/outgoing/broadcast/navigation_report"/>
+        <param name="uwcomms_heartbeat_top" value="/$(var robot_name)/uwcomms/uw_heartbeat"/>
+        <param name="in_heartbeat_top" value="/$(var robot_name)/acomms/incoming/cm_station/heartbeat"/>
+        <param name="mission_fb_period" value="20."/>
+        <param name="nav_report_period" value="10."/>
+        <param name="use_sim_time" value="$(var use_sim_time)" />
+    </node> -->
+
+
+    <node pkg="smarc_acomms" exec="sam_uwcomm_interface" name="sam_uwcomm_interface" output="screen">
+        <param name="nachos_button" value="/$(var robot_name)/uwgps/nachos"/>
+        <param name="in_nav_report_top" value="/$(var robot_name)/acomms/incoming/cm_station/navigation_report"/>
+    </node>
+
+
+
+</launch>

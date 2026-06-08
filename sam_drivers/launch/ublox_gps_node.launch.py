@@ -37,9 +37,12 @@ import os
 import ament_index_python.packages
 import launch
 import launch_ros.actions
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
+
+    namespace = LaunchConfiguration('robot_name')
 
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('sam_drivers'),
@@ -47,6 +50,7 @@ def generate_launch_description():
     params = os.path.join(config_directory, 'zed_f9p_sam.yaml')
     ublox_gps_node = launch_ros.actions.Node(package='ublox_gps',
                                              executable='ublox_gps_node',
+                                            #  namespace=namespace,
                                              output='both',
                                              parameters=[params],
                                              remappings=[

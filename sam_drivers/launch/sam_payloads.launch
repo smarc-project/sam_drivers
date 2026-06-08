@@ -25,9 +25,9 @@
 
 
       <!-- port cam -->
-      <node name="cam_port" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_port" >
+      <!-- <node name="cam_port" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_port" >
           <param from ="$(find-pkg-share sam_drivers)/config/cam_port.yml"/>
-      </node>
+      </node> -->
 
       <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_port/stop_capture {}" /> 
       <execute_process
@@ -35,14 +35,14 @@
         output="screen"
       /> -->
       <!-- starboard cam -->
-      <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_starboard">
+      <!-- <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_starboard">
           <param from ="$(find-pkg-share sam_drivers)/config/cam_starboard.yml"/>
-      </node>
+      </node> -->
 
       <!-- starboard forward -->
-      <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_forward">
+      <!-- <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_forward">
           <param from ="$(find-pkg-share sam_drivers)/config/cam_forward.yml"/>
-      </node>
+      </node> -->
 
       <!-- starboard down -->
       <!-- <node name="cam_down" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
