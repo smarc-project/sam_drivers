@@ -6,7 +6,7 @@ namespace ros_to_uav {
 template <>
 bool convert(const std::shared_ptr<smarc_msgs::msg::PercentStamped> ros_msg, uavcan_equipment_actuator_ArrayCommand& uav_msg, unsigned char uid,DefaultTag)
 {
-
+    // std::cout << "Inside Percentage convert"<< std::endl;
     // uav_msg.commands.resize(1);
     uav_msg.commands.data[0].actuator_id = uid;
     uav_msg.commands.data[0].command_value = ros_msg->value;

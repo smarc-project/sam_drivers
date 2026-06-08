@@ -98,6 +98,7 @@ void ServiceConversionBridge::start_canard_node() {
 
 void ServiceConversionBridge::start_node(const char *can_interface_, uint8_t node_id) {
     canard_interface.init(can_interface_, node_id);
+    // Nacho: is this giving us shit?
     setup_service_servers();
 }
 
@@ -136,8 +137,8 @@ void ServiceConversionBridge::setup_service_servers() {
     restart_server = std::make_unique<ros_to_uav::ServiceConversionServer<uavcan_protocol_RestartNodeRequest,uavcan_protocol_RestartNodeResponse, uavcan_ros_msgs::srv::UavcanRestartNode>>(
         &canard_interface, shared_this, sam_msgs::msg::Topics::RESTART_NODE_SRV);
 
-    update_battery_server = std::make_unique<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, uavcan_ros_msgs::srv::UavcanUpdateBattery>>(
-        &canard_interface, shared_this, sam_msgs::msg::Topics::UPDATE_BATTERY_SRV);
+    // update_battery_server = std::make_unique<ros_to_uav::ServiceConversionServer<smarc_uavcan_services_UpdateBatteryRequest,smarc_uavcan_services_UpdateBatteryResponse, uavcan_ros_msgs::srv::UavcanUpdateBattery>>(
+    //     &canard_interface, shared_this, sam_msgs::msg::Topics::UPDATE_BATTERY_SRV);
 }
 
 int main(int argc, char** argv)

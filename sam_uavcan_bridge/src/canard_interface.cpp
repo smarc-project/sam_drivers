@@ -1,4 +1,5 @@
 #include <canard_interface.h>
+#include <iostream>
 void CanardInterface::init(const char *interface_name, uint8_t node_id) {
     int16_t res = socketcanInit(&socketcan, interface_name);
     if (res < 0) {
@@ -55,6 +56,7 @@ bool CanardInterface::broadcast(const Canard::Transfer &bcast_transfer) {
     tx_transfer.priority = bcast_transfer.priority; 
     tx_transfer.payload = (const uint8_t*)bcast_transfer.payload; 
     tx_transfer.payload_len = static_cast<uint16_t>(bcast_transfer.payload_len); 
+    // std::cout << "Inside braodcast ---" << std::endl;
     bool success = canardBroadcastObj(&canard, &tx_transfer) > 0;
     return success;
 }
@@ -81,6 +83,6 @@ bool CanardInterface::respond(uint8_t destination_node_id, const Canard::Transfe
     tx_transfer.priority = res_transfer.priority; 
     tx_transfer.payload = (const uint8_t*)res_transfer.payload; 
     tx_transfer.payload_len = uint16_t(res_transfer.payload_len); 
-    
+    // std::cout << "Inside respond" << std::endl;
     return canardRequestOrRespondObj(&canard, destination_node_id, &tx_transfer) > 0;
 }

@@ -91,7 +91,7 @@ void ConversionServer<UAVMSG, ROSMSG>::conversion_callback(const CanardRxTransfe
 
 };
 
-
+//-=====================================
 
 namespace ros_to_uav {
     struct DefaultTag {};
@@ -153,13 +153,14 @@ public:
         ros_sub_ = ros_node->create_subscription<ROSMSG>(ros_topic, 10, 
             std::bind(&ConversionServer::conversion_callback, this, std::placeholders::_1));
 
-        std::string service_name = ros_sub_->get_topic_name();
-        std::replace(service_name.begin(), service_name.end(), '/', '_');
-        service_name = std::string("start_stop") + service_name;
-        ros_service_ = ros_node->create_service<std_srvs::srv::SetBool>(service_name, 
-            std::bind(&ConversionServer::start_stop, this, std::placeholders::_1, std::placeholders::_2));
+        // Nacho: not used atm
+        // std::string service_name = ros_sub_->get_topic_name();
+        // std::replace(service_name.begin(), service_name.end(), '/', '_');
+        // service_name = std::string("start_stop") + service_name;
+        // ros_service_ = ros_node->create_service<std_srvs::srv::SetBool>(service_name, 
+        //     std::bind(&ConversionServer::start_stop, this, std::placeholders::_1, std::placeholders::_2));
 
-        RCLCPP_INFO(ros_node->get_logger(), "Announcing service: %s", service_name.c_str());
+        // RCLCPP_INFO(ros_node->get_logger(), "Announcing service: %s", service_name.c_str());
     }
 
     bool start_stop(const std::shared_ptr<std_srvs::srv::SetBool::Request> req, std::shared_ptr<std_srvs::srv::SetBool::Response> res)
@@ -177,16 +178,15 @@ public:
 
     void conversion_callback(const std::shared_ptr<ROSMSG> ros_msg)
     {
-        if (!running_) {
-            return;
-        }
+        // if (!running_) {
+        //     return;
+        // }
         UAVMSG uav_msg;
         bool success = convert(ros_msg, uav_msg, uid_, tag_);
         if (success) {
+        //    std::cout << "Sending UAVCAN msg " << std::endl;
             canard_publisher.broadcast(uav_msg);
         }
-
-
     }
 
 private:
